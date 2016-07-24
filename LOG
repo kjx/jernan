@@ -1,0 +1,23 @@
+24 July 5pmish
+
+* CS2J at least makes the files.
+* BUT: everything seems broken everywhere!
+
+* in particular: C# literal hashmaps FUCK everything
+ - made auxuiliary hash(k,v) hash(k,v,k,v) hash(h,v,k,v,k,v) 
+
+24 July 6pm - Lexer parses. I think. 
+
+24 July 8pm or thereabouts - nasty versions of Unicode helper classes 
+
+24 July 8:40pm - compiled first file  StaticErrorException.java
+
+24 July 9:23pm - compiles OutputSink (1 line!!)
+
+24 July 10:34pm ErrorReporting compiles!  This is due to a big HACK in
+Token, but still...
+
+24 July 11:30 fucking about, adding StringInfo to Grace;
+probaby have to add (some of) StringSupport too; 
+
+24 July 12:36 Lexer.java compiles!!!!!
