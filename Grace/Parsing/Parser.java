@@ -186,14 +186,14 @@ public class Parser
     *  @param start First token that led to this
     * sequence, for use in error reportingToken class to search for
     */
-    private <T extends Token>boolean awaiting(Token start) throws Exception {
-        if (lexer.current instanceof T)
+    private <T extends Token>boolean awaiting(Token start, Class<T> token) throws Exception {
+        if (token.isInstance(lexer.current))
             return false;
          
         if (lexer.current instanceof EndToken)
             ErrorReporting.ReportStaticError(
   	     moduleName, start.line, "P1001",
-	     hash("expected", T.class.getName(),  
+	     hash("expected", token.getName(),  
 		  "found", lexer.current.toString() ), 
 	     "Unexpected end of file");
          
@@ -204,8 +204,8 @@ public class Parser
     * Report an error if the current token is not
     * a particular kindToken class to expect
     */
-    private <T extends Token>void expect() throws Exception {
-        if (lexer.current instanceof T)
+    private <T extends Token>void expect(Class<T> token) throws Exception {
+        if (token.isInstance(lexer.current))
             return ;
          
         ErrorReporting.ReportStaticError(moduleName, lexer.current.line, lexer.current instanceof EndToken ? "P1001" : "P1002", hash(), "Expected something else, got " + lexer.current);
@@ -217,8 +217,8 @@ public class Parser
     *  @param expectation Description of what was expected
     * instead
     */
-    private <T extends Token>void expect(String expectation) throws Exception {
-        if (lexer.current instanceof T)
+    private <T extends Token>void expect(Class<T> token, String expectation) throws Exception {
+        if (token.isInstance(lexer.current))
             return ;
          
         ErrorReporting.ReportStaticError(moduleName, lexer.current.line, lexer.current instanceof EndToken ? "P1001" : "P1002", hash(), "Expected something else, got " + lexer.current);
@@ -229,8 +229,8 @@ public class Parser
     * a particular kindToken class to expect
     *  @param code Error code to report
     */
-    private <T extends Token>void expectWithError(String code) throws Exception {
-        if (lexer.current instanceof T)
+    private <T extends Token>void expectWithError(Class<T> token, String code) throws Exception {
+        if (token.isInstance(lexer.current))
             return ;
          
         ErrorReporting.ReportStaticError(moduleName, lexer.current.line, code, hash(), "Expected something else, got " + lexer.current);
@@ -243,8 +243,8 @@ public class Parser
     *  @param expectation Description of what was expected
     * instead
     */
-    private <T extends Token>void expectWithError(String code, String expectation) throws Exception {
-        if (lexer.current instanceof T)
+    private <T extends Token>void expectWithError(Class<T> token, String code, String expectation) throws Exception {
+        if (token.isInstance(lexer.current))
             return ;
          
         if (lexer.current instanceof EndToken)
@@ -475,7 +475,7 @@ public class Parser
     private ParseNode parseVarDeclaration() throws Exception {
         Token start = lexer.current;
         nextToken();
-        expect();
+        expect(IdentifierToken.class);
         ParseNode name = parseIdentifier();
         ParseNode type = null;
         if (lexer.current instanceof ColonToken)
@@ -508,7 +508,7 @@ public class Parser
     private ParseNode parseDefDeclaration() throws Exception {
         Token start = lexer.current;
         nextToken();
-        expect();
+        expect(IdentifierToken.class);
         ParseNode name = parseIdentifier();
         ParseNode type = null;
         if (lexer.current instanceof ColonToken)
@@ -522,7 +522,7 @@ public class Parser
             reportError("P1006","def declarations use '='.");
         }
          
-        expect();
+        expect(SingleEqualsToken.class);
         nextToken();
         ParseNode val = parseExpression();
         return new DefDeclarationParseNode(start,name,val,type,annotations);
@@ -564,8 +564,8 @@ public class Parser
         {
             Token lp = lexer.current;
             nextToken();
-            parseParameterList(lp,Token.class,theseParameters);
-            expect();
+            parseParameterList(lp,RParenToken.class,theseParameters);
+            expect(RParenToken.class);
             nextToken();
         }
          
@@ -582,7 +582,7 @@ public class Parser
 
     private SignaturePartParseNode parsePrefixOperatorSignaturePart(Token start, IdentifierToken prefix) throws Exception {
         nextToken();
-        expect();
+        expect(OperatorToken.class);
         OperatorToken op = (OperatorToken)lexerCurrent();
         nextToken();
         IdentifierParseNode partName = new IdentifierParseNode(prefix,"prefix" + op.getName());
@@ -593,13 +593,13 @@ public class Parser
 
     private SignaturePartParseNode parseCircumfixSignaturePart(Token start, IdentifierToken circumfix) throws Exception {
         nextToken();
-        expect();
+        expect(OpenBracketToken.class);
         OpenBracketToken ob = (OpenBracketToken)lexer.current;
         nextToken();
         IdentifierParseNode partName = new IdentifierParseNode(circumfix,"circumfix" + ob.getName() + ob.getOther());
         OrdinarySignaturePartParseNode ret = new OrdinarySignaturePartParseNode(partName);
         parseParameterList(ob,OpenBracketToken.class,ret.getParameters());
-        expectWithError("P1033",ob.getName() + " ... " + ob.getOther());
+        expectWithError(CloseBracketToken.class,"P1033",ob.getName() + " ... " + ob.getOther());
         CloseBracketToken cb = (CloseBracketToken)lexer.current;
         if (!StringSupport.equals(cb.getName(), ob.getOther()))
         {
@@ -645,8 +645,8 @@ public class Parser
             {
                 Token l = lexer.current;
                 nextToken();
-                parseParameterList(l,Token.class,ret.getGenericParameters());
-                expect();
+                parseParameterList(l,RGenericToken.class,ret.getGenericParameters());
+                expect(RGenericToken.class);
                 nextToken();
             }
              
@@ -654,9 +654,9 @@ public class Parser
             {
                 Token l = lexer.current;
                 nextToken();
-                parseParameterList(l,Token.class,ret.getParameters());
+                parseParameterList(l,RParenToken.class,ret.getParameters());
                 rejectVariadicParameters(ret.getParameters());
-                expect();
+                expect(RParenToken.class);
                 nextToken();
             }
             else
@@ -666,7 +666,7 @@ public class Parser
             return ret;
         }
          
-        expectWithError("P1032","method name");
+        expectWithError(IdentifierToken.class, "P1032","method name");
         return null;
     }
 
@@ -678,17 +678,17 @@ public class Parser
         {
             Token l = lexer.current;
             nextToken();
-            parseParameterList(l,Token.class,ret.getGenericParameters());
-            expect();
+            parseParameterList(l,RGenericToken.class,ret.getGenericParameters());
+            expect(RGenericToken.class);
             nextToken();
         }
          
-        expect("parameter list");
+        expect(LParenToken.class, "parameter list");
         Token lp = lexer.current;
         nextToken();
-        parseParameterList(lp,Token.class,ret.getParameters());
+        parseParameterList(lp,RParenToken.class,ret.getParameters());
         rejectVariadicParameters(ret.getParameters());
-        expect();
+        expect(RParenToken.class);
         nextToken();
         return ret;
     }
@@ -706,11 +706,11 @@ public class Parser
         OrdinarySignaturePartParseNode ret = new OrdinarySignaturePartParseNode(id);
         if (!parametersAreOptional || lexer.current instanceof LParenToken)
         {
-            expect("parameter list");
+            expect(LParenToken.class, "parameter list");
             Token lp = lexer.current;
             nextToken();
-            parseParameterList(lp,Token.class,ret.getParameters());
-            expect();
+            parseParameterList(lp,RParenToken.class,ret.getParameters());
+            expect(RParenToken.class);
             nextToken();
         }
          
@@ -731,7 +731,7 @@ public class Parser
                 ret.addPart(part);
             }
             else
-                expect("return type"); 
+                expect(LParenToken.class, "return type"); 
         }
          
         while (!part.getFinal())
@@ -759,7 +759,7 @@ public class Parser
         nextToken();
         MethodDeclarationParseNode ret = new MethodDeclarationParseNode(start);
         ret.setSignature(parseSignature(start,false));
-        expect();
+        expect(LBraceToken.class);
         List<ParseNode> origComments = prepareComments();
         parseBraceDelimitedBlock(ret.getBody(),StatementLevel.MethodLevel);
         attachComments(ret,comments);
@@ -771,11 +771,11 @@ public class Parser
         Token start = lexer.current;
         nextToken();
         if (!(lexer.current instanceof IdentifierToken || lexer.current instanceof OperatorToken))
-            expect();
+            expect(IdentifierToken.class);
          
         ClassDeclarationParseNode ret = new ClassDeclarationParseNode(start);
         ret.setSignature(parseSignature(start,false));
-        expect();
+        expect(LBraceToken.class);
         List<ParseNode> origComments = prepareComments();
         parseBraceDelimitedBlock(ret.getBody(),StatementLevel.ObjectLevel);
         attachComments(ret,comments);
@@ -786,10 +786,10 @@ public class Parser
     private ParseNode parseTraitDeclaration() throws Exception {
         Token start = lexer.current;
         nextToken();
-        expect();
+        expect(IdentifierToken.class);
         TraitDeclarationParseNode ret = new TraitDeclarationParseNode(start);
         ret.setSignature(parseSignature(start,false));
-        expect();
+        expect(LBraceToken.class);
         List<ParseNode> origComments = prepareComments();
         parseBraceDelimitedBlock(ret.getBody(),StatementLevel.TraitLevel);
         attachComments(ret,comments);
@@ -804,7 +804,7 @@ public class Parser
             return parseType();
          
         nextToken();
-        expectWithError("P1034");
+        expectWithError(IdentifierToken.class, "P1034");
         ParseNode name = parseIdentifier();
         List<ParseNode> genericParameters = new ArrayList<ParseNode>();
         if (lexer.current instanceof LGenericToken)
@@ -827,7 +827,7 @@ public class Parser
             reportError("P1009","Unexpected operator in type name, expected '[['.");
         }
           
-        expect();
+        expect(SingleEqualsToken.class);
         nextToken();
         Token ts = lexer.current;
         ParseNode type = null;
@@ -852,9 +852,9 @@ public class Parser
 
     private ParseNode parseType() throws Exception {
         Token start = lexer.current;
-        expect();
+        expect(TypeKeywordToken.class);
         nextToken();
-        expect();
+        expect(LBraceToken.class);
         List<ParseNode> origComments = prepareComments();
         List<ParseNode> body = parseTypeBody();
         ParseNode ret = new TypeParseNode(start,body);
@@ -864,7 +864,7 @@ public class Parser
     }
 
     private List<ParseNode> parseTypeBody() throws Exception {
-        expect();
+        expect(LBraceToken.class);
         int indentBefore = indentColumn;
         Token start = lexer.current;
         nextToken();
@@ -882,7 +882,7 @@ public class Parser
          
         List<ParseNode> ret = new ArrayList<ParseNode>();
         SignatureParseNode lastSig = null;
-        while (awaiting(start))
+        while (awaiting(start,RBraceToken.class))
         {
             List<ParseNode> origComments = prepareComments();
             takeLineComments();
@@ -913,7 +913,7 @@ public class Parser
     }
 
     private <Terminator extends Token>void parseParameterList(Token start, Class<Terminator> terminator, List<ParseNode> parameters) throws Exception {
-        while (awaiting(start))
+        while (awaiting(start,terminator))
         {
             ParseNode param = null;
             if (lexer.current instanceof IdentifierToken)
@@ -946,7 +946,7 @@ public class Parser
                     reportError("P1012",hash(),"Unexpected operator in parameter list.");
                  
                 nextToken();
-                expectWithError("P1031");
+                expectWithError(IdentifierToken.class, "P1031");
                 ParseNode id = parseIdentifier();
                 param = id;
                 if (lexer.current instanceof ColonToken)
@@ -956,13 +956,13 @@ public class Parser
                 }
                  
                 param = new VarArgsParameterParseNode(param);
-                expectWithError("P1039");
+                expectWithError(terminator, "P1039");
             }
               
             if (param != null)
                 parameters.add(param);
             else
-                expectWithError("P1031"); 
+                expectWithError(IdentifierToken.class, "P1031"); 
             if (lexer.current instanceof CommaToken)
                 nextToken();
             else if (!(terminator.isInstance(lexer.current)))
@@ -979,7 +979,7 @@ public class Parser
     }
 
     private ParseNode parseTypeAnnotation() throws Exception {
-        expect();
+        expect(ColonToken.class);
         nextToken();
         return parseExpression();
     }
@@ -996,7 +996,7 @@ public class Parser
             if (tok instanceof AliasKeywordToken)
             {
                 SignatureParseNode newName = parseSignature(lexer.current,true);
-                expect();
+                expect(SingleEqualsToken.class);
                 nextToken();
                 SignatureParseNode oldName = parseSignature(lexer.current,true);
                 ret.addAlias(tok,newName,oldName);
@@ -1022,7 +1022,7 @@ public class Parser
             if (tok instanceof AliasKeywordToken)
             {
                 SignatureParseNode newName = parseSignature(lexer.current,true);
-                expect();
+                expect(SingleEqualsToken.class);
                 nextToken();
                 SignatureParseNode oldName = parseSignature(lexer.current,true);
                 ret.addAlias(tok,newName,oldName);
@@ -1039,14 +1039,14 @@ public class Parser
     private ParseNode parseImport() throws Exception {
         Token start = lexer.current;
         nextToken();
-        expect();
+        expect(StringToken.class);
         if ((lexer.current instanceof StringToken ? (StringToken)lexer.current : (StringToken)null).getBeginsInterpolation())
             reportError("P1014","Import path uses string interpolation.");
          
         ParseNode path = parseString();
-        expect();
+        expect(AsToken.class);
         nextToken();
-        expect();
+        expect(IdentifierToken.class);
         ParseNode name = parseIdentifier();
         ParseNode type = null;
         if (lexer.current instanceof ColonToken)
@@ -1060,7 +1060,7 @@ public class Parser
     private ParseNode parseDialect() throws Exception {
         Token start = lexer.current;
         nextToken();
-        expect();
+        expect(StringToken.class);
         if ((lexer.current instanceof StringToken ? (StringToken)lexer.current : (StringToken)null).getBeginsInterpolation())
             reportError("P1015","Dialect path uses string interpolation.");
          
@@ -1116,7 +1116,7 @@ public class Parser
         if (startToken != null)
         {
             nextToken();
-            while (awaiting(startToken))
+            while (awaiting(startToken,CloseBracketToken.class))
             {
                 ParseNode expr = parseExpression();
                 arguments.add(expr);
@@ -1130,7 +1130,7 @@ public class Parser
                 }
                 else
                 {
-                    expect("CloseBracketToken '" + startToken.getOther() + "'");
+                    expect(CloseBracketToken.class, "CloseBracketToken '" + startToken.getOther() + "'");
                 } 
             }
             CloseBracketToken cb = (CloseBracketToken)lexer.current;
@@ -1194,7 +1194,7 @@ public class Parser
             lhs = new IdentifierParseNode((OuterKeywordToken)lexer.current);
             nextToken();
             if (!(lexer.current instanceof DotToken || lexer.current instanceof OperatorToken))
-                expectWithError("P1042");
+                expectWithError(DotToken.class, "P1042");
              
         }
         else
@@ -1473,9 +1473,9 @@ public class Parser
             int myprec = precedence(tok.getName());
             while (opstack.size() > 0 && myprec <= precedence(opstack.peek().getName()))
             {
-                /* [UNSUPPORTED] 'var' as type is unsupported "var" */ OperatorToken o2 = opstack.pop();
-                /* [UNSUPPORTED] 'var' as type is unsupported "var" */ ParseNode tmp2 = valstack.pop();
-                /* [UNSUPPORTED] 'var' as type is unsupported "var" */ ParseNode tmp1 = valstack.pop();
+                OperatorToken o2 = opstack.pop();
+                ParseNode tmp2 = valstack.pop();
+                ParseNode tmp1 = valstack.pop();
                 valstack.push(new OperatorParseNode(o2, o2.getName(), tmp1, tmp2));
             }
             opstack.push(tok);
@@ -1485,9 +1485,9 @@ public class Parser
         }
         while (opstack.size() > 0)
         {
-            /* [UNSUPPORTED] 'var' as type is unsupported "var" */ OperatorToken o = opstack.pop();
-            /* [UNSUPPORTED] 'var' as type is unsupported "var" */ ParseNode tmp2 = valstack.pop();
-            /* [UNSUPPORTED] 'var' as type is unsupported "var" */ ParseNode tmp1 = valstack.pop();
+            OperatorToken o = opstack.pop();
+            ParseNode tmp2 = valstack.pop();
+            ParseNode tmp1 = valstack.pop();
             valstack.push(new OperatorParseNode(o, o.getName(), tmp1, tmp2));
         }
         return valstack.pop();
@@ -1539,7 +1539,7 @@ public class Parser
             reportError("P1011",hash(),"Indentation must increase inside {}.");
          
         Token lastToken = lexerCurrent();
-        while (awaiting(start))
+        while (awaiting(start,RBraceToken.class))
         {
             if (lexer.current.column != indentColumn)
             {
@@ -1671,7 +1671,7 @@ public class Parser
         } 
         Token lastToken = lexerCurrent();
         indentColumn = firstBodyToken.column;
-        while (awaiting(start))
+        while (awaiting(start,RBraceToken.class))
         {
             if (lexer.current.column != indentColumn)
             {
@@ -1701,7 +1701,7 @@ public class Parser
         {
             Token start = lexer.current;
             nextToken();
-            while (awaiting(start))
+            while (awaiting(start,RParenToken.class))
             {
                 ParseNode expr = parseExpression();
                 arguments.add(expr);
@@ -1735,7 +1735,7 @@ public class Parser
         {
             Token start = lexer.current;
             nextToken();
-            while (awaiting(start))
+            while (awaiting(start,RGenericToken.class))
             {
                 ParseNode expr = parseExpression();
                 arguments.add(expr);

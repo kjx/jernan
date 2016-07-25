@@ -1,5 +1,19 @@
 24 July 5pmish
 
+Pretty sure I forked from here:
+
+> commit 8c2348e36980260d9430aa12f241de176aee903b
+> Author: Michael Homer <mwh@ecs.vuw.ac.nz>
+> Date:   Tue May 10 15:21:37 2016 +1200
+>
+>     Create new Implicit nodes for each instance
+>    
+>     Implicit nodes without locations caused problems for the dialect error
+>     reporting infrastructure, so new nodes will now be created on demand
+>     when they are accessed. They will have the locations of the surrounding
+>     Node.
+
+
 * CS2J at least makes the files.
 * BUT: everything seems broken everywhere!
 
@@ -44,3 +58,16 @@ made Grace.Tests directory.  Should do real tests. sometime.
 
 25 July 16:37 went around the museum, walking back towards the hotel.
    half pint of cider (cos the tap wouldn't pour a full pint!).
+
+25 July 19:04 kept working on the parser.
+ bunch of stupid stuff: added Staick class, fixed Array and ArrayList
+ etc. started to put in the generic .class paramters --- figured out
+ that CS2J had LEFT THE DAMN THINGS OUT.   Going through Parser.cs to
+ put them back in again!
+
+25 July 19:36 clean compile of Parser.
+ 
+25 July 20:35 FUCK ME. Parsed combinators.grace!!
+  output *nearly* identitcal to Kernan, signature and method decln are
+  wrong.
+
