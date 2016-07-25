@@ -53,7 +53,7 @@ public class SignatureParseNode  extends ParseNode
 	    //C# _name = String.Join(" ", from p in _parts select p.Name)
 
 	    _name = _parts.stream()
-		.map(i -> i.toString())
+		.map(i -> i.getName())
 		.collect(Collectors.joining(" "));
 
 

@@ -47,7 +47,7 @@ public class OrdinarySignaturePartParseNode  extends SignaturePartParseNode
     /**
     * This property gets the value of the string field _name
     */
-    public String getName() throws Exception {
+    public String getName() {
         return _name;
     }
 

@@ -71,3 +71,5 @@ made Grace.Tests directory.  Should do real tests. sometime.
   output *nearly* identitcal to Kernan, signature and method decln are
   wrong.
 
+25 July 20:51. Produces exactly the same output as kernan on combinators.grace
+

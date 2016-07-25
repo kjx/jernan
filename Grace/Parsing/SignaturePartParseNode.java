@@ -31,7 +31,7 @@ public abstract class SignaturePartParseNode  extends ParseNode
     /**
     * The name of this part
     */
-    public abstract String getName() throws Exception ;
+    public abstract String getName();
 
     /**
     * @param name Name of this part
