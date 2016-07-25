@@ -4,29 +4,28 @@
 
 package Grace.Parsing;
 
-import CS2JNet.System.Collections.LCC.CSList;
-import CS2JNet.System.LCC.Disposable;
-import CS2JNet.System.StringSupport;
+import Grace.Parsing.StringSupport;
 import Grace.Parsing.IdentifierParseNode;
 import Grace.Parsing.ParseNode;
 import Grace.Parsing.ParseNodeVisitor;
 import Grace.Parsing.Token;
 import java.io.PrintStream;
-
+import java.util.List;
+import java.util.ArrayList;
 /**
 * Parse node for a list of annotations
 */
 public class AnnotationsParseNode  extends ParseNode 
 {
-    CSList<ParseNode> _annotations = new CSList<ParseNode>();
+    List<ParseNode> _annotations = new ArrayList<ParseNode>();
     /**
     * The annotations in this collection
     */
-    public CSList<ParseNode> getAnnotations() throws Exception {
+    public List<ParseNode> getAnnotations() throws Exception {
         return _annotations;
     }
 
-    public void setAnnotations(CSList<ParseNode> value) throws Exception {
+    public void setAnnotations(List<ParseNode> value) throws Exception {
         _annotations = value;
     }
 

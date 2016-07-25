@@ -3,34 +3,32 @@
 //
 
 package Grace.Parsing;
-
-import CS2JNet.System.Collections.LCC.CSList;
-import CS2JNet.System.LCC.Disposable;
 import Grace.Parsing.ParseNode;
 import Grace.Parsing.ParseNodeVisitor;
 import Grace.Parsing.Token;
 import java.io.PrintStream;
-
+import java.util.ArrayList;
+import java.util.List;
 /**
 * Parse node for a interpolated string
 */
 public class InterpolatedStringParseNode  extends ParseNode 
 {
-    private CSList<ParseNode> _parts;
+    private List<ParseNode> _parts;
     /**
     * List of component strings and stringifiables
     */
-    public CSList<ParseNode> getParts() throws Exception {
+    public List<ParseNode> getParts() throws Exception {
         return _parts;
     }
 
-    public void setParts(CSList<ParseNode> value) throws Exception {
+    public void setParts(List<ParseNode> value) throws Exception {
         _parts = value;
     }
 
     public InterpolatedStringParseNode(Token tok) throws Exception {
         super(tok);
-        _parts = new CSList<ParseNode>();
+        _parts = new ArrayList<ParseNode>();
     }
 
     /**

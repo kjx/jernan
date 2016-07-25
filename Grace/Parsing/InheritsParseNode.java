@@ -4,8 +4,9 @@
 
 package Grace.Parsing;
 
-import CS2JNet.System.Collections.LCC.CSList;
-import CS2JNet.System.LCC.Disposable;
+import java.util.List;
+import java.util.ArrayList;
+
 import Grace.Parsing.AliasParseNode;
 import Grace.Parsing.ExcludeParseNode;
 import Grace.Parsing.ParseNode;
@@ -34,32 +35,32 @@ public class InheritsParseNode  extends ParseNode
     /**
     * Aliases on this inherits statement
     */
-    private CSList<AliasParseNode> __Aliases;
-    public CSList<AliasParseNode> getAliases() {
+    private List<AliasParseNode> __Aliases;
+    public List<AliasParseNode> getAliases() {
         return __Aliases;
     }
 
-    public void setAliases(CSList<AliasParseNode> value) {
+    public void setAliases(List<AliasParseNode> value) {
         __Aliases = value;
     }
 
     /**
     * Exclusions on this inherits statement
     */
-    private CSList<ExcludeParseNode> __Excludes;
-    public CSList<ExcludeParseNode> getExcludes() {
+    private List<ExcludeParseNode> __Excludes;
+    public List<ExcludeParseNode> getExcludes() {
         return __Excludes;
     }
 
-    public void setExcludes(CSList<ExcludeParseNode> value) {
+    public void setExcludes(List<ExcludeParseNode> value) {
         __Excludes = value;
     }
 
     public InheritsParseNode(Token tok, ParseNode expr) throws Exception {
         super(tok);
         _from = expr;
-        setAliases(new CSList<AliasParseNode>());
-        setExcludes(new CSList<ExcludeParseNode>());
+        setAliases(new ArrayList<AliasParseNode>());
+        setExcludes(new ArrayList<ExcludeParseNode>());
     }
 
     /**

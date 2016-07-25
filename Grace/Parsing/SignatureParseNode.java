@@ -4,22 +4,24 @@
 
 package Grace.Parsing;
 
-import CS2JNet.System.Collections.LCC.CSList;
-import CS2JNet.System.LCC.Disposable;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.stream.Collectors;
+
 import Grace.Parsing.AnnotationsParseNode;
 import Grace.Parsing.ParseNode;
 import Grace.Parsing.ParseNodeVisitor;
 import Grace.Parsing.SignaturePartParseNode;
 import Grace.Parsing.Token;
 import java.io.PrintStream;
-import java.util.List;
+
 
 /**
 * Declared signature of a method
 */
 public class SignatureParseNode  extends ParseNode 
 {
-    private List<SignaturePartParseNode> _parts = new CSList<SignaturePartParseNode>();
+    private List<SignaturePartParseNode> _parts = new ArrayList<SignaturePartParseNode>();
     /**
     * Parts in this signature
     * This property gets the value of the string field _parts
@@ -48,7 +50,13 @@ public class SignatureParseNode  extends ParseNode
     public String getName() throws Exception {
         if (_name == null)
         {
-            _name = String.Join(" ");
+	    //C# _name = String.Join(" ", from p in _parts select p.Name)
+
+	    _name = _parts.stream()
+		.map(i -> i.toString())
+		.collect(Collectors.joining(" "));
+
+
         }
          
         return _name;

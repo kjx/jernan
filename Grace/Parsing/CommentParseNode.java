@@ -4,7 +4,7 @@
 
 package Grace.Parsing;
 
-import CS2JNet.System.LCC.Disposable;
+
 import Grace.Parsing.CommentToken;
 import Grace.Parsing.ParseNode;
 import Grace.Parsing.ParseNodeVisitor;

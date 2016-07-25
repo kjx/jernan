@@ -4,46 +4,47 @@
 
 package Grace.Parsing;
 
-import CS2JNet.System.Collections.LCC.CSList;
-import CS2JNet.System.LCC.Disposable;
 import Grace.Parsing.ParseNode;
 import Grace.Parsing.ParseNodeVisitor;
 import Grace.Parsing.Token;
 import java.io.PrintStream;
+import java.util.List;
+import java.util.ArrayList;
+
 
 /**
 * Parse node for a block
 */
 public class BlockParseNode  extends ParseNode 
 {
-    private CSList<ParseNode> _parameters;
+    private List<ParseNode> _parameters;
     /**
     * Parameters of the block
     */
-    public CSList<ParseNode> getParameters() throws Exception {
+    public List<ParseNode> getParameters() throws Exception {
         return _parameters;
     }
 
-    public void setParameters(CSList<ParseNode> value) throws Exception {
+    public void setParameters(List<ParseNode> value) throws Exception {
         _parameters = value;
     }
 
-    private CSList<ParseNode> _body;
+    private List<ParseNode> _body;
     /**
     * Body of the block
     */
-    public CSList<ParseNode> getBody() throws Exception {
+    public List<ParseNode> getBody() throws Exception {
         return _body;
     }
 
-    public void setBody(CSList<ParseNode> value) throws Exception {
+    public void setBody(List<ParseNode> value) throws Exception {
         _body = value;
     }
 
     public BlockParseNode(Token tok) throws Exception {
         super(tok);
-        _body = new CSList<ParseNode>();
-        _parameters = new CSList<ParseNode>();
+        _body = new ArrayList<ParseNode>();
+        _parameters = new ArrayList<ParseNode>();
     }
 
     /**

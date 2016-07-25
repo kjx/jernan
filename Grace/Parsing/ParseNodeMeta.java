@@ -2,10 +2,11 @@
 // Translated by CS2J (http://www.cs2j.com): 25/07/2016 2:46:37 a.m.
 //
 
+//KJX currently chose NOT to fix. Not uses by jernan so far.
+
 package Grace.Parsing;
 
-import CS2JNet.System.IO.TextReaderSupport;
-import CS2JNet.System.LCC.Disposable;
+
 import Grace.Parsing.AliasParseNode;
 import Grace.Parsing.AnnotationsParseNode;
 import Grace.Parsing.BindParseNode;

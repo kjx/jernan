@@ -4,8 +4,9 @@
 
 package Grace.Parsing;
 
-import CS2JNet.System.Collections.LCC.CSList;
-import CS2JNet.System.LCC.Disposable;
+import java.util.List;
+import java.util.ArrayList;
+
 import Grace.Parsing.IdentifierParseNode;
 import Grace.Parsing.ParseNode;
 import Grace.Parsing.ParseNodeVisitor;
@@ -56,8 +57,8 @@ public class OrdinarySignaturePartParseNode  extends SignaturePartParseNode
     public OrdinarySignaturePartParseNode(IdentifierParseNode name) throws Exception {
         super(name);
         _name = name.getName();
-        setParameters(new CSList<ParseNode>());
-        setGenericParameters(new CSList<ParseNode>());
+        setParameters(new ArrayList<ParseNode>());
+        setGenericParameters(new ArrayList<ParseNode>());
     }
 
     /**

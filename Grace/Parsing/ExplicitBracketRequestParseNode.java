@@ -4,8 +4,9 @@
 
 package Grace.Parsing;
 
-import CS2JNet.System.Collections.LCC.CSList;
-import CS2JNet.System.LCC.Disposable;
+import java.util.List;
+import java.util.ArrayList;
+
 import Grace.Parsing.ParseNode;
 import Grace.Parsing.ParseNodeVisitor;
 import Grace.Parsing.Token;
@@ -43,16 +44,16 @@ public class ExplicitBracketRequestParseNode  extends ParseNode
     /**
     * Arguments to this request
     */
-    private CSList<ParseNode> __Arguments;
-    public CSList<ParseNode> getArguments() {
+    private List<ParseNode> __Arguments;
+    public List<ParseNode> getArguments() {
         return __Arguments;
     }
 
-    public void setArguments(CSList<ParseNode> value) {
+    public void setArguments(List<ParseNode> value) {
         __Arguments = value;
     }
 
-    public ExplicitBracketRequestParseNode(Token start, String name, ParseNode receiver, CSList<ParseNode> arguments) throws Exception {
+    public ExplicitBracketRequestParseNode(Token start, String name, ParseNode receiver, List<ParseNode> arguments) throws Exception {
         super(start);
         setName(name);
         setReceiver(receiver);

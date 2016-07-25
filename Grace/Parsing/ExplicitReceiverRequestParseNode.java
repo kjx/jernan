@@ -4,8 +4,9 @@
 
 package Grace.Parsing;
 
-import CS2JNet.System.Collections.LCC.CSList;
-import CS2JNet.System.LCC.Disposable;
+import java.util.List;
+import java.util.ArrayList;
+
 import Grace.Parsing.IdentifierParseNode;
 import Grace.Parsing.ParseNode;
 import Grace.Parsing.ParseNodeVisitor;
@@ -28,48 +29,48 @@ public class ExplicitReceiverRequestParseNode  extends ParseNode
         _receiver = value;
     }
 
-    private CSList<ParseNode> _nameParts;
+    private List<ParseNode> _nameParts;
     /**
     * Parts of this method
     */
-    public CSList<ParseNode> getNameParts() throws Exception {
+    public List<ParseNode> getNameParts() throws Exception {
         return _nameParts;
     }
 
-    public void setNameParts(CSList<ParseNode> value) throws Exception {
+    public void setNameParts(List<ParseNode> value) throws Exception {
         _nameParts = value;
     }
 
-    private CSList<CSList<ParseNode>> _arguments;
+    private List<List<ParseNode>> _arguments;
     /**
     * Argument lists of each part
     */
-    public CSList<CSList<ParseNode>> getArguments() throws Exception {
+    public List<List<ParseNode>> getArguments() throws Exception {
         return _arguments;
     }
 
-    public void setArguments(CSList<CSList<ParseNode>> value) throws Exception {
+    public void setArguments(List<List<ParseNode>> value) throws Exception {
         _arguments = value;
     }
 
-    private CSList<CSList<ParseNode>> _genericArguments;
+    private List<List<ParseNode>> _genericArguments;
     /**
     * Generic argument lists of each part
     */
-    public CSList<CSList<ParseNode>> getGenericArguments() throws Exception {
+    public List<List<ParseNode>> getGenericArguments() throws Exception {
         return _genericArguments;
     }
 
-    public void setGenericArguments(CSList<CSList<ParseNode>> value) throws Exception {
+    public void setGenericArguments(List<List<ParseNode>> value) throws Exception {
         _genericArguments = value;
     }
 
     public ExplicitReceiverRequestParseNode(ParseNode receiver) throws Exception {
         super(receiver);
         this._receiver = receiver;
-        _nameParts = new CSList<ParseNode>();
-        _arguments = new CSList<CSList<ParseNode>>();
-        _genericArguments = new CSList<CSList<ParseNode>>();
+        _nameParts = new ArrayList<ParseNode>();
+        _arguments = new ArrayList<List<ParseNode>>();
+        _genericArguments = new ArrayList<List<ParseNode>>();
     }
 
     /**
@@ -77,8 +78,8 @@ public class ExplicitReceiverRequestParseNode  extends ParseNode
     */
     public void addPart(ParseNode id) throws Exception {
         _nameParts.add(id);
-        _arguments.add(new CSList<ParseNode>());
-        _genericArguments.add(new CSList<ParseNode>());
+        _arguments.add(new ArrayList<ParseNode>());
+        _genericArguments.add(new ArrayList<ParseNode>());
     }
 
     /**
@@ -97,7 +98,7 @@ public class ExplicitReceiverRequestParseNode  extends ParseNode
         for (int i = 0;i < _nameParts.size();i++)
         {
             ParseNode partName = _nameParts.get(i);
-            CSList<ParseNode> args = _arguments.get(i);
+            List<ParseNode> args = _arguments.get(i);
             tw.println(prefix + "    Part " + (i + 1) + ": ");
             tw.println(prefix + "      Name:");
             partName.debugPrint(tw,prefix + "        ");

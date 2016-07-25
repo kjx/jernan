@@ -4,8 +4,8 @@
 
 package Grace.Parsing;
 
-//import CS2JNet.System.Collections.LCC.CSList;
-//import CS2JNet.System.LCC.Disposable;
+import java.util.List;
+import java.util.ArrayList;
 import Grace.Parsing.AliasParseNode;
 import Grace.Parsing.ExcludeParseNode;
 import Grace.Parsing.ParseNode;
@@ -13,7 +13,7 @@ import Grace.Parsing.ParseNodeVisitor;
 import Grace.Parsing.SignatureParseNode;
 import Grace.Parsing.Token;
 import java.io.PrintStream;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
 * Parse node for a uses statement
@@ -35,24 +35,24 @@ public class UsesParseNode  extends ParseNode
     /**
     * Aliases on this uses statement
     */
-    private ArrayList<AliasParseNode> __Aliases;
-    public ArrayList<AliasParseNode> getAliases() {
+    private List<AliasParseNode> __Aliases;
+    public List<AliasParseNode> getAliases() {
         return __Aliases;
     }
 
-    public void setAliases(ArrayList<AliasParseNode> value) {
+    public void setAliases(List<AliasParseNode> value) {
         __Aliases = value;
     }
 
     /**
     * Exclusions on this uses statement
     */
-    private ArrayList<ExcludeParseNode> __Excludes;
-    public ArrayList<ExcludeParseNode> getExcludes() {
+    private List<ExcludeParseNode> __Excludes;
+    public List<ExcludeParseNode> getExcludes() {
         return __Excludes;
     }
 
-    public void setExcludes(ArrayList<ExcludeParseNode> value) {
+    public void setExcludes(List<ExcludeParseNode> value) {
         __Excludes = value;
     }
 

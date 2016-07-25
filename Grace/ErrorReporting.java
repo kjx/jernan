@@ -380,6 +380,19 @@ public class ErrorReporting
         return reportedErrors.size() != 0;
     }
 
+    //KJX
+    public static HashMap<String,String> hash() { return new HashMap<String,String>(); }
+    public static HashMap<String,String> hash(String k, String v) {
+	HashMap<String,String> h = new HashMap<>(); h.put(k,v); return h; }
+    public static HashMap<String,String> hash(String k1, String v1, String k, String v) {
+	HashMap<String,String> h = hash(k1,v1); h.put(k,v); return h; }
+    public static  HashMap<String,String> hash(String k2, String v2, String k1, String v1, String k, String v) {
+	HashMap<String,String> h = hash(k2,v2,k1,v1); h.put(k,v); return h; }
+    public static HashMap<String,String> hash(String k3, String v3, String k2, String v2, String k1, String v1, String k, String v) {
+	HashMap<String,String> h = hash(k3,v3,k2,v2,k1,v1); h.put(k,v); return h; }
+
+
+
 }
 
 

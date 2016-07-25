@@ -4,8 +4,9 @@
 
 package Grace.Parsing;
 
-import CS2JNet.System.Collections.LCC.CSList;
-import CS2JNet.System.LCC.Disposable;
+import java.util.List;
+import java.util.ArrayList;
+
 import Grace.Parsing.ParseNode;
 import Grace.Parsing.ParseNodeVisitor;
 import Grace.Parsing.Token;
@@ -43,15 +44,15 @@ public class TypeStatementParseNode  extends ParseNode
     /**
     * Generic parameters of this type
     */
-    private CSList<ParseNode> genericParameters;
+    private List<ParseNode> genericParameters;
     /**
     * Generic parameters of this type
     */
-    public CSList<ParseNode> getGenericParameters() throws Exception {
+    public List<ParseNode> getGenericParameters() throws Exception {
         return genericParameters;
     }
 
-    public TypeStatementParseNode(Token tok, ParseNode baseName, ParseNode body, CSList<ParseNode> generics) throws Exception {
+    public TypeStatementParseNode(Token tok, ParseNode baseName, ParseNode body, List<ParseNode> generics) throws Exception {
         super(tok);
         this._baseName = baseName;
         this._body = body;

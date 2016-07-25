@@ -9,7 +9,9 @@ package Grace.Parsing;
 //import CS2JNet.System.StringSupport;   //KJX BUGGY
 
 import Grace.ErrorReporting;
+import static Grace.ErrorReporting.hash;
 import Grace.StringInfo; //KJX evil compatability shit.
+
 
 import Grace.Parsing.AliasKeywordToken;
 import Grace.Parsing.ArrowToken;
@@ -260,16 +262,6 @@ public class Lexer
         nextToken();
     }
 
-    //KJX
-    private HashMap<String,String> hash() { return new HashMap<String,String>(); }
-    private HashMap<String,String> hash(String k, String v) {
-	HashMap<String,String> h = new HashMap<>(); h.put(k,v); return h; }
-    private HashMap<String,String> hash(String k1, String v1, String k, String v) {
-	HashMap<String,String> h = hash(k1,v1); h.put(k,v); return h; }
-    private HashMap<String,String> hash(String k2, String v2, String k1, String v1, String k, String v) {
-	HashMap<String,String> h = hash(k2,v2,k1,v1); h.put(k,v); return h; }
-    private HashMap<String,String> hash(String k3, String v3, String k2, String v2, String k1, String v1, String k, String v) {
-	HashMap<String,String> h = hash(k3,v3,k2,v2,k1,v1); h.put(k,v); return h; }
 
     private void reportError(String code, HashMap<String,String> vars, String localDescription) throws Exception {
         ErrorReporting.ReportStaticError(moduleName, line, code, vars, localDescription);

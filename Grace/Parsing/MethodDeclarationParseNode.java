@@ -4,14 +4,13 @@
 
 package Grace.Parsing;
 
-import CS2JNet.System.Collections.LCC.CSList;
-import CS2JNet.System.LCC.Disposable;
 import Grace.Parsing.ParseNode;
 import Grace.Parsing.ParseNodeVisitor;
 import Grace.Parsing.SignatureParseNode;
 import Grace.Parsing.Token;
 import java.io.PrintStream;
-
+import java.util.List;
+import java.util.ArrayList;
 /**
 * Parse node for a method declaration
 */
@@ -29,15 +28,15 @@ public class MethodDeclarationParseNode  extends ParseNode
         __Signature = value;
     }
 
-    private CSList<ParseNode> _body;
+    private List<ParseNode> _body;
     /**
     * Body of this method
     */
-    public CSList<ParseNode> getBody() throws Exception {
+    public List<ParseNode> getBody() throws Exception {
         return _body;
     }
 
-    public void setBody(CSList<ParseNode> value) throws Exception {
+    public void setBody(List<ParseNode> value) throws Exception {
         _body = value;
     }
 
@@ -55,7 +54,7 @@ public class MethodDeclarationParseNode  extends ParseNode
 
     public MethodDeclarationParseNode(Token tok) throws Exception {
         super(tok);
-        _body = new CSList<ParseNode>();
+        _body = new ArrayList<ParseNode>();
     }
 
     /**

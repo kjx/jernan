@@ -4,6 +4,9 @@
 
 package Grace.Parsing;
 
+import Grace.ErrorReporting;
+import static Grace.ErrorReporting.hash;
+
 import Grace.Parsing.CheckingParseNodeVisitor;
 import Grace.Parsing.ExplicitReceiverRequestParseNode;
 import Grace.Parsing.IdentifierParseNode;
@@ -13,6 +16,8 @@ import Grace.Parsing.OperatorParseNode;
 import Grace.Parsing.ParseNode;
 import Grace.Parsing.PrefixOperatorParseNode;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 
 public class NonReceiverNameCheckingParseNodeVisitor  extends CheckingParseNodeVisitor 
 {
@@ -29,8 +34,8 @@ public class NonReceiverNameCheckingParseNodeVisitor  extends CheckingParseNodeV
         // set of disallowed names will always raise an error,
         // but the other cases below avoid visiting such a
         // node if it is in a valid place.
-        if (_names.Contains(ipn.getName()))
-            ErrorReporting.ReportStaticError(ipn.getToken().getModule(), ipn.getLine(), "P1043", new HashMap<String,String>{ { "name", ipn.getName() } }, "Invalid use of parent name");
+        if (_names.contains(ipn.getName()))
+            ErrorReporting.ReportStaticError(ipn.getToken().getModule(), ipn.getLine(), "P1043", hash( "name", ipn.getName() ), "Invalid use of parent name");
          
         return ipn;
     }
@@ -48,10 +53,10 @@ public class NonReceiverNameCheckingParseNodeVisitor  extends CheckingParseNodeV
         for (List<ParseNode> args : irrpn.getArguments())
             for (ParseNode a : args)
                 // The arguments require checking either way.
-                a.Visit(this);
+                a.visit(this);
         for (List<ParseNode> args : irrpn.getGenericArguments())
             for (ParseNode a : args)
-                a.Visit(this);
+                a.visit(this);
         return irrpn;
     }
 
@@ -69,10 +74,10 @@ public class NonReceiverNameCheckingParseNodeVisitor  extends CheckingParseNodeV
                 // If the receiver was an identifier, we only
                 // want to look at arguments for possible
                 // problems - the receiver is OK.
-                a.Visit(this);
+                a.visit(this);
         for (List<ParseNode> args : errpn.getGenericArguments())
             for (ParseNode a : args)
-                a.Visit(this);
+                a.visit(this);
         return errpn;
     }
 
@@ -87,7 +92,7 @@ public class NonReceiverNameCheckingParseNodeVisitor  extends CheckingParseNodeV
          
         // If the left-hand side (the receiver) was
         // an identifier, only check the right.
-        opn.getRight().Visit(this);
+        opn.getRight().visit(this);
         return opn;
     }
 
@@ -100,14 +105,14 @@ public class NonReceiverNameCheckingParseNodeVisitor  extends CheckingParseNodeV
         if (popn.getReceiver() instanceof IdentifierParseNode)
             return popn;
          
-        return popn.getReceiver().Visit(this);
+        return popn.getReceiver().visit(this);
     }
 
     /**
     * 
     */
     public ParseNode visit(InheritsParseNode ipn) throws Exception {
-        return ipn.getFrom().Visit(this);
+        return ipn.getFrom().visit(this);
     }
 
 }

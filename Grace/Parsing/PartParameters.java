@@ -4,8 +4,9 @@
 
 package Grace.Parsing;
 
-import CS2JNet.System.Collections.LCC.CSList;
-import CS2JNet.System.LCC.Disposable;
+import java.util.List;
+import java.util.ArrayList;
+
 import Grace.Parsing.ParseNode;
 
 /**
@@ -17,27 +18,27 @@ public class PartParameters
     public PartParameters() {
     }
 
-    private CSList<ParseNode> _generics;
+    private List<ParseNode> _generics;
     /**
     * Generic parameters
     */
-    public CSList<ParseNode> getGenerics() throws Exception {
+    public List<ParseNode> getGenerics() throws Exception {
         return _generics;
     }
 
-    public void setGenerics(CSList<ParseNode> value) throws Exception {
+    public void setGenerics(List<ParseNode> value) throws Exception {
         _generics = value;
     }
 
-    private CSList<ParseNode> _ordinary;
+    private List<ParseNode> _ordinary;
     /**
     * Ordinary parameters
     */
-    public CSList<ParseNode> getOrdinary() throws Exception {
+    public List<ParseNode> getOrdinary() throws Exception {
         return _ordinary;
     }
 
-    public void setOrdinary(CSList<ParseNode> value) throws Exception {
+    public void setOrdinary(List<ParseNode> value) throws Exception {
         _ordinary = value;
     }
 
@@ -45,7 +46,7 @@ public class PartParameters
     * @param g Generic parameters
     *  @param o Ordinary parameters
     */
-    public PartParameters(CSList<ParseNode> g, CSList<ParseNode> o) throws Exception {
+    public PartParameters(List<ParseNode> g, List<ParseNode> o) throws Exception {
         _generics = g;
         _ordinary = o;
     }
