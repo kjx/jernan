@@ -21,3 +21,23 @@ Token, but still...
 probaby have to add (some of) StringSupport too; 
 
 24 July 12:36 Lexer.java compiles!!!!!
+
+
+====
+
+25 July 13:50. spent the morning doing email and stuff.
+Lexer.java means all the Tokens compile too. 
+I can test it...
+
+25 July 14:12. first Lexer test runs: seems good to me!
+made Grace.Tests directory.  Should do real tests. sometime.
+
+25 July 14:35 lexed hellow world.
+
+25 July 14:55 spend 20 minutes tracking down a "bug"
+   that turned out not to be a bug. Rather the lexer must be 
+   triggererd by the parser to handle interpolation properly.
+   RBrace { terminates a string literal, and then things run amok.
+
+25 July 15:00 made a version of combinators will all braces escaped
+   lexes fine.  added and commited

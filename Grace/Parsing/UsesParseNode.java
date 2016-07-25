@@ -4,8 +4,8 @@
 
 package Grace.Parsing;
 
-import CS2JNet.System.Collections.LCC.CSList;
-import CS2JNet.System.LCC.Disposable;
+//import CS2JNet.System.Collections.LCC.CSList;
+//import CS2JNet.System.LCC.Disposable;
 import Grace.Parsing.AliasParseNode;
 import Grace.Parsing.ExcludeParseNode;
 import Grace.Parsing.ParseNode;
@@ -13,6 +13,7 @@ import Grace.Parsing.ParseNodeVisitor;
 import Grace.Parsing.SignatureParseNode;
 import Grace.Parsing.Token;
 import java.io.PrintStream;
+import java.util.ArrayList;
 
 /**
 * Parse node for a uses statement
@@ -34,32 +35,32 @@ public class UsesParseNode  extends ParseNode
     /**
     * Aliases on this uses statement
     */
-    private CSList<AliasParseNode> __Aliases;
-    public CSList<AliasParseNode> getAliases() {
+    private ArrayList<AliasParseNode> __Aliases;
+    public ArrayList<AliasParseNode> getAliases() {
         return __Aliases;
     }
 
-    public void setAliases(CSList<AliasParseNode> value) {
+    public void setAliases(ArrayList<AliasParseNode> value) {
         __Aliases = value;
     }
 
     /**
     * Exclusions on this uses statement
     */
-    private CSList<ExcludeParseNode> __Excludes;
-    public CSList<ExcludeParseNode> getExcludes() {
+    private ArrayList<ExcludeParseNode> __Excludes;
+    public ArrayList<ExcludeParseNode> getExcludes() {
         return __Excludes;
     }
 
-    public void setExcludes(CSList<ExcludeParseNode> value) {
+    public void setExcludes(ArrayList<ExcludeParseNode> value) {
         __Excludes = value;
     }
 
     public UsesParseNode(Token tok, ParseNode expr) throws Exception {
         super(tok);
         _from = expr;
-        setAliases(new CSList<AliasParseNode>());
-        setExcludes(new CSList<ExcludeParseNode>());
+        setAliases(new ArrayList<AliasParseNode>());
+        setExcludes(new ArrayList<ExcludeParseNode>());
     }
 
     /**
