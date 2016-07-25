@@ -4,9 +4,15 @@
 
 package Grace.Parsing;
 
-import CS2JNet.System.Collections.LCC.CSList;
-import CS2JNet.System.Collections.LCC.IEnumerable;
-import CS2JNet.System.StringSupport;
+import Grace.ErrorReporting;
+import static Grace.ErrorReporting.hash;
+import Grace.StringInfo; //KJX evil compatability shit.
+import Grace.StringSupport;
+
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Stack;
+
 import Grace.Parsing.AliasKeywordToken;
 import Grace.Parsing.AnnotationsParseNode;
 import Grace.Parsing.ArrowToken;
@@ -93,11 +99,15 @@ import java.util.List;
 */
 public class Parser   
 {
+    //KJX THIS IS TOTALLY EEEVIILLL
+    private static <T> T First(List<T> list) {return list.get(0); }
+    private static <T> T Last(List<T> list) {return list.get(list.size() - 1); }
+
     private Lexer lexer;
     private String code;
     private int indentColumn = 0;
     private String moduleName = "source code";
-    private CSList<ParseNode> comments;
+    private List<ParseNode> comments;
     private boolean doNotAcceptDelimitedBlock = false;
     /**
     * @param module Module name for debugging
@@ -125,7 +135,7 @@ public class Parser
         if (code.length() == 0)
             return module;
          
-        CSList<ParseNode> body = module.getBody();
+        List<ParseNode> body = module.getBody();
         lexer = new Lexer(moduleName,this.code);
         Token was = lexer.current;
         while (!lexer.done())
@@ -156,7 +166,7 @@ public class Parser
     }
 
     private void reportError(String code, Token t1, String localDescription) throws Exception {
-        Dictionary<String, String> vars = new HashMap<String,String>();
+        HashMap<String, String> vars = new HashMap<String,String>();
         if (StringSupport.equals(code, "P1018") && t1 instanceof EndToken)
         {
             code = "P1001";
@@ -181,7 +191,11 @@ public class Parser
             return false;
          
         if (lexer.current instanceof EndToken)
-            ErrorReporting.ReportStaticError(moduleName, start.line, "P1001", new HashMap<String,String>{ { "expected", T.class.getName() }, { "found", lexer.current.toString() } }, "Unexpected end of file");
+            ErrorReporting.ReportStaticError(
+  	     moduleName, start.line, "P1001",
+	     hash("expected", T.class.getName(),  
+		  "found", lexer.current.toString() ), 
+	     "Unexpected end of file");
          
         return true;
     }
@@ -194,7 +208,7 @@ public class Parser
         if (lexer.current instanceof T)
             return ;
          
-        ErrorReporting.ReportStaticError(moduleName, lexer.current.line, lexer.current instanceof EndToken ? "P1001" : "P1002", new HashMap<String,String>(), "Expected something else, got " + lexer.current);
+        ErrorReporting.ReportStaticError(moduleName, lexer.current.line, lexer.current instanceof EndToken ? "P1001" : "P1002", hash(), "Expected something else, got " + lexer.current);
     }
 
     /**
@@ -207,7 +221,7 @@ public class Parser
         if (lexer.current instanceof T)
             return ;
          
-        ErrorReporting.ReportStaticError(moduleName, lexer.current.line, lexer.current instanceof EndToken ? "P1001" : "P1002", new HashMap<String,String>(), "Expected something else, got " + lexer.current);
+        ErrorReporting.ReportStaticError(moduleName, lexer.current.line, lexer.current instanceof EndToken ? "P1001" : "P1002", hash(), "Expected something else, got " + lexer.current);
     }
 
     /**
@@ -219,7 +233,7 @@ public class Parser
         if (lexer.current instanceof T)
             return ;
          
-        ErrorReporting.ReportStaticError(moduleName, lexer.current.line, code, new HashMap<String,String>(), "Expected something else, got " + lexer.current);
+        ErrorReporting.ReportStaticError(moduleName, lexer.current.line, code, hash(), "Expected something else, got " + lexer.current);
     }
 
     /**
@@ -236,7 +250,7 @@ public class Parser
         if (lexer.current instanceof EndToken)
             code = "P1001";
          
-        ErrorReporting.ReportStaticError(moduleName, lexer.current.line, code, new HashMap<String,String>(), "Expected something else, got " + lexer.current);
+        ErrorReporting.ReportStaticError(moduleName, lexer.current.line, code, hash(), "Expected something else, got " + lexer.current);
     }
 
     /**
@@ -296,7 +310,7 @@ public class Parser
     *  @param node Node to attach comments to
     *  @param comments Comment nodes to attach
     */
-    private void attachComments(ParseNode node, CSList<ParseNode> comments) throws Exception {
+    private void attachComments(ParseNode node, List<ParseNode> comments) throws Exception {
         if (comments.size() == 0)
         {
             return ;
@@ -305,7 +319,7 @@ public class Parser
         int startAt = 0;
         if (node.getComment() == null)
         {
-            ParseNode dest = comments.First();
+            ParseNode dest = First(comments);
             node.setComment(dest);
             startAt = 1;
         }
@@ -322,13 +336,13 @@ public class Parser
         }
     }
 
-    private CSList<ParseNode> prepareComments() throws Exception {
-        CSList<ParseNode> orig = comments;
-        comments = new CSList<ParseNode>();
+    private List<ParseNode> prepareComments() throws Exception {
+        List<ParseNode> orig = comments;
+        comments = new ArrayList<ParseNode>();
         return orig;
     }
 
-    private void restoreComments(CSList<ParseNode> orig) throws Exception {
+    private void restoreComments(List<ParseNode> orig) throws Exception {
         comments = orig;
     }
 
@@ -366,8 +380,8 @@ public class Parser
     }
 
     private ParseNode parseStatement(StatementLevel level) throws Exception {
-        CSList<ParseNode> origComments = comments;
-        comments = new CSList<ParseNode>();
+        List<ParseNode> origComments = comments;
+        comments = new ArrayList<ParseNode>();
         takeLineComments();
         Token start = lexer.current;
         ParseNode ret;
@@ -386,7 +400,7 @@ public class Parser
         {
             // Took line comments, followed by a blank
             ret = collapseComments(comments);
-            comments = new CSList<ParseNode>();
+            comments = new ArrayList<ParseNode>();
         }
         else if (lexer.current instanceof CommentToken)
             ret = parseComment();
@@ -439,7 +453,7 @@ public class Parser
                     break;
             
             }
-            reportError("P1046",new HashMap<String,String>(),"May not have  inside ");
+            reportError("P1046",hash(),"May not have  inside ");
             return null;
         }              
         takeSemicolon();
@@ -483,7 +497,9 @@ public class Parser
         }
         else if (op != null && op.getName().startsWith(":="))
         {
-            reportError("P1038",new HashMap<String,String>{ { "rest", op.getName().substring(2) } },":= requires space before prefix operator");
+            reportError("P1038",
+			hash("rest", op.getName().substring(2)),
+			":= requires space before prefix operator");
         }
            
         return new VarDeclarationParseNode(start,name,val,type,annotations);
@@ -548,14 +564,16 @@ public class Parser
         {
             Token lp = lexer.current;
             nextToken();
-            parseParameterList(lp,theseParameters);
+            parseParameterList(lp,Token.class,theseParameters);
             expect();
             nextToken();
         }
          
         if (theseParameters.size() != 1)
         {
-            reportError("P1047",op,new HashMap<String,String>{ { "op", op.getName() } },"Operator needs a parameter.");
+            reportError("P1047",op, 
+			hash( "op", op.getName() ),
+			"Operator needs a parameter.");
         }
          
         ret.setFinal(true);
@@ -580,12 +598,15 @@ public class Parser
         nextToken();
         IdentifierParseNode partName = new IdentifierParseNode(circumfix,"circumfix" + ob.getName() + ob.getOther());
         OrdinarySignaturePartParseNode ret = new OrdinarySignaturePartParseNode(partName);
-        parseParameterList(ob,ret.getParameters());
+        parseParameterList(ob,OpenBracketToken.class,ret.getParameters());
         expectWithError("P1033",ob.getName() + " ... " + ob.getOther());
         CloseBracketToken cb = (CloseBracketToken)lexer.current;
         if (!StringSupport.equals(cb.getName(), ob.getOther()))
         {
-            ErrorReporting.ReportStaticError(moduleName, cb.line, "P1033", new HashMap<String,String>{ { "expected", ob.getName() + " ... " + ob.getOther() }, { "found", cb.getName() } }, "Expected bracket name ${expected}, " + "got ${found}.");
+            ErrorReporting.ReportStaticError(moduleName, cb.line, "P1033", 
+		hash( "expected", ob.getName() + " ... " + ob.getOther(), 
+		      "found", cb.getName() ), 
+		     "Expected bracket name ${expected}, " + "got ${found}.");
         }
          
         nextToken();
@@ -593,11 +614,13 @@ public class Parser
         return ret;
     }
 
-    private void rejectVariadicParameters(IEnumerable<ParseNode> list) throws Exception {
+    private void rejectVariadicParameters(List<ParseNode> list) throws Exception {
         for (ParseNode p : list)
         {
             if (p instanceof VarArgsParameterParseNode)
-                reportError("P1012",p.getToken(),new HashMap<String,String>{ { "operator", "*" } },"Unexpected operator in parameter list.");
+                reportError("P1012",p.getToken(),
+			    hash("operator", "*"), 
+			    "Unexpected operator in parameter list.");
              
         }
     }
@@ -622,7 +645,7 @@ public class Parser
             {
                 Token l = lexer.current;
                 nextToken();
-                parseParameterList(l,ret.getGenericParameters());
+                parseParameterList(l,Token.class,ret.getGenericParameters());
                 expect();
                 nextToken();
             }
@@ -631,7 +654,7 @@ public class Parser
             {
                 Token l = lexer.current;
                 nextToken();
-                parseParameterList(l,ret.getParameters());
+                parseParameterList(l,Token.class,ret.getParameters());
                 rejectVariadicParameters(ret.getParameters());
                 expect();
                 nextToken();
@@ -655,7 +678,7 @@ public class Parser
         {
             Token l = lexer.current;
             nextToken();
-            parseParameterList(l,ret.getGenericParameters());
+            parseParameterList(l,Token.class,ret.getGenericParameters());
             expect();
             nextToken();
         }
@@ -663,7 +686,7 @@ public class Parser
         expect("parameter list");
         Token lp = lexer.current;
         nextToken();
-        parseParameterList(lp,ret.getParameters());
+        parseParameterList(lp,Token.class,ret.getParameters());
         rejectVariadicParameters(ret.getParameters());
         expect();
         nextToken();
@@ -686,7 +709,7 @@ public class Parser
             expect("parameter list");
             Token lp = lexer.current;
             nextToken();
-            parseParameterList(lp,ret.getParameters());
+            parseParameterList(lp,Token.class,ret.getParameters());
             expect();
             nextToken();
         }
@@ -737,7 +760,7 @@ public class Parser
         MethodDeclarationParseNode ret = new MethodDeclarationParseNode(start);
         ret.setSignature(parseSignature(start,false));
         expect();
-        CSList<ParseNode> origComments = prepareComments();
+        List<ParseNode> origComments = prepareComments();
         parseBraceDelimitedBlock(ret.getBody(),StatementLevel.MethodLevel);
         attachComments(ret,comments);
         restoreComments(origComments);
@@ -753,7 +776,7 @@ public class Parser
         ClassDeclarationParseNode ret = new ClassDeclarationParseNode(start);
         ret.setSignature(parseSignature(start,false));
         expect();
-        CSList<ParseNode> origComments = prepareComments();
+        List<ParseNode> origComments = prepareComments();
         parseBraceDelimitedBlock(ret.getBody(),StatementLevel.ObjectLevel);
         attachComments(ret,comments);
         restoreComments(origComments);
@@ -767,7 +790,7 @@ public class Parser
         TraitDeclarationParseNode ret = new TraitDeclarationParseNode(start);
         ret.setSignature(parseSignature(start,false));
         expect();
-        CSList<ParseNode> origComments = prepareComments();
+        List<ParseNode> origComments = prepareComments();
         parseBraceDelimitedBlock(ret.getBody(),StatementLevel.TraitLevel);
         attachComments(ret,comments);
         restoreComments(origComments);
@@ -783,7 +806,7 @@ public class Parser
         nextToken();
         expectWithError("P1034");
         ParseNode name = parseIdentifier();
-        CSList<ParseNode> genericParameters = new CSList<ParseNode>();
+        List<ParseNode> genericParameters = new ArrayList<ParseNode>();
         if (lexer.current instanceof LGenericToken)
         {
             nextToken();
@@ -813,8 +836,8 @@ public class Parser
             if (lexer.current instanceof TypeKeywordToken)
                 nextToken();
              
-            CSList<ParseNode> origComments = prepareComments();
-            CSList<ParseNode> body = parseTypeBody();
+            List<ParseNode> origComments = prepareComments();
+            List<ParseNode> body = parseTypeBody();
             type = new TypeParseNode(ts,body);
             attachComments(type,comments);
             restoreComments(origComments);
@@ -832,15 +855,15 @@ public class Parser
         expect();
         nextToken();
         expect();
-        CSList<ParseNode> origComments = prepareComments();
-        CSList<ParseNode> body = parseTypeBody();
+        List<ParseNode> origComments = prepareComments();
+        List<ParseNode> body = parseTypeBody();
         ParseNode ret = new TypeParseNode(start,body);
         attachComments(ret,comments);
         restoreComments(origComments);
         return ret;
     }
 
-    private CSList<ParseNode> parseTypeBody() throws Exception {
+    private List<ParseNode> parseTypeBody() throws Exception {
         expect();
         int indentBefore = indentColumn;
         Token start = lexer.current;
@@ -850,18 +873,18 @@ public class Parser
         if (lexer.current instanceof RBraceToken)
         {
             nextToken();
-            return new CSList<ParseNode>();
+            return new ArrayList<ParseNode>();
         }
          
         indentColumn = lexer.current.column;
         if (indentColumn <= indentBefore)
-            reportError("P1010",new HashMap<String,String>(),"Indentation must increase inside {}.");
+            reportError("P1010", hash(),"Indentation must increase inside {}.");
          
-        CSList<ParseNode> ret = new CSList<ParseNode>();
+        List<ParseNode> ret = new ArrayList<ParseNode>();
         SignatureParseNode lastSig = null;
         while (awaiting(start))
         {
-            CSList<ParseNode> origComments = prepareComments();
+            List<ParseNode> origComments = prepareComments();
             takeLineComments();
             if (lexer.current instanceof RBraceToken && comments.size() > 0)
             {
@@ -889,7 +912,7 @@ public class Parser
         return ret;
     }
 
-    private <Terminator extends Token>void parseParameterList(Token start, List<ParseNode> parameters) throws Exception {
+    private <Terminator extends Token>void parseParameterList(Token start, Class<Terminator> terminator, List<ParseNode> parameters) throws Exception {
         while (awaiting(start))
         {
             ParseNode param = null;
@@ -902,7 +925,7 @@ public class Parser
                     ParseNode type = parseTypeAnnotation();
                     param = new TypedParameterParseNode(id,type);
                 }
-                else if (after instanceof CommaToken || after instanceof Terminator)
+                else if (after instanceof CommaToken || terminator.isInstance(after))
                 {
                     param = parseTerm();
                 }
@@ -920,7 +943,7 @@ public class Parser
                 // This must be varargs
                 OperatorToken op = lexer.current instanceof OperatorToken ? (OperatorToken)lexer.current : (OperatorToken)null;
                 if (!StringSupport.equals("*", op.getName()))
-                    reportError("P1012",new HashMap<String,String>(),"Unexpected operator in parameter list.");
+                    reportError("P1012",hash(),"Unexpected operator in parameter list.");
                  
                 nextToken();
                 expectWithError("P1031");
@@ -942,9 +965,13 @@ public class Parser
                 expectWithError("P1031"); 
             if (lexer.current instanceof CommaToken)
                 nextToken();
-            else if (!(lexer.current instanceof Terminator))
+            else if (!(terminator.isInstance(lexer.current)))
             {
-                reportError("P1013",new HashMap<String,String>{ { "token", lexer.current.toString() }, { "end", Token.describeSubclass() } },"In parameter list, expected " + " ',' or end of list.");
+                reportError("P1013",
+			    hash("token", lexer.current.toString(),
+				 "end", Token.describeSubclass()), 
+			    "In parameter list, expected " + 
+			    " ',' or end of list.");
                 break;
             }
               
@@ -1056,7 +1083,7 @@ public class Parser
 
     private ParseNode parsePostcircumfixRequest(ParseNode rec) throws Exception {
         OpenBracketToken startToken = lexer.current instanceof OpenBracketToken ? (OpenBracketToken)lexer.current : (OpenBracketToken)null;
-        List<ParseNode> arguments = new CSList<ParseNode>();
+        List<ParseNode> arguments = new ArrayList<ParseNode>();
         parseBracketConstruct(arguments);
         return new ExplicitBracketRequestParseNode(startToken,startToken.getName() + startToken.getOther(),rec,arguments);
     }
@@ -1084,7 +1111,7 @@ public class Parser
         return maybeParseOperator(lhs);
     }
 
-    private void parseBracketConstruct(CSList<ParseNode> arguments) throws Exception {
+    private void parseBracketConstruct(List<ParseNode> arguments) throws Exception {
         OpenBracketToken startToken = lexer.current instanceof OpenBracketToken ? (OpenBracketToken)lexer.current : (OpenBracketToken)null;
         if (startToken != null)
         {
@@ -1109,7 +1136,11 @@ public class Parser
             CloseBracketToken cb = (CloseBracketToken)lexer.current;
             if (!StringSupport.equals(cb.getName(), startToken.getOther()))
             {
-                reportError("P1028",new HashMap<String,String>{ { "start", startToken.getName() }, { "expected", startToken.getOther() }, { "found", cb.getName() } },"Mismatched bracket construct");
+                reportError("P1028",
+			    hash( "start", startToken.getName(),
+				  "expected", startToken.getOther(),
+				  "found", cb.getName() ),
+			    "Mismatched bracket construct");
             }
              
             nextToken();
@@ -1119,7 +1150,7 @@ public class Parser
 
     private ParseNode parseImplicitBracket() throws Exception {
         OpenBracketToken startToken = lexer.current instanceof OpenBracketToken ? (OpenBracketToken)lexer.current : (OpenBracketToken)null;
-        List<ParseNode> arguments = new CSList<ParseNode>();
+        List<ParseNode> arguments = new ArrayList<ParseNode>();
         parseBracketConstruct(arguments);
         return new ImplicitBracketRequestParseNode(startToken,startToken.getName() + startToken.getOther(),arguments);
     }
@@ -1360,7 +1391,7 @@ public class Parser
     private ParseNode oldParseOperator(ParseNode lhs) throws Exception {
         OperatorToken tok = lexer.current instanceof OperatorToken ? (OperatorToken)lexer.current : (OperatorToken)null;
         if ((!tok.getSpaceBefore() || !tok.getSpaceAfter()))
-            reportError("P1020",new HashMap<String,String>(),"Infix operators must be surrounded by spaces.");
+            reportError("P1020",hash(),"Infix operators must be surrounded by spaces.");
          
         nextToken();
         ParseNode rhs = parseExpressionNoOp();
@@ -1369,7 +1400,7 @@ public class Parser
         while (tok != null)
         {
             if ((!tok.getSpaceBefore() || !tok.getSpaceAfter()))
-                reportError("P1020",new HashMap<String,String>(),"Infix operators must be surrounded by spaces.");
+                reportError("P1020",hash(),"Infix operators must be surrounded by spaces.");
              
             nextToken();
             ParseNode comment = null;
@@ -1397,9 +1428,9 @@ public class Parser
     }
 
     private ParseNode parseOperatorStream(ParseNode lhs) throws Exception {
-        /* [UNSUPPORTED] 'var' as type is unsupported "var" */ opstack = new Stack<OperatorToken>();
-        /* [UNSUPPORTED] 'var' as type is unsupported "var" */ valstack = new Stack<ParseNode>();
-        valstack.Push(lhs);
+        Stack<OperatorToken> opstack = new Stack<OperatorToken>();
+        Stack<ParseNode> valstack = new Stack<ParseNode>();
+        valstack.push(lhs);
         OperatorToken tok = lexer.current instanceof OperatorToken ? (OperatorToken)lexer.current : (OperatorToken)null;
         String firstOp = null;
         boolean allArith = true;
@@ -1408,9 +1439,12 @@ public class Parser
             if ((!tok.getSpaceBefore() || !tok.getSpaceAfter()))
             {
                 if (tok.getName().startsWith(":="))
-                    reportError("P1038",new HashMap<String,String>{ { "rest", tok.getName().substring(2) } },":= needs space before prefix operator");
+                    reportError("P1038",
+				hash("rest", tok.getName().substring(2) ),
+				":= needs space before prefix operator");
                  
-                reportError("P1020",new HashMap<String,String>(),"Infix operators must be surrounded by spaces.");
+                reportError("P1020", hash(), 
+			    "Infix operators must be surrounded by spaces."); 
             }
              
             nextToken();
@@ -1429,7 +1463,7 @@ public class Parser
             } 
             if (firstOp != null && !allArith && !StringSupport.equals(firstOp, tok.getName()))
             {
-                reportError("P1026",new HashMap<String,String>(),"Mixed operators without parentheses");
+                reportError("P1026",hash(),"Mixed operators without parentheses");
             }
             else if (firstOp == null)
             {
@@ -1437,26 +1471,26 @@ public class Parser
             }
               
             int myprec = precedence(tok.getName());
-            while (opstack.Count > 0 && myprec <= precedence(opstack.Peek().Name))
+            while (opstack.size() > 0 && myprec <= precedence(opstack.peek().getName()))
             {
-                /* [UNSUPPORTED] 'var' as type is unsupported "var" */ o2 = opstack.Pop();
-                /* [UNSUPPORTED] 'var' as type is unsupported "var" */ tmp2 = valstack.Pop();
-                /* [UNSUPPORTED] 'var' as type is unsupported "var" */ tmp1 = valstack.Pop();
-                valstack.Push(new OperatorParseNode(o2, o2.Name, tmp1, tmp2));
+                /* [UNSUPPORTED] 'var' as type is unsupported "var" */ OperatorToken o2 = opstack.pop();
+                /* [UNSUPPORTED] 'var' as type is unsupported "var" */ ParseNode tmp2 = valstack.pop();
+                /* [UNSUPPORTED] 'var' as type is unsupported "var" */ ParseNode tmp1 = valstack.pop();
+                valstack.push(new OperatorParseNode(o2, o2.getName(), tmp1, tmp2));
             }
-            opstack.Push(tok);
+            opstack.push(tok);
             ParseNode rhs = parseExpressionNoOp();
-            valstack.Push(rhs);
+            valstack.push(rhs);
             tok = lexer.current instanceof OperatorToken ? (OperatorToken)lexer.current : (OperatorToken)null;
         }
-        while (opstack.Count > 0)
+        while (opstack.size() > 0)
         {
-            /* [UNSUPPORTED] 'var' as type is unsupported "var" */ o = opstack.Pop();
-            /* [UNSUPPORTED] 'var' as type is unsupported "var" */ tmp2 = valstack.Pop();
-            /* [UNSUPPORTED] 'var' as type is unsupported "var" */ tmp1 = valstack.Pop();
-            valstack.Push(new OperatorParseNode(o, o.Name, tmp1, tmp2));
+            /* [UNSUPPORTED] 'var' as type is unsupported "var" */ OperatorToken o = opstack.pop();
+            /* [UNSUPPORTED] 'var' as type is unsupported "var" */ ParseNode tmp2 = valstack.pop();
+            /* [UNSUPPORTED] 'var' as type is unsupported "var" */ ParseNode tmp1 = valstack.pop();
+            valstack.push(new OperatorParseNode(o, o.getName(), tmp1, tmp2));
         }
-        return valstack.Pop();
+        return valstack.pop();
     }
 
     // XXX works around JSIL bug #911
@@ -1474,7 +1508,7 @@ public class Parser
         return getlc();
     }
 
-    private void parseBraceDelimitedBlock(CSList<ParseNode> body, StatementLevel level) throws Exception {
+    private void parseBraceDelimitedBlock(List<ParseNode> body, StatementLevel level) throws Exception {
         int indentBefore = indentColumn;
         Token start = lexer.current;
         // Skip the {
@@ -1502,14 +1536,14 @@ public class Parser
          
         indentColumn = lexer.current.column;
         if (indentColumn <= indentBefore)
-            reportError("P1011",new HashMap<String,String>(),"Indentation must increase inside {}.");
+            reportError("P1011",hash(),"Indentation must increase inside {}.");
          
         Token lastToken = lexerCurrent();
         while (awaiting(start))
         {
             if (lexer.current.column != indentColumn)
             {
-                reportError("P1016",new HashMap<String,String>(),"Indentation mismatch; is " + (lexer.current.column - 1) + ", should be " + (indentColumn - 1) + ".");
+                reportError("P1016",hash(),"Indentation mismatch; is " + (lexer.current.column - 1) + ", should be " + (indentColumn - 1) + ".");
             }
              
             body.add(parseStatement(level));
@@ -1532,7 +1566,7 @@ public class Parser
             reportError("P1021","object must have '{' after.");
         }
          
-        CSList<ParseNode> origComments = prepareComments();
+        List<ParseNode> origComments = prepareComments();
         parseBraceDelimitedBlock(ret.getBody(),StatementLevel.ObjectLevel);
         attachComments(ret,comments);
         restoreComments(origComments);
@@ -1619,7 +1653,7 @@ public class Parser
             if (lexer.current instanceof CommaToken)
             {
                 nextToken();
-                parseParameterList<ArrowToken>(start, ret.getParameters());
+                parseParameterList(start, ArrowToken.class, ret.getParameters() );
             }
              
         }
@@ -1641,7 +1675,11 @@ public class Parser
         {
             if (lexer.current.column != indentColumn)
             {
-                reportError("P1016",new HashMap<String,String>{ { "required indentation", "" + (indentColumn - 1) }, { "given indentation", "" + (lexer.current.column - 1) } },"Indentation mismatch; is " + (lexer.current.column - 1) + ", should be " + (indentColumn - 1) + ".");
+                reportError("P1016",
+			    hash( "required indentation", "" + (indentColumn - 1),
+				  "given indentation", "" + (lexer.current.column - 1) ), 
+			    "Indentation mismatch; is " + (lexer.current.column - 1) + 
+			    ", should be " + (indentColumn - 1) + ".");
             }
              
             ret.getBody().add(parseStatement(StatementLevel.MethodLevel));
@@ -1657,7 +1695,7 @@ public class Parser
         return ret;
     }
 
-    private boolean parseArgumentList(CSList<ParseNode> arguments) throws Exception {
+    private boolean parseArgumentList(List<ParseNode> arguments) throws Exception {
         Boolean ret = false;
         if (lexer.current instanceof LParenToken)
         {
@@ -1692,7 +1730,7 @@ public class Parser
         return ret;
     }
 
-    private void parseGenericArgumentList(CSList<ParseNode> arguments) throws Exception {
+    private void parseGenericArgumentList(List<ParseNode> arguments) throws Exception {
         if (lexer.current instanceof LGenericToken)
         {
             Token start = lexer.current;
@@ -1726,10 +1764,12 @@ public class Parser
             IdentifierParseNode partName = parseIdentifier();
             ret.addPart(partName);
             Boolean hadParen = lexer.current instanceof LParenToken;
-            parseArgumentList(ret.getArguments().Last());
-            if (ret.getArguments().Last().Count == 0 && !hadParen)
+            parseArgumentList(Last(ret.getArguments()));
+            if (Last(ret.getArguments()).size() == 0 && !hadParen)
             {
-                reportError("P1040",new HashMap<String,String>{ { "part", partName.getName() } },"No argument list in request.");
+                reportError("P1040", 
+			    hash( "part", partName.getName() ),
+			    "No argument list in request.");
             }
              
         }
@@ -1744,10 +1784,10 @@ public class Parser
         {
             // Add this part of the method name
             ret.addPart(parseIdentifier());
-            parseGenericArgumentList(ret.getGenericArguments().Last());
+            parseGenericArgumentList(Last(ret.getGenericArguments()));
             Boolean hadParen = lexer.current instanceof LParenToken;
-            parseArgumentList(ret.getArguments().Last());
-            if (ret.getArguments().Last().Count == 0 && !hadParen)
+            parseArgumentList(Last(ret.getArguments()));
+            if (Last(ret.getArguments()).size() == 0 && !hadParen)
                 return ret;
              
             named = true;
@@ -1766,7 +1806,7 @@ public class Parser
         return ret;
     }
 
-    private ParseNode collapseComments(CSList<ParseNode> comments) throws Exception {
+    private ParseNode collapseComments(List<ParseNode> comments) throws Exception {
         ParseNode first = comments.get(0);
         ParseNode last = first;
         for (int i = 1;i < comments.size();i++)

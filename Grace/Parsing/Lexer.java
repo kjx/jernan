@@ -11,7 +11,7 @@ package Grace.Parsing;
 import Grace.ErrorReporting;
 import static Grace.ErrorReporting.hash;
 import Grace.StringInfo; //KJX evil compatability shit.
-
+import Grace.StringSupport; //KJX evil compatability shit.
 
 import Grace.Parsing.AliasKeywordToken;
 import Grace.Parsing.ArrowToken;
@@ -208,17 +208,6 @@ OtherNotAssigned
 }
 
 
-//brutally copied in from the CS2J library
-class StringSupport {
-        public static boolean equals(String s1, String s2)
-        {
-                if (s1 == null)
-                        return s2 == null;
-                else
-                        return s1.equals(s2);
-        }
- 
-}
 
 
 
