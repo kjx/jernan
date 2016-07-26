@@ -27,9 +27,9 @@ public class ImplicitReceiverRequestNode  extends RequestNode
     */
     public void debugPrint(PrintStream tw, String prefix) throws Exception {
         tw.println(prefix + "ImplicitReceiverRequest: " + getName());
-        if (parts.Count == 1)
+        if (parts.size() == 1)
         {
-            if (parts[0].Arguments.Count == 0 && parts[0].GenericArguments.Count == 0)
+            if (parts.get(0).getArguments().size() == 0 && parts.get(0).getGenericArguments().size() == 0)
                 return ;
              
         }
@@ -42,7 +42,7 @@ public class ImplicitReceiverRequestNode  extends RequestNode
             String partName = p.getName();
             tw.println(prefix + "    Part " + i + ": ");
             tw.println(prefix + "      Name: " + p.getName());
-            if (p.getGenericArguments().Count != 0)
+            if (p.getGenericArguments().size() != 0)
             {
                 tw.println(prefix + "      Generic arguments:");
                 for (Object __dummyForeachVar0 : p.getGenericArguments())
@@ -52,7 +52,7 @@ public class ImplicitReceiverRequestNode  extends RequestNode
                 }
             }
              
-            if (p.getArguments().Count != 0)
+            if (p.getArguments().size() != 0)
             {
                 tw.println(prefix + "      Arguments:");
                 for (Object __dummyForeachVar1 : p.getArguments())

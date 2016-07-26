@@ -3,6 +3,10 @@
 //
 
 package Grace.Execution;
+import Grace.Parsing.Token;
+import Grace.Parsing.ReturnParseNode;
+import java.io.PrintStream;
+
 
 import Grace.Execution.ImplicitNode;
 import Grace.Execution.Node;
@@ -33,47 +37,15 @@ public class ReturnNode  extends Node
     /**
     * 
     */
-    public GraceObject evaluate(EvaluationContext ctx) throws Exception {
-        MethodScope ms = ctx.FindNearestMethod();
-        if (ms == null)
-            ErrorReporting.RaiseError(ctx, "R2016", new Dictionary<String, String>(), "IllegalReturnError: top-level return");
-         
-        if (getValue() != null)
-            ms.Return(ctx, getValue().evaluate(ctx), this);
-        else
-            ms.Return(ctx, GraceObject.Done, this); 
-        return GraceObject.Done;
-    }
-
-    /**
-    * 
-    */
-    public void debugPrint(System.IO.TextWriter tw, String prefix) throws Exception {
-        tw.WriteLine(prefix + "Return:");
+    public void debugPrint(PrintStream tw, String prefix) throws Exception {
+        tw.println(prefix + "Return:");
         if (getValue() != null)
         {
-            tw.WriteLine(prefix + "  Value:");
+            tw.println(prefix + "  Value:");
             getValue().debugPrint(tw,prefix + "    ");
         }
          
     }
-
-    // Below exposes state as Grace methods.
-    private static Dictionary<String, Method> sharedMethods = new Dictionary<String, Method>{ { "value", new DelegateMethodTyped0<ReturnNode>(mValue) } };
-    /**
-    * 
-    */
-    protected void addMethods() throws Exception {
-        AddMethods(sharedMethods);
-    }
-
-    private static GraceObject mValue(ReturnNode self) throws Exception {
-        if (self.getValue() != null)
-            return self.getValue();
-         
-        return new ImplicitNode("Done",self.getOrigin());
-    }
-
 }
 
 

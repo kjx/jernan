@@ -20,11 +20,11 @@ public class StringLiteralParseNode  extends ParseNode
     /**
     * String value after escape processing
     */
-    public String getValue() throws Exception {
+    public String getValue()  {
         return _value;
     }
 
-    public void setValue(String value) throws Exception {
+    public void setValue(String value)  {
         _value = value;
     }
 
@@ -33,7 +33,7 @@ public class StringLiteralParseNode  extends ParseNode
     * Literal string as written, without
     * escape processing
     */
-    public String getRaw() throws Exception {
+    public String getRaw()  {
         return raw;
     }
 

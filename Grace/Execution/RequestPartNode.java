@@ -41,28 +41,28 @@ public class RequestPartNode //kjx really not a Node?
     /**
     * Make this part into a := bind request part
     */
-    public void makeBind() throws Exception {
+    public void makeBind()  {
         name += ":=(_)";
     }
 
     /**
     * The name of this partThis property gets the string field name
     */
-    public String getName() throws Exception {
+    public String getName()  {
         return name;
     }
 
     /**
     * The base name of this partThis property gets the string field baseName
     */
-    public String getBaseName() throws Exception {
+    public String getBaseName()  {
         return baseName;
     }
 
     /**
     * Generic arguments to this partThis property gets the field generics
     */
-    public List<Node> getGenericArguments() throws Exception {
+    public List<Node> getGenericArguments()  {
         return generics;
     }
 

@@ -8,7 +8,9 @@ import Grace.Parsing.ParseNode;
 import Grace.MethodHelper;
 import java.io.PrintStream;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.Collection;
 
 
@@ -38,20 +40,20 @@ public class InheritsNode  extends Node
     /**
     * List of aliases on this inherits statement.
     */
-    private HashMap<String, SignatureNode> __Aliases;
-    public HashMap<String, SignatureNode> getAliases() {
+    private Map<String, SignatureNode> __Aliases;
+    public Map<String, SignatureNode> getAliases() {
         return __Aliases;
     }
 
-    public void setAliases(Dictionary<String, SignatureNode> value) {
+    public void setAliases(Map<String, SignatureNode> value) {
         __Aliases = value;
     }
 
     /**
     * List of excludes on this inherits statement.
     */
-    private HashSet<String> __Excludes;
-    public HashSet<String> getExcludes() {
+    private Set<String> __Excludes;
+    public Set<String> getExcludes() {
         return __Excludes;
     }
 
@@ -79,7 +81,7 @@ public class InheritsNode  extends Node
     public void debugPrint(PrintStream tw, String prefix) throws Exception {
         tw.println(prefix + "Inherits: ");
         getFrom().debugPrint(tw,prefix + "    ");
-        for (Map.Entry<String,SignatureNode> a : getAliases())
+        for (Map.Entry<String,SignatureNode> a : getAliases().entrySet())
             tw.println(prefix + "    alias " + a.getKey() + " = " + a.getValue());
         for (String e : getExcludes())
             tw.println(prefix + "    exclude " + e);

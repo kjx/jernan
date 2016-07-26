@@ -23,7 +23,7 @@ public class OrdinarySignaturePartNode  extends SignaturePartNode
     /**
     * Name of the part
     */
-    public String getName() throws Exception {
+    public String getName()  {
         return _name;
     }
 

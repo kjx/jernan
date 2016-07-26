@@ -3,6 +3,16 @@
 //
 
 package Grace.Execution;
+import Grace.Parsing.Token;
+import Grace.Parsing.ParseNode;
+import Grace.Parsing.SignatureParseNode;
+import java.io.PrintStream;
+
+import java.util.List;
+import java.util.Collection;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.stream.Collectors;
 
 import Grace.Execution.AnnotationsNode;
 import Grace.Execution.ImplicitNode;
@@ -14,16 +24,20 @@ import Grace.Execution.SignaturePartNode;
 /**
 * A method signature
 */
-public class SignatureNode  extends Node implements IEnumerable<SignaturePartNode>
+public class SignatureNode  extends Node implements Iterable<SignaturePartNode>
 {
-    private String _name = new String();
+    private String _name;
     /**
     * Name of the method
     */
-    public String getName() throws Exception {
+    public String getName() {
         if (_name == null)
         {
-            _name = String.Join(" ");
+            //C# _name = String.Join(" ", from p in _parts select p.Name)
+
+            _name = getParts().stream()
+                .map(i -> i.getName())
+                .collect(Collectors.joining(" "));
         }
          
         return _name;
@@ -32,12 +46,12 @@ public class SignatureNode  extends Node implements IEnumerable<SignaturePartNod
     /**
     * Parts of the method name
     */
-    private IList<SignaturePartNode> __Parts = new IList<SignaturePartNode>();
-    public IList<SignaturePartNode> getParts() {
+    private List<SignaturePartNode> __Parts;
+    public List<SignaturePartNode> getParts() {
         return __Parts;
     }
 
-    public void setParts(IList<SignaturePartNode> value) {
+    public void setParts(List<SignaturePartNode> value) {
         __Parts = value;
     }
 
@@ -71,38 +85,31 @@ public class SignatureNode  extends Node implements IEnumerable<SignaturePartNod
 
     public SignatureNode(Token location, SignatureParseNode source) throws Exception {
         super(location, source);
-        setParts(new List<SignaturePartNode>());
-        setAnnotations(new AnnotationsNode(location, source != null ? source.Annotations : null));
+        setParts(new ArrayList<SignaturePartNode>());
+        setAnnotations(new AnnotationsNode(location, source != null ? source.getAnnotations() : null));
     }
 
     /**
     * 
     */
-    public void debugPrint(System.IO.TextWriter tw, String prefix) throws Exception {
-        tw.WriteLine(prefix + "Signature: " + getName());
-        if (getAnnotations() != null && getAnnotations().getCount() > 0)
+    public void debugPrint(PrintStream tw, String prefix) throws Exception {
+        tw.println(prefix + "Signature: " + getName());
+        if (getAnnotations() != null && getAnnotations().size() > 0)
         {
-            tw.WriteLine(prefix + "  Annotations:");
+            tw.println(prefix + "  Annotations:");
             getAnnotations().debugPrint(tw,prefix + "    ");
-            tw.WriteLine(prefix + "  Parts:");
+            tw.println(prefix + "  Parts:");
         }
          
-        for (/* [UNSUPPORTED] 'var' as type is unsupported "var" */ p : getParts())
-            p.DebugPrint(tw, prefix + "    ");
-    }
-
-    /**
-    * 
-    */
-    public GraceObject evaluate(EvaluationContext ctx) throws Exception {
-        return null;
+        for (SignaturePartNode p : getParts())
+            p.debugPrint(tw, prefix + "    ");
     }
 
     /**
     * Add a part to this method name
     */
     public void addPart(SignaturePartNode spn) throws Exception {
-        getParts().Add(spn);
+        getParts().add(spn);
         if (!(spn instanceof OrdinarySignaturePartNode))
             Linear = false;
          
@@ -111,37 +118,8 @@ public class SignatureNode  extends Node implements IEnumerable<SignaturePartNod
     /**
     * Get an enumerator giving each part of this signature in turn.
     */
-    public IEnumerator<SignaturePartNode> getEnumerator() throws Exception {
-        for (/* [UNSUPPORTED] 'var' as type is unsupported "var" */ p : getParts())
-        {
-        }
-    }
-
-    /**
-    * Get an enumerator giving each part of this signature in turn.
-    */
-    System.Collections.IEnumerator system___Collections___IEnumerable___GetEnumerator() throws Exception {
-        return getEnumerator();
-    }
-
-    // Below exposes state as Grace methods.
-    private static Dictionary<String, Method> sharedMethods = new Dictionary<String, Method>{ { "parts", new DelegateMethodTyped0<SignatureNode>(mParts) }, { "returnType", new DelegateMethodTyped0<SignatureNode>(mReturnType) } };
-    /**
-    * 
-    */
-    protected void addMethods() throws Exception {
-        AddMethods(sharedMethods);
-    }
-
-    private static GraceObject mParts(SignatureNode self) throws Exception {
-        return GraceVariadicList.Of(self.getParts());
-    }
-
-    private static GraceObject mReturnType(SignatureNode self) throws Exception {
-        if (self.getReturnType() != null)
-            return self.getReturnType();
-         
-        return new ImplicitNode("Unknown",self.getOrigin());
+    public Iterator<SignaturePartNode> iterator() {
+	return getParts().iterator();
     }
 
 }

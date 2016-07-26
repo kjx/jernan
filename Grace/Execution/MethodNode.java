@@ -6,7 +6,8 @@ package Grace.Execution;
 import Grace.Parsing.Token;
 import Grace.Parsing.ParseNode;
 import java.io.PrintStream;
-
+import java.util.List;
+import java.util.ArrayList;
 
 import Grace.Execution.AnnotationsNode;
 import Grace.Execution.IdentifierNode;
@@ -93,10 +94,10 @@ public class MethodNode  extends Node
 //     public boolean getUseRealReceiver() {
 //         return __UseRealReceiver;
 //     }
-
-    public void setUseRealReceiver(boolean value) {
-        __UseRealReceiver = value;
-    }
+//
+//     public void setUseRealReceiver(boolean value) {
+//         __UseRealReceiver = value;
+//     }
 
     public MethodNode(Token token, ParseNode source) throws Exception {
         super(token, source);
@@ -117,7 +118,7 @@ public class MethodNode  extends Node
     *  @param node Node to add
     */
     public void add(Node node) throws Exception {
-        body.Add(node);
+        body.add(node);
     }
 
     /**

@@ -3,6 +3,12 @@
 //
 
 package Grace.Execution;
+import Grace.Parsing.Token;
+import Grace.Parsing.TypeParseNode;
+import Grace.Parsing.ParseNode;
+import java.io.PrintStream;
+import java.util.List;
+import java.util.ArrayList;
 
 import Grace.Execution.Node;
 import Grace.Execution.SignatureNode;
@@ -13,11 +19,11 @@ import Grace.Execution.TypeNode;
 */
 public class TypeNode  extends Node 
 {
-    private List<SignatureNode> body = new List<SignatureNode>();
+    private List<SignatureNode> body;
     /**
     * The name of this type literal for debugging
     */
-    private String __Name = new String();
+    private String __Name;
     public String getName() {
         return __Name;
     }
@@ -34,43 +40,20 @@ public class TypeNode  extends Node
     /**
     * The body of this type literalThis property gets the value of the field body
     */
-    public List<SignatureNode> getBody() throws Exception {
+    public List<SignatureNode> getBody()  {
         return body;
     }
 
     /**
     * 
     */
-    public void debugPrint(System.IO.TextWriter tw, String prefix) throws Exception {
-        tw.WriteLine(prefix + "Type:");
-        tw.WriteLine(prefix + "  Methods:");
-        for (/* [UNSUPPORTED] 'var' as type is unsupported "var" */ meth : body)
+    public void debugPrint(PrintStream tw, String prefix) throws Exception {
+        tw.println(prefix + "Type:");
+        tw.println(prefix + "  Methods:");
+        for (SignatureNode meth : body)
         {
-            meth.DebugPrint(tw, prefix + "    ");
+            meth.debugPrint(tw, prefix + "    ");
         }
-    }
-
-    /**
-    * 
-    */
-    public GraceObject evaluate(EvaluationContext ctx) throws Exception {
-        /* [UNSUPPORTED] 'var' as type is unsupported "var" */ ret = new GraceType(getName());
-        for (/* [UNSUPPORTED] 'var' as type is unsupported "var" */ n : body)
-            ret.Add(n);
-        return ret;
-    }
-
-    // Below exposes state as Grace methods.
-    private static Dictionary<String, Method> sharedMethods = new Dictionary<String, Method>{ { "signatures", new DelegateMethodTyped0<TypeNode>(mSignatures) } };
-    /**
-    * 
-    */
-    protected void addMethods() throws Exception {
-        AddMethods(sharedMethods);
-    }
-
-    private static GraceObject mSignatures(TypeNode self) throws Exception {
-        return GraceVariadicList.Of(self.body);
     }
 
 }

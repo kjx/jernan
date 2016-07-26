@@ -19,11 +19,11 @@ public class ImportParseNode  extends ParseNode
     /**
     * Given import path in the syntax
     */
-    public ParseNode getPath() throws Exception {
+    public ParseNode getPath() {
         return _path;
     }
 
-    public void setPath(ParseNode value) throws Exception {
+    public void setPath(ParseNode value)  {
         _path = value;
     }
 
@@ -31,11 +31,11 @@ public class ImportParseNode  extends ParseNode
     /**
     * Given "as name" in the syntax
     */
-    public ParseNode getName() throws Exception {
+    public ParseNode getName()  {
         return _name;
     }
 
-    public void setName(ParseNode value) throws Exception {
+    public void setName(ParseNode value)  {
         _name = value;
     }
 
@@ -43,11 +43,11 @@ public class ImportParseNode  extends ParseNode
     /**
     * Given ": type", if provided
     */
-    public ParseNode getType() throws Exception {
+    public ParseNode getType()  {
         return _type;
     }
 
-    public void setType(ParseNode value) throws Exception {
+    public void setType(ParseNode value)  {
         _type = value;
     }
 

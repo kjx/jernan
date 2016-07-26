@@ -25,11 +25,11 @@ public class IdentifierParseNode  extends ParseNode
     /**
     * Name of this identifier
     */
-    public String getName() throws Exception {
+    public String getName()  {
         return _name;
     }
 
-    public void setName(String value) throws Exception {
+    public void setName(String value)  {
         _name = value;
     }
 

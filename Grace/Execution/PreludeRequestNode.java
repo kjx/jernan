@@ -3,6 +3,10 @@
 //
 
 package Grace.Execution;
+import Grace.Parsing.Token;
+import Grace.Parsing.ParseNode;
+import java.io.PrintStream;
+
 
 import Grace.Execution.Node;
 import Grace.Execution.RequestNode;
@@ -20,26 +24,26 @@ public class PreludeRequestNode  extends RequestNode
     /**
     * 
     */
-    public void debugPrint(System.IO.TextWriter tw, String prefix) throws Exception {
-        tw.WriteLine(prefix + "PreludeRequest: " + getName());
-        if (parts.Count == 1)
+    public void debugPrint(PrintStream tw, String prefix) throws Exception {
+        tw.println(prefix + "PreludeRequest: " + getName());
+        if (parts.size() == 1)
         {
-            if (parts[0].Arguments.Count == 0 && parts[0].GenericArguments.Count == 0)
+            if (parts.get(0).getArguments().size() == 0 && parts.get(0).getGenericArguments().size() == 0)
                 return ;
              
         }
          
-        tw.WriteLine(prefix + "  Parts:");
+        tw.println(prefix + "  Parts:");
         int i = 1;
         for (Object __dummyForeachVar2 : parts)
         {
             RequestPartNode p = (RequestPartNode)__dummyForeachVar2;
             String partName = p.getName();
-            tw.WriteLine(prefix + "    Part " + i + ": ");
-            tw.WriteLine(prefix + "      Name: " + p.getName());
-            if (p.getGenericArguments().Count != 0)
+            tw.println(prefix + "    Part " + i + ": ");
+            tw.println(prefix + "      Name: " + p.getName());
+            if (p.getGenericArguments().size() != 0)
             {
-                tw.WriteLine(prefix + "      Generic arguments:");
+                tw.println(prefix + "      Generic arguments:");
                 for (Object __dummyForeachVar0 : p.getGenericArguments())
                 {
                     Node arg = (Node)__dummyForeachVar0;
@@ -47,9 +51,9 @@ public class PreludeRequestNode  extends RequestNode
                 }
             }
              
-            if (p.getArguments().Count != 0)
+            if (p.getArguments().size() != 0)
             {
-                tw.WriteLine(prefix + "      Arguments:");
+                tw.println(prefix + "      Arguments:");
                 for (Object __dummyForeachVar1 : p.getArguments())
                 {
                     Node arg = (Node)__dummyForeachVar1;
@@ -60,14 +64,6 @@ public class PreludeRequestNode  extends RequestNode
             i++;
         }
     }
-
-    /**
-    * 
-    */
-    protected GraceObject getReceiver(EvaluationContext ctx, MethodRequest req) throws Exception {
-        return ctx.Prelude;
-    }
-
 }
 
 

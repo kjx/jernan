@@ -6,7 +6,10 @@ package Grace.Execution;
 import Grace.Parsing.Token;
 import Grace.Parsing.ParseNode;
 import java.io.PrintStream;
-
+import java.util.Iterator;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 import Grace.Execution.Node;
 import Grace.Execution.RequestNode;
@@ -32,10 +35,12 @@ public abstract class RequestNode  extends Node implements Iterable<RequestPartN
     *  @param val Value to assign
     */
     public void makeBind(Node val) throws Exception {
+	List<Node> tmp = new ArrayList<Node>();
+	tmp.add(val); 
         RequestPartNode rpn = 
 	    new RequestPartNode(":=", 
 				new ArrayList<Node>(), 
-				new ArrayList<Node>().add(val));
+				tmp);
         addPart(rpn);
     }
 
@@ -65,7 +70,7 @@ public abstract class RequestNode  extends Node implements Iterable<RequestPartN
     * Get an enumerator giving each part of this request
     * in turn
     */
-    public Iterator<RequestPartNode> iterator() throws Exception {
+    public Iterator<RequestPartNode> iterator()  {
 	return parts.iterator();
     }
 }

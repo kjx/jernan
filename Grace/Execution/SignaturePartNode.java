@@ -18,7 +18,7 @@ public abstract class SignaturePartNode  extends Node
     /**
     * Name of the part
     */
-    public abstract String getName() throws Exception ;
+    public abstract String getName()  ;
 
     public SignaturePartNode(Token location, SignaturePartParseNode source) throws Exception {
         super(location, source);

@@ -20,11 +20,11 @@ public class NumberParseNode  extends ParseNode
     /**
     * Base of the number
     */
-    public int getNumericBase() throws Exception {
+    public int getNumericBase() {
         return _base;
     }
 
-    public void setNumericBase(int value) throws Exception {
+    public void setNumericBase(int value)  {
         _base = value;
     }
 
@@ -32,11 +32,11 @@ public class NumberParseNode  extends ParseNode
     /**
     * Digits of the number in its base
     */
-    public String getDigits() throws Exception {
+    public String getDigits() {
         return _digits;
     }
 
-    public void setDigits(String value) throws Exception {
+    public void setDigits(String value)  {
         _digits = value;
     }
 

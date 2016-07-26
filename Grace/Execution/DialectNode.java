@@ -6,7 +6,10 @@ package Grace.Execution;
 import Grace.Parsing.Token;
 import Grace.Parsing.ParseNode;
 import Grace.Parsing.DialectParseNode;
+import Grace.Parsing.StringLiteralParseNode;
 import java.io.PrintStream;
+import java.util.List;
+import java.util.ArrayList;
 
 
 import Grace.Execution.DialectNode;
@@ -30,7 +33,9 @@ public class DialectNode  extends Node
     * path field of the originating parse node
     */
     public String getPath() throws Exception {
-        return (origin.Path instanceof StringLiteralParseNode ? (StringLiteralParseNode)origin.Path : (StringLiteralParseNode)null).Value;
+	//KJX hackety hack. no explcit test just a cast. 
+	return ((StringLiteralParseNode) origin.getPath()).getValue();
+
     }
 
     /**
@@ -55,5 +60,4 @@ public class DialectNode  extends Node
     }
 
 }
-
 

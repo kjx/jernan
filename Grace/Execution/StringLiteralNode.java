@@ -3,6 +3,10 @@
 //
 
 package Grace.Execution;
+import Grace.Parsing.Token;
+import Grace.Parsing.StringLiteralParseNode;
+import java.io.PrintStream;
+
 
 import Grace.Execution.Node;
 import Grace.Execution.StringLiteralNode;
@@ -12,7 +16,7 @@ import Grace.Execution.StringLiteralNode;
 */
 public class StringLiteralNode  extends Node 
 {
-    private StringLiteralParseNode origin = new StringLiteralParseNode();
+    private StringLiteralParseNode origin;
     public StringLiteralNode(Token location, StringLiteralParseNode source) throws Exception {
         super(location, source);
         origin = source;
@@ -22,37 +26,16 @@ public class StringLiteralNode  extends Node
     * The string value of this literalThis property gets the value field of the
     * originating parse node
     */
-    public String getValue() throws Exception {
-        return origin.Value;
+    public String getValue()  {
+        return origin.getValue();
     }
 
     /**
     * 
     */
-    public void debugPrint(System.IO.TextWriter tw, String prefix) throws Exception {
-        tw.WriteLine(prefix + "String: " + getValue());
+    public void debugPrint(PrintStream tw, String prefix) throws Exception {
+        tw.println(prefix + "String: " + getValue());
     }
-
-    /**
-    * 
-    */
-    public GraceObject evaluate(EvaluationContext ctx) throws Exception {
-        return GraceString.Create(getValue());
-    }
-
-    // Below exposes state as Grace methods.
-    private static Dictionary<String, Method> sharedMethods = new Dictionary<String, Method>{ { "value", new DelegateMethodTyped0<StringLiteralNode>(mValue) } };
-    /**
-    * 
-    */
-    protected void addMethods() throws Exception {
-        AddMethods(sharedMethods);
-    }
-
-    private static GraceObject mValue(StringLiteralNode self) throws Exception {
-        return GraceString.Create(self.getValue());
-    }
-
 }
 
 

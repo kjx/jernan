@@ -3,6 +3,10 @@
 //
 
 package Grace.Execution;
+import Grace.Parsing.Token;
+import Grace.Parsing.ParseNode;
+import java.io.PrintStream;
+
 
 import Grace.Execution.Node;
 
@@ -18,26 +22,9 @@ public class NoopNode  extends Node
     /**
     * 
     */
-    public GraceObject evaluate(EvaluationContext ctx) throws Exception {
-        return GraceObject.Done;
+    public void debugPrint(PrintStream tw, String prefix) throws Exception {
+        tw.println(prefix + "Noop");
     }
-
-    /**
-    * 
-    */
-    public void debugPrint(System.IO.TextWriter tw, String prefix) throws Exception {
-        tw.WriteLine(prefix + "Noop");
-    }
-
-    // Below exposes state as Grace methods.
-    private static Dictionary<String, Method> sharedMethods = new Dictionary<String, Method>();
-    /**
-    * 
-    */
-    protected void addMethods() throws Exception {
-        AddMethods(sharedMethods);
-    }
-
 }
 
 
