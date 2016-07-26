@@ -3,23 +3,19 @@
 //
 
 package Grace.Execution;
-import Grace.Parsing.Token;
-import Grace.Parsing.TypeParseNode;
-import Grace.Parsing.ParseNode;
 import java.io.PrintStream;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
-import Grace.Execution.Node;
-import Grace.Execution.SignatureNode;
-import Grace.Execution.TypeNode;
+import Grace.Parsing.ParseNode;
+import Grace.Parsing.Token;
 
 /**
 * A type literal
 */
 public class TypeNode  extends Node 
 {
-    private List<SignatureNode> body;
+    private List<SignatureNode> body = new ArrayList<>();
     /**
     * The name of this type literal for debugging
     */

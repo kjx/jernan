@@ -90,7 +90,8 @@ public class NumberLiteralNode  extends Node
             desc += "0x" + origin.getDigits();
         else
             desc += origin.getNumericBase() + "x" + origin.getDigits();  
-        tw.println(prefix + "Number: " + desc + " (NO VALUE)");
+        tw.println(prefix + "Number: " + desc + " ("+ desc+ ")");
+
     }
 }
 
