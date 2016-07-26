@@ -3,10 +3,10 @@
 //
 
 package Grace.Execution;
-import Grace.Parsing.Token;
-import Grace.Parsing.ParseNode;
-import Grace.Parsing.SignaturePartParseNode;
-import Grace.Parsing.ParseNodeVisitor;
+
+import Grace.ErrorReporting;
+import static Grace.ErrorReporting.hash;
+import Grace.Parsing.*;  //I claim this is defensible because it needs it all!
 import java.io.PrintStream;
 import java.util.List;
 import java.util.ArrayList;
@@ -99,7 +99,7 @@ public class ExecutionTreeTranslator  extends ParseNodeVisitor<Node>
     */
     public Node visit(InterpolatedStringParseNode n) throws Exception {
         Node ret = null;
-        for (Object __dummyForeachVar1 : n.Parts)
+        for (Object __dummyForeachVar1 : n.getParts())
         {
             ParseNode part = (ParseNode)__dummyForeachVar1;
             if (ret == null)
@@ -138,10 +138,10 @@ public class ExecutionTreeTranslator  extends ParseNodeVisitor<Node>
         {
             ret.addPart((SignaturePartNode)part.visit(this));
         }
-        if (spn.ReturnType != null)
-            ret.setReturnType(spn.ReturnType.visit(this));
+        if (spn.getReturnType() != null)
+            ret.setReturnType(spn.getReturnType().visit(this));
          
-        addAnnotations(spn.Annotations, ret.getAnnotations());
+        addAnnotations(spn.getAnnotations(), ret.getAnnotations());
         return ret;
     }
 
@@ -155,31 +155,57 @@ public class ExecutionTreeTranslator  extends ParseNodeVisitor<Node>
     * 
     */
     public Node visit(OrdinarySignaturePartParseNode osppn) throws Exception {
-        /* [UNSUPPORTED] 'var' as type is unsupported "var" */ parameters = new ArrayList<Node>();
-        for (/* [UNSUPPORTED] 'var' as type is unsupported "var" */ p : osppn.Parameters)
+        List<Node> parameters = new ArrayList<Node>();
+        for (ParseNode p : osppn.getParameters())
         {
             // f
-            /* [UNSUPPORTED] 'var' as type is unsupported "var" */ id = p instanceof IdentifierParseNode ? (IdentifierParseNode)p : (IdentifierParseNode)null;
-            /* [UNSUPPORTED] 'var' as type is unsupported "var" */ tppn = p instanceof TypedParameterParseNode ? (TypedParameterParseNode)p : (TypedParameterParseNode)null;
-            /* [UNSUPPORTED] 'var' as type is unsupported "var" */ vappn = p instanceof VarArgsParameterParseNode ? (VarArgsParameterParseNode)p : (VarArgsParameterParseNode)null;
+	    IdentifierParseNode id = p instanceof IdentifierParseNode 
+		? (IdentifierParseNode)p : (IdentifierParseNode)null;
+
+	    TypedParameterParseNode tppn = p instanceof TypedParameterParseNode
+		? (TypedParameterParseNode)p : (TypedParameterParseNode)null;
+
+	    VarArgsParameterParseNode vappn = p instanceof VarArgsParameterParseNode
+		? (VarArgsParameterParseNode)p : (VarArgsParameterParseNode)null;
             if (id != null)
                 parameters.add(new ParameterNode(id.getToken(), id));
             else if (tppn != null)
             {
-                parameters.add(new ParameterNode(tppn.getToken(), tppn.Name instanceof IdentifierParseNode ? (IdentifierParseNode)tppn.Name : (IdentifierParseNode)null, tppn.Type.visit(this)));
+                parameters.add(
+   	          new ParameterNode(
+                     tppn.getToken(), 
+		     tppn.getName() instanceof IdentifierParseNode
+   		        ? (IdentifierParseNode)tppn.getName()
+			: (IdentifierParseNode)null, 
+		     tppn.getType().visit(this)));
             }
             else if (vappn != null)
             {
                 // Inside could be either an identifier or a
                 // TypedParameterParseNode - check for both.
-                /* [UNSUPPORTED] 'var' as type is unsupported "var" */ inIPN = vappn.Name instanceof IdentifierParseNode ? (IdentifierParseNode)vappn.Name : (IdentifierParseNode)null;
-                /* [UNSUPPORTED] 'var' as type is unsupported "var" */ inTPPN = vappn.Name instanceof TypedParameterParseNode ? (TypedParameterParseNode)vappn.Name : (TypedParameterParseNode)null;
+                IdentifierParseNode inIPN = 
+		    vappn.getName() instanceof IdentifierParseNode
+		      ? (IdentifierParseNode)vappn.getName()
+		      : (IdentifierParseNode)null;
+		TypedParameterParseNode inTPPN =
+		    vappn.getName() instanceof TypedParameterParseNode
+		      ? (TypedParameterParseNode)vappn.getName() 
+		      : (TypedParameterParseNode)null;
+
                 if (inIPN != null)
-                    parameters.add(new ParameterNode(inIPN.getToken(), inIPN, true));
+                    parameters.add(
+		      new ParameterNode(inIPN.getToken(), inIPN, true));
                 else // Variadic
                 if (inTPPN != null)
                     // Variadic
-                    parameters.add(new ParameterNode(inTPPN.getToken(), inTPPN.Name instanceof IdentifierParseNode ? (IdentifierParseNode)inTPPN.Name : (IdentifierParseNode)null, true, inTPPN.Type.visit(this)));
+                    parameters.add(
+		      new ParameterNode(
+		        inTPPN.getToken(),
+			inTPPN.getName() instanceof IdentifierParseNode
+			  ? (IdentifierParseNode)inTPPN.getName()
+			  : (IdentifierParseNode)null, 
+			true, 
+			inTPPN.getType().visit(this)));
                   
             }
             else
@@ -187,10 +213,12 @@ public class ExecutionTreeTranslator  extends ParseNodeVisitor<Node>
                 throw new Exception("unimplemented - unusual parameters");
             }   
         }
-        /* [UNSUPPORTED] 'var' as type is unsupported "var" */ generics = new ArrayList<Node>();
-        for (/* [UNSUPPORTED] 'var' as type is unsupported "var" */ p : osppn.GenericParameters)
+        List<Node>  generics = new ArrayList<Node>();
+        for (ParseNode p : osppn.getGenericParameters())
         {
-            /* [UNSUPPORTED] 'var' as type is unsupported "var" */ id = p instanceof IdentifierParseNode ? (IdentifierParseNode)p : (IdentifierParseNode)null;
+            IdentifierParseNode id = p instanceof IdentifierParseNode
+		? (IdentifierParseNode)p 
+		: (IdentifierParseNode)null;
             if (id != null)
             {
                 generics.add(new ParameterNode(id.getToken(), id));
@@ -200,7 +228,7 @@ public class ExecutionTreeTranslator  extends ParseNodeVisitor<Node>
                 throw new Exception("unimplemented - bad generic parameters");
             } 
         }
-        if (osppn.Name.StartsWith("circumfix", StringComparison.Ordinal))
+        if (osppn.getName().startsWith("circumfix"))
             return new OrdinarySignaturePartNode(osppn.getToken(), osppn, parameters, generics, false);
          
         return new OrdinarySignaturePartNode(osppn.getToken(), osppn, parameters, generics);
@@ -211,13 +239,13 @@ public class ExecutionTreeTranslator  extends ParseNodeVisitor<Node>
     */
     public Node visit(MethodDeclarationParseNode d) throws Exception {
         MethodNode ret = new MethodNode(d.getToken(), d);
-        SignatureNode sig = (SignatureNode)d.Signature.visit(this);
+        SignatureNode sig = (SignatureNode)d.getSignature().visit(this);
         ret.setSignature(sig);
         ret.setAnnotations(sig.getAnnotations());
         String name = sig.getName();
-        ret.setConfidential((d.Signature.Annotations != null && d.Signature.Annotations.HasAnnotation("confidential")));
-        ret.setAbstract((d.Signature.Annotations != null && d.Signature.Annotations.HasAnnotation("abstract")));
-        for (Object __dummyForeachVar5 : d.Body)
+        ret.setConfidential((d.getSignature().getAnnotations() != null && d.getSignature().getAnnotations().hasAnnotation("confidential")));
+        ret.setAbstract((d.getSignature().getAnnotations() != null && d.getSignature().getAnnotations().hasAnnotation("abstract")));
+        for (Object __dummyForeachVar5 : d.getBody())
         {
             ParseNode p = (ParseNode)__dummyForeachVar5;
             if (!(p instanceof CommentParseNode))
@@ -225,7 +253,8 @@ public class ExecutionTreeTranslator  extends ParseNodeVisitor<Node>
              
         }
         // Indicate whether this method returns a fresh object
-        ret.setFresh((d.Body.Count > 0 && d.Body[d.Body.Count - 1] instanceof ObjectParseNode));
+        ret.setFresh((d.getBody().size() > 0
+		      && d.getBody().get(d.getBody().size() - 1) instanceof ObjectParseNode));
         return ret;
     }
 
@@ -234,7 +263,7 @@ public class ExecutionTreeTranslator  extends ParseNodeVisitor<Node>
     */
     public Node visit(IdentifierParseNode i) throws Exception {
         ImplicitReceiverRequestNode ret = new ImplicitReceiverRequestNode(i.getToken(), i);
-        RequestPartNode rpn = new RequestPartNode(i.Name, new ArrayList<Node>(), new ArrayList<Node>());
+        RequestPartNode rpn = new RequestPartNode(i.getName(), new ArrayList<Node>(), new ArrayList<Node>());
         ret.addPart(rpn);
         return ret;
     }
@@ -244,11 +273,11 @@ public class ExecutionTreeTranslator  extends ParseNodeVisitor<Node>
     */
     public Node visit(ImplicitReceiverRequestParseNode irrpn) throws Exception {
         ImplicitReceiverRequestNode ret = null;
-        if (StringSupport.equals(irrpn.Name, "if then"))
+        if (StringSupport.equals(irrpn.getName(), "if then"))
         {
             ret = new IfThenRequestNode(irrpn.getToken(), irrpn);
         }
-        else if (StringSupport.equals(irrpn.Name, "for do"))
+        else if (StringSupport.equals(irrpn.getName(), "for do"))
         {
             ret = new ForDoRequestNode(irrpn.getToken(), irrpn);
         }
@@ -256,9 +285,13 @@ public class ExecutionTreeTranslator  extends ParseNodeVisitor<Node>
         {
             ret = new ImplicitReceiverRequestNode(irrpn.getToken(), irrpn);
         }  
-        for (int i = 0;i < irrpn.Arguments.Count;i++)
+        for (int i = 0;i < irrpn.getArguments().size();i++)
         {
-            RequestPartNode rpn = new RequestPartNode(((IdentifierParseNode)irrpn.NameParts[i]).Name, map(irrpn.GenericArguments[i]), map(irrpn.Arguments[i]));
+            RequestPartNode rpn = 
+              new RequestPartNode(
+		((IdentifierParseNode)irrpn.getName().getParts().get(i)).getName(), 
+		map(irrpn.getGenericArguments().get(i)), 
+		map(irrpn.getArguments().get(i)));
             ret.addPart(rpn);
         }
         return ret;
@@ -268,10 +301,16 @@ public class ExecutionTreeTranslator  extends ParseNodeVisitor<Node>
     * 
     */
     public Node visit(ExplicitReceiverRequestParseNode irrpn) throws Exception {
-        ExplicitReceiverRequestNode ret = new ExplicitReceiverRequestNode(irrpn.getToken(), irrpn, irrpn.Receiver.visit(this));
-        for (int i = 0;i < irrpn.Arguments.Count;i++)
+        ExplicitReceiverRequestNode ret = 
+	    new ExplicitReceiverRequestNode(
+	      irrpn.getToken(), irrpn, irrpn.getReceiver().visit(this));
+        for (int i = 0;i < irrpn.getArguments().size();i++)
         {
-            RequestPartNode rpn = new RequestPartNode(((IdentifierParseNode)irrpn.NameParts[i]).Name, map(irrpn.GenericArguments[i]), map(irrpn.Arguments[i]));
+            RequestPartNode rpn = 
+              new RequestPartNode(
+  	        ((IdentifierParseNode)irrpn.getName().getParts().get(i)).getName(),
+		map(irrpn.getGenericArguments().get(i)),
+		map(irrpn.getArguments().get(i)));
             ret.addPart(rpn);
         }
         return ret;
@@ -281,8 +320,8 @@ public class ExecutionTreeTranslator  extends ParseNodeVisitor<Node>
     * 
     */
     public Node visit(PrefixOperatorParseNode popn) throws Exception {
-        ExplicitReceiverRequestNode ret = new ExplicitReceiverRequestNode(popn.getToken(), popn, popn.Receiver.visit(this));
-        RequestPartNode rpn = new RequestPartNode("prefix" + popn.Name, new ArrayList<Node>(), new ArrayList<Node>());
+        ExplicitReceiverRequestNode ret = new ExplicitReceiverRequestNode(popn.getToken(), popn, popn.getReceiver().visit(this));
+        RequestPartNode rpn = new RequestPartNode("prefix" + popn.getName(), new ArrayList<Node>(), new ArrayList<Node>());
         ret.addPart(rpn);
         return ret;
     }
@@ -291,9 +330,9 @@ public class ExecutionTreeTranslator  extends ParseNodeVisitor<Node>
     * 
     */
     public Node visit(OperatorParseNode opn) throws Exception {
-        ExplicitReceiverRequestNode ret = new ExplicitReceiverRequestNode(opn.getToken(), opn, opn.Left.visit(this));
-        /* [UNSUPPORTED] 'var' as type is unsupported "var" */ args = new ArrayList<Node>();
-        args.add(opn.Right.visit(this));
+        ExplicitReceiverRequestNode ret = new ExplicitReceiverRequestNode(opn.getToken(), opn, opn.getLeft().visit(this));
+        List<Node> args = new ArrayList<Node>();
+        args.add(opn.getRight().visit(this));
         RequestPartNode rpn = new RequestPartNode(opn.name, new ArrayList<Node>(), args);
         ret.addPart(rpn);
         return ret;
@@ -305,23 +344,23 @@ public class ExecutionTreeTranslator  extends ParseNodeVisitor<Node>
     public Node visit(VarDeclarationParseNode vdpn) throws Exception {
         Node val = null;
         Node type = null;
-        if (vdpn.Value != null)
-            val = vdpn.Value.visit(this);
+        if (vdpn.getValue() != null)
+            val = vdpn.getValue().visit(this);
          
-        if (vdpn.Type != null)
-            type = vdpn.Type.visit(this);
+        if (vdpn.getType() != null)
+            type = vdpn.getType().visit(this);
          
         VarDeclarationNode ret = new VarDeclarationNode(vdpn.getToken(),vdpn,val,type);
-        addAnnotations(vdpn.Annotations, ret.getAnnotations());
-        if (vdpn.Annotations != null && vdpn.Annotations.HasAnnotation("public"))
+        addAnnotations(vdpn.getAnnotations(), ret.getAnnotations());
+        if (vdpn.getAnnotations() != null && vdpn.getAnnotations().hasAnnotation("public"))
         {
             ret.setReadable(true);
             ret.setWritable(true);
         }
         else
         {
-            ret.setReadable((vdpn.Annotations != null && vdpn.Annotations.HasAnnotation("readable")));
-            ret.setWritable((vdpn.Annotations != null && vdpn.Annotations.HasAnnotation("writable")));
+            ret.setReadable((vdpn.getAnnotations() != null && vdpn.getAnnotations().hasAnnotation("readable")));
+            ret.setWritable((vdpn.getAnnotations() != null && vdpn.getAnnotations().hasAnnotation("writable")));
         } 
         return ret;
     }
@@ -332,18 +371,18 @@ public class ExecutionTreeTranslator  extends ParseNodeVisitor<Node>
     public Node visit(DefDeclarationParseNode vdpn) throws Exception {
         Node val = null;
         Node type = null;
-        if (vdpn.Value != null)
-            val = vdpn.Value.visit(this);
+        if (vdpn.getValue() != null)
+            val = vdpn.getValue().visit(this);
          
-        if (vdpn.Type != null)
-            type = vdpn.Type.visit(this);
+        if (vdpn.getType() != null)
+            type = vdpn.getType().visit(this);
          
         DefDeclarationNode ret = new DefDeclarationNode(vdpn.getToken(),vdpn,val,type);
-        addAnnotations(vdpn.Annotations, ret.getAnnotations());
-        if (vdpn.Annotations != null && vdpn.Annotations.HasAnnotation("public"))
+        addAnnotations(vdpn.getAnnotations(), ret.getAnnotations());
+        if (vdpn.getAnnotations() != null && vdpn.getAnnotations().hasAnnotation("public"))
             ret.setPublic(true);
          
-        ret.setPublic((vdpn.Annotations != null && (vdpn.Annotations.HasAnnotation("public") || vdpn.Annotations.HasAnnotation("readable"))));
+        ret.setPublic((vdpn.getAnnotations() != null && (vdpn.getAnnotations().hasAnnotation("public") || vdpn.getAnnotations().hasAnnotation("readable"))));
         return ret;
     }
 
@@ -351,28 +390,31 @@ public class ExecutionTreeTranslator  extends ParseNodeVisitor<Node>
     * 
     */
     public Node visit(BindParseNode bpn) throws Exception {
-        /* [UNSUPPORTED] 'var' as type is unsupported "var" */ ret = bpn.Left.visit(this);
-        /* [UNSUPPORTED] 'var' as type is unsupported "var" */ right = bpn.Right.visit(this);
-        RequestNode lrrn = ret instanceof RequestNode ? (RequestNode)ret : (RequestNode)null;
+	ParseNode ret = bpn.getLeft().visit(this);
+	ParseNode right = bpn.getRight().visit(this);
+        RequestNode lrrn = ret instanceof RequestNode 
+	    ? (RequestNode)ret : (RequestNode)null;
         if (lrrn != null)
         {
-            lrrn.MakeBind(right);
-            if (bpn.Left instanceof OperatorParseNode || bpn.Left instanceof InterpolatedStringParseNode)
+            lrrn.makeBind(right);
+            if (bpn.getLeft() instanceof OperatorParseNode || bpn.getLeft() instanceof InterpolatedStringParseNode)
                 lrrn = null;
              
         }
          
         if (lrrn == null)
         {
-            /* [UNSUPPORTED] 'var' as type is unsupported "var" */ name = ret.GetType().Name;
-            name = name.Substring(0, name.Length - 4);
-            if (bpn.Left instanceof OperatorParseNode)
+	    String name = ret.getType().getName();
+            name = "KJX-WTFFF" + name.substring(0, name.length() - 4); //KJXWTFFFF
+            if (bpn.getLeft() instanceof OperatorParseNode)
                 name = "Operator";
              
-            if (bpn.Left instanceof InterpolatedStringParseNode)
+            if (bpn.getLeft() instanceof InterpolatedStringParseNode)
                 name = "StringLiteral";
              
-            ErrorReporting.ReportStaticError(bpn.getToken().Module, bpn.Line, "P1044", new Dictionary<String, String>{ { "lhs", name } }, "Cannot assign to " + name);
+            ErrorReporting.ReportStaticError(
+ 	       bpn.getToken().getModule(), bpn.getLine(), "P1044", 
+	       hash("lhs", name), "Cannot assign to " + name);
         }
          
         return ret;
@@ -382,32 +424,45 @@ public class ExecutionTreeTranslator  extends ParseNodeVisitor<Node>
     * 
     */
     public Node visit(BlockParseNode d) throws Exception {
-        /* [UNSUPPORTED] 'var' as type is unsupported "var" */ parameters = new ArrayList<Node>();
+	List<Node> parameters = new ArrayList<Node>();
         Node forcedPattern = null;
-        for (Object __dummyForeachVar6 : d.Parameters)
+        for (Object __dummyForeachVar6 : d.getParameters())
         {
             ParseNode p = (ParseNode)__dummyForeachVar6;
-            /* [UNSUPPORTED] 'var' as type is unsupported "var" */ id = p instanceof IdentifierParseNode ? (IdentifierParseNode)p : (IdentifierParseNode)null;
-            /* [UNSUPPORTED] 'var' as type is unsupported "var" */ tppn = p instanceof TypedParameterParseNode ? (TypedParameterParseNode)p : (TypedParameterParseNode)null;
-            /* [UNSUPPORTED] 'var' as type is unsupported "var" */ vappn = p instanceof VarArgsParameterParseNode ? (VarArgsParameterParseNode)p : (VarArgsParameterParseNode)null;
+	    IdentifierParseNode id = p instanceof IdentifierParseNode 
+		? (IdentifierParseNode)p : (IdentifierParseNode)null;
+	    TypedParameterParseNode tppn = p instanceof TypedParameterParseNode 
+		? (TypedParameterParseNode)p : (TypedParameterParseNode)null;
+	    VarArgsParameterParseNode vappn = p instanceof VarArgsParameterParseNode 
+		? (VarArgsParameterParseNode)p : (VarArgsParameterParseNode)null;
             if (id != null)
                 parameters.add(new ParameterNode(id.getToken(), id));
             else if (tppn != null)
             {
-                parameters.add(new ParameterNode(tppn.getToken(), tppn.Name instanceof IdentifierParseNode ? (IdentifierParseNode)tppn.Name : (IdentifierParseNode)null, tppn.Type.visit(this)));
+                parameters.add(new ParameterNode(tppn.getToken(), tppn.getName() instanceof IdentifierParseNode ? (IdentifierParseNode)tppn.getName() : (IdentifierParseNode)null, tppn.getType().visit(this)));
             }
             else if (vappn != null)
             {
                 // Inside could be either an identifier or a
                 // TypedParameterParseNode - check for both.
-                /* [UNSUPPORTED] 'var' as type is unsupported "var" */ inIPN = vappn.Name instanceof IdentifierParseNode ? (IdentifierParseNode)vappn.Name : (IdentifierParseNode)null;
-                /* [UNSUPPORTED] 'var' as type is unsupported "var" */ inTPPN = vappn.Name instanceof TypedParameterParseNode ? (TypedParameterParseNode)vappn.Name : (TypedParameterParseNode)null;
+		IdentifierParseNode inIPN = vappn.getName() instanceof IdentifierParseNode ? (IdentifierParseNode)vappn.getName() : (IdentifierParseNode)null;
+		TypedParameterParseNode inTPPN = 
+		    vappn.getName() instanceof TypedParameterParseNode
+		      ? (TypedParameterParseNode)vappn.getName() 
+		      : (TypedParameterParseNode)null;
                 if (inIPN != null)
                     parameters.add(new ParameterNode(inIPN.getToken(), inIPN, true));
                 else // Variadic
                 if (inTPPN != null)
                     // Variadic
-                    parameters.add(new ParameterNode(inTPPN.getToken(), inTPPN.Name instanceof IdentifierParseNode ? (IdentifierParseNode)inTPPN.Name : (IdentifierParseNode)null, true, inTPPN.Type.visit(this)));
+                    parameters.add(
+		      new ParameterNode(
+                        inTPPN.getToken(),
+			inTPPN.getName() instanceof IdentifierParseNode
+			  ? (IdentifierParseNode)inTPPN.getName()
+			  : (IdentifierParseNode)null,
+			true,
+			inTPPN.getType().visit(this)));
                   
             }
             else if (p instanceof NumberParseNode || p instanceof StringLiteralParseNode || p instanceof OperatorParseNode)
@@ -416,8 +471,9 @@ public class ExecutionTreeTranslator  extends ParseNodeVisitor<Node>
             }
             else if (p instanceof ParenthesisedParseNode)
             {
-                /* [UNSUPPORTED] 'var' as type is unsupported "var" */ tok = p.getToken();
-                /* [UNSUPPORTED] 'var' as type is unsupported "var" */ it = new IdentifierToken(tok.module, tok.line, tok.column, "_");
+
+		Token tok = p.getToken();
+		IdentifierToken it = new IdentifierToken(tok.module, tok.line, tok.column, "_");
                 id = new IdentifierParseNode(it);
                 parameters.add(new ParameterNode(tok, id, p.visit(this)));
             }
@@ -426,7 +482,7 @@ public class ExecutionTreeTranslator  extends ParseNodeVisitor<Node>
                 throw new Exception("unimplemented - unusual parameters");
             }     
         }
-        BlockNode ret = new BlockNode(d.getToken(), d, parameters, map(d.Body), forcedPattern);
+        BlockNode ret = new BlockNode(d.getToken(), d, parameters, map(d.getBody()), forcedPattern);
         return ret;
     }
 
@@ -434,11 +490,11 @@ public class ExecutionTreeTranslator  extends ParseNodeVisitor<Node>
     * 
     */
     public Node visit(ClassDeclarationParseNode d) throws Exception {
-        /* [UNSUPPORTED] 'var' as type is unsupported "var" */ constructor = new MethodDeclarationParseNode(d.getToken());
-        constructor.Signature = d.Signature;
-        /* [UNSUPPORTED] 'var' as type is unsupported "var" */ instanceObj = new ObjectParseNode(d.getToken());
-        instanceObj.Body = d.Body;
-        constructor.Body.add(instanceObj);
+	MethodDeclarationParseNode constructor = new MethodDeclarationParseNode(d.getToken());
+        constructor.setSignature(d.getSignature());
+	ObjectParseNode instanceObj = new ObjectParseNode(d.getToken());
+        instanceObj.setBody(d.getBody());
+	constructor.getBody().add(instanceObj);
         MethodNode ret = (MethodNode)constructor.visit(this);
         // Classes are public by default.
         // The next line makes them public always; it is not
@@ -452,11 +508,11 @@ public class ExecutionTreeTranslator  extends ParseNodeVisitor<Node>
     * 
     */
     public Node visit(TraitDeclarationParseNode d) throws Exception {
-        /* [UNSUPPORTED] 'var' as type is unsupported "var" */ constructor = new MethodDeclarationParseNode(d.getToken());
-        constructor.Signature = d.Signature;
-        /* [UNSUPPORTED] 'var' as type is unsupported "var" */ instanceObj = new ObjectParseNode(d.getToken());
-        instanceObj.Body = d.Body;
-        constructor.Body.add(instanceObj);
+	MethodDeclarationParseNode constructor = new MethodDeclarationParseNode(d.getToken());
+        constructor.setSignature(d.getSignature());
+	ObjectParseNode instanceObj = new ObjectParseNode(d.getToken());
+        instanceObj.setBody(d.getBody());
+        constructor.getBody().add(instanceObj);
         MethodNode ret = (MethodNode)constructor.visit(this);
         // Traits are public by default.
         // The next line makes them public always; it is not
@@ -470,10 +526,10 @@ public class ExecutionTreeTranslator  extends ParseNodeVisitor<Node>
     * 
     */
     public Node visit(ReturnParseNode rpn) throws Exception {
-        if (rpn.ReturnValue == null)
+        if (rpn.getReturnValue() == null)
             return new ReturnNode(rpn.getToken(),rpn,null);
          
-        return new ReturnNode(rpn.getToken(), rpn, rpn.ReturnValue.visit(this));
+	return new ReturnNode(rpn.getToken(), rpn, rpn.getReturnValue().visit(this));
     }
 
     /**
@@ -487,19 +543,24 @@ public class ExecutionTreeTranslator  extends ParseNodeVisitor<Node>
     * 
     */
     public Node visit(TypeStatementParseNode tspn) throws Exception {
-        /* [UNSUPPORTED] 'var' as type is unsupported "var" */ meth = new MethodDeclarationParseNode(tspn.getToken());
-        /* [UNSUPPORTED] 'var' as type is unsupported "var" */ spn = new SignatureParseNode(tspn.getToken());
-        /* [UNSUPPORTED] 'var' as type is unsupported "var" */ spp = new OrdinarySignaturePartParseNode((IdentifierParseNode)tspn.BaseName);
-        spp.GenericParameters = tspn.GenericParameters;
+	MethodDeclarationParseNode meth = 
+	    new MethodDeclarationParseNode(tspn.getToken());
+	SignatureParseNode spn = 
+	    new SignatureParseNode(tspn.getToken());
+	OrdinarySignaturePartParseNode spp = 
+	    new OrdinarySignaturePartParseNode(
+	       (IdentifierParseNode)tspn.getBaseName());
+        spp.setGenericParameters(tspn.getGenericParameters());
         spn.addPart(spp);
-        meth.Signature = spn;
-        /* [UNSUPPORTED] 'var' as type is unsupported "var" */ tpn = tspn.Body instanceof TypeParseNode ? (TypeParseNode)tspn.Body : (TypeParseNode)null;
+        meth.setSignature(spn);
+	TypeParseNode tpn = tspn.getBody() instanceof TypeParseNode
+	    ? (TypeParseNode)tspn.getBody() : (TypeParseNode)null;
         if (tpn != null)
         {
-            tpn.Name = ((IdentifierParseNode)tspn.BaseName).Name;
+            tpn.setName(((IdentifierParseNode)tspn.getBaseName()).getName());
         }
          
-        meth.Body.add(tspn.Body);
+        meth.getBody().add(tspn.getBody());
         return meth.visit(this);
     }
 
@@ -508,10 +569,10 @@ public class ExecutionTreeTranslator  extends ParseNodeVisitor<Node>
     */
     public Node visit(TypeParseNode tpn) throws Exception {
         TypeNode ret = new TypeNode(tpn.getToken(), tpn);
-        if (tpn.Name != null)
-            ret.setName(tpn.Name);
+        if (tpn.getName() != null)
+            ret.setName(tpn.getName());
          
-        for (/* [UNSUPPORTED] 'var' as type is unsupported "var" */ p : tpn.Body)
+        for (ParseNode p : tpn.getBody())
             ret.getBody().add((SignatureNode)p.visit(this));
         return ret;
     }
@@ -521,8 +582,8 @@ public class ExecutionTreeTranslator  extends ParseNodeVisitor<Node>
     */
     public Node visit(ImportParseNode ipn) throws Exception {
         Node type = null;
-        if (ipn.Type != null)
-            type = ipn.Type.visit(this);
+        if (ipn.getType() != null)
+            type = ipn.getType().visit(this);
          
         return new ImportNode(ipn.getToken(),ipn,type);
     }
@@ -538,9 +599,9 @@ public class ExecutionTreeTranslator  extends ParseNodeVisitor<Node>
     * 
     */
     public Node visit(InheritsParseNode ipn) throws Exception {
-        /* [UNSUPPORTED] 'var' as type is unsupported "var" */ frm = ipn.From.visit(this);
+	ParseNode frm = ipn.getFrom().visit(this);
         if (!(frm instanceof RequestNode))
-            ErrorReporting.ReportStaticError(ipn.From.getToken().Module, ipn.From.Line, "P1045", new Dictionary<String, String>{  }, "Can only inherit from method requests");
+            ErrorReporting.ReportStaticError(ipn.getFrom().getToken().getModule(), ipn.getFrom().getLine(), "P1045", hash(), "Can only inherit from method requests");
          
         return new InheritsNode(ipn.getToken(), ipn, frm);
     }
@@ -549,9 +610,9 @@ public class ExecutionTreeTranslator  extends ParseNodeVisitor<Node>
     * 
     */
     public Node visit(UsesParseNode upn) throws Exception {
-        /* [UNSUPPORTED] 'var' as type is unsupported "var" */ frm = upn.From.visit(this);
+	Node frm = upn.getFrom().visit(this);
         if (!(frm instanceof RequestNode))
-            ErrorReporting.ReportStaticError(upn.From.getToken().Module, upn.From.Line, "P1045", new Dictionary<String, String>{  }, "Can only inherit from method requests");
+            ErrorReporting.ReportStaticError(upn.getFrom().getToken().getModule(), upn.getFrom().getLine(), "P1045", hash(),  "Can only inherit from method requests");
          
         return new InheritsNode(upn.getToken(), upn, frm);
     }
@@ -574,14 +635,18 @@ public class ExecutionTreeTranslator  extends ParseNodeVisitor<Node>
     * 
     */
     public Node visit(ParenthesisedParseNode ppn) throws Exception {
-        return ppn.Expression.visit(this);
+        return ppn.getExpression().visit(this);
     }
 
     /**
     * 
     */
     public Node visit(TypedParameterParseNode tppn) throws Exception {
-        ErrorReporting.ReportStaticError(tppn.getToken().Module, tppn.Line, "P1023", new Dictionary<String, String>{ { "token", "" + tppn.getToken() } }, "Unexpected ':' in argument list");
+        ErrorReporting.ReportStaticError(
+	 tppn.getToken().getModule(), 
+	 tppn.getLine(), "P1023",
+         hash( "token", "" + tppn.getToken()) ,
+	 "Unexpected ':' in argument list");
         return null;
     }
 
@@ -590,7 +655,7 @@ public class ExecutionTreeTranslator  extends ParseNodeVisitor<Node>
     */
     public Node visit(ImplicitBracketRequestParseNode ibrpn) throws Exception {
         ImplicitReceiverRequestNode ret = new ImplicitReceiverRequestNode(ibrpn.getToken(), ibrpn);
-        RequestPartNode rpn = new RequestPartNode("circumfix" + ibrpn.Name, new ArrayList<Node>(), map(ibrpn.Arguments), false);
+        RequestPartNode rpn = new RequestPartNode("circumfix" + ibrpn.getName(), new ArrayList<Node>(), map(ibrpn.getArguments()), false);
         ret.addPart(rpn);
         return ret;
     }
@@ -599,8 +664,8 @@ public class ExecutionTreeTranslator  extends ParseNodeVisitor<Node>
     * 
     */
     public Node visit(ExplicitBracketRequestParseNode ebrpn) throws Exception {
-        ExplicitReceiverRequestNode ret = new ExplicitReceiverRequestNode(ebrpn.getToken(), ebrpn, ebrpn.Receiver.visit(this));
-        RequestPartNode rpn = new RequestPartNode(ebrpn.Name, new ArrayList<Node>(), map(ebrpn.Arguments));
+        ExplicitReceiverRequestNode ret = new ExplicitReceiverRequestNode(ebrpn.getToken(), ebrpn, ebrpn.getReceiver().visit(this));
+        RequestPartNode rpn = new RequestPartNode(ebrpn.getName(), new ArrayList<Node>(), map(ebrpn.getArguments()));
         ret.addPart(rpn);
         return ret;
     }
@@ -609,14 +674,13 @@ public class ExecutionTreeTranslator  extends ParseNodeVisitor<Node>
     * Transforms a list of ParseNodes into a list of the
     * corresponding Nodes
     */
-    private List<Node> map(IEnumerable<ParseNode> l) throws Exception {
+    private List<Node> map(Iterable<ParseNode> l) throws Exception {
         List<Node> ret = new ArrayList<Node>();
         for (Object __dummyForeachVar8 : l)
         {
             ParseNode p = (ParseNode)__dummyForeachVar8;
             if (!(p instanceof CommentParseNode))
                 ret.add(p.visit(this));
-             
         }
         return ret;
     }

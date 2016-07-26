@@ -64,7 +64,7 @@ public abstract class Token
     /**
     * Module this token was found in.
     */
-    public String getModule() throws Exception {
+    public String getModule()  {
         return module;
     }
 
