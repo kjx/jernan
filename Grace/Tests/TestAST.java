@@ -1,5 +1,6 @@
 package Grace.Tests;
 
+import Grace.StaticErrorException;
 import Grace.Parsing.Parser;
 import Grace.Parsing.ParseNode;
 import Grace.Parsing.ObjectParseNode;
@@ -17,11 +18,16 @@ public class TestAST {
 
 	String source = readFile(args[0]);
 	Parser parser = new Parser(args[0],source);
+	try {
+	    ObjectParseNode module = (ObjectParseNode)parser.parse();
+	    Node ast = new ExecutionTreeTranslator().translate(module);
+	    ast.debugPrint(new PrintStream(System.out,true), "");
 
-	ObjectParseNode module = (ObjectParseNode)parser.parse();
-	Node ast = new ExecutionTreeTranslator().translate(module);
-
-	ast.debugPrint(new PrintStream(System.out,true), "");
+	}
+	catch (StaticErrorException e)
+	    {
+		return;
+	    }
     }
 
     public static String readFile(String filename) {

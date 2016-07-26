@@ -62,8 +62,7 @@ public class ErrorReporting
     * distribution. The first matching entry will be used.
     */
     public static String getMessage(String code, HashMap<String,String> data)  {
-	System.err.println("KJX BUGGY NO ERROR MESSAGES");
-	return null;
+	return code;
     }
 
     /**
@@ -144,7 +143,7 @@ public class ErrorReporting
     */
 
     public static void ReportStaticError(String module, int line, String code, HashMap<String,String> vars, String localDescription)  {
-        String baseMessage = getMessage(code,vars) != null ? getMessage(code,vars) : localDescription;
+        String baseMessage =  localDescription; //KJX HACK
         String formattedMessage = formatMessage(baseMessage,vars);
         if (!SilencedErrors.contains(code) && !getSuppressAllErrors())
             WriteError(module,line,code,formattedMessage);
@@ -174,7 +173,8 @@ public class ErrorReporting
     *  @see ErrorReporting.GetMessage
     */
     public static void ReportStaticError(String module, int line, String code, String localDescription)  {
-        String baseMessage = getMessage(code,new HashMap<String,String>()) != null ? getMessage(code,new HashMap<String,String>()) : localDescription;
+        String baseMessage =  localDescription; //KJX HACK
+	//getMessage(code,new HashMap<String,String>()) != null ? getMessage(code,new HashMap<String,String>()) : localDescription;
         if (!SilencedErrors.contains(code) && !getSuppressAllErrors())
             WriteError(module,line,code,baseMessage);
     }
