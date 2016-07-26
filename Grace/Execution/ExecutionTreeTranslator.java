@@ -10,7 +10,7 @@ import Grace.Parsing.*;  //I claim this is defensible because it needs it all!
 import java.io.PrintStream;
 import java.util.List;
 import java.util.ArrayList;
-
+import java.util.stream.Collectors;
 import Grace.StringSupport;
 
 import Grace.Execution.AnnotationsNode;
@@ -42,7 +42,7 @@ import Grace.Execution.VarDeclarationNode;
 /**
 * Translates a tree of ParseNodes into Nodes
 */
-public class ExecutionTreeTranslator  extends ParseNodeVisitor<Node> 
+public class ExecutionTreeTranslator implements ParseNodeVisitor<Node> 
 {
     private ObjectConstructorNode module;
     /**
@@ -147,8 +147,9 @@ public class ExecutionTreeTranslator  extends ParseNodeVisitor<Node>
 
     private void addAnnotations(AnnotationsParseNode source, AnnotationsNode dest) throws Exception {
         if (source != null)
-            dest.addAnnotations();
-         
+            dest.addAnnotations(source.getAnnotations().stream()
+				.map(x -> x.visit(this))
+				.collect(Collectors.toList()));
     }
 
     /**
@@ -289,7 +290,7 @@ public class ExecutionTreeTranslator  extends ParseNodeVisitor<Node>
         {
             RequestPartNode rpn = 
               new RequestPartNode(
-		((IdentifierParseNode)irrpn.getName().getParts().get(i)).getName(), 
+		((IdentifierParseNode)irrpn.getNameParts().get(i)).getName(), 
 		map(irrpn.getGenericArguments().get(i)), 
 		map(irrpn.getArguments().get(i)));
             ret.addPart(rpn);
@@ -308,7 +309,7 @@ public class ExecutionTreeTranslator  extends ParseNodeVisitor<Node>
         {
             RequestPartNode rpn = 
               new RequestPartNode(
-  	        ((IdentifierParseNode)irrpn.getName().getParts().get(i)).getName(),
+  	        ((IdentifierParseNode)irrpn.getNameParts().get(i)).getName(),
 		map(irrpn.getGenericArguments().get(i)),
 		map(irrpn.getArguments().get(i)));
             ret.addPart(rpn);
@@ -390,21 +391,22 @@ public class ExecutionTreeTranslator  extends ParseNodeVisitor<Node>
     * 
     */
     public Node visit(BindParseNode bpn) throws Exception {
-	ParseNode ret = bpn.getLeft().visit(this);
-	ParseNode right = bpn.getRight().visit(this);
+	Node ret = bpn.getLeft().visit(this);
+	Node right = bpn.getRight().visit(this);
         RequestNode lrrn = ret instanceof RequestNode 
 	    ? (RequestNode)ret : (RequestNode)null;
         if (lrrn != null)
         {
             lrrn.makeBind(right);
-            if (bpn.getLeft() instanceof OperatorParseNode || bpn.getLeft() instanceof InterpolatedStringParseNode)
+            if (bpn.getLeft() instanceof OperatorParseNode ||
+		   bpn.getLeft() instanceof InterpolatedStringParseNode)
                 lrrn = null;
              
         }
          
         if (lrrn == null)
         {
-	    String name = ret.getType().getName();
+	    String name = ret.getClass().getName();
             name = "KJX-WTFFF" + name.substring(0, name.length() - 4); //KJXWTFFFF
             if (bpn.getLeft() instanceof OperatorParseNode)
                 name = "Operator";
@@ -599,22 +601,38 @@ public class ExecutionTreeTranslator  extends ParseNodeVisitor<Node>
     * 
     */
     public Node visit(InheritsParseNode ipn) throws Exception {
-	ParseNode frm = ipn.getFrom().visit(this);
+	Node frm = ipn.getFrom().visit(this);
         if (!(frm instanceof RequestNode))
             ErrorReporting.ReportStaticError(ipn.getFrom().getToken().getModule(), ipn.getFrom().getLine(), "P1045", hash(), "Can only inherit from method requests");
          
-        return new InheritsNode(ipn.getToken(), ipn, frm);
+        return new InheritsNode(ipn.getToken(), ipn, frm,
+				ipn.getAliases().stream()
+				.collect(Collectors.toMap(
+							 (apn -> ((SignatureNode)apn.getNewName().visit(this)).getName()),
+							 (apn -> ((SignatureNode)apn.getOldName().visit(this))) )),
+				ipn.getExcludes().stream()
+				.map(x -> x.getName().getName())
+				.collect(Collectors.toList()));
     }
 
     /**
     * 
     */
     public Node visit(UsesParseNode upn) throws Exception {
+	//this method is an exact copy of the method above for InheritsParseNode
+	//with the variable names changed
 	Node frm = upn.getFrom().visit(this);
         if (!(frm instanceof RequestNode))
             ErrorReporting.ReportStaticError(upn.getFrom().getToken().getModule(), upn.getFrom().getLine(), "P1045", hash(),  "Can only inherit from method requests");
          
-        return new InheritsNode(upn.getToken(), upn, frm);
+        return new InheritsNode(upn.getToken(), upn, frm,
+				upn.getAliases().stream()
+				.collect(Collectors.toMap(
+							 (apn -> ((SignatureNode)apn.getNewName().visit(this)).getName()),
+							 (apn -> ((SignatureNode)apn.getOldName().visit(this))) )),
+				upn.getExcludes().stream()
+				.map(x -> x.getName().getName())
+				.collect(Collectors.toList()));
     }
 
     /**

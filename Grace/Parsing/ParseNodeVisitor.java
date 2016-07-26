@@ -38,6 +38,8 @@ import Grace.Parsing.TypeStatementParseNode;
 import Grace.Parsing.UsesParseNode;
 import Grace.Parsing.VarDeclarationParseNode;
 
+import Grace.Execution.Node;
+
 /**
 * Visitor for tree of ParseNodesType nodes are mapped to
 */

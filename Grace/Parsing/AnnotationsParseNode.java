@@ -4,7 +4,7 @@
 
 package Grace.Parsing;
 
-import Grace.Parsing.StringSupport;
+import Grace.StringSupport;
 import Grace.Parsing.IdentifierParseNode;
 import Grace.Parsing.ParseNode;
 import Grace.Parsing.ParseNodeVisitor;
@@ -21,11 +21,11 @@ public class AnnotationsParseNode  extends ParseNode
     /**
     * The annotations in this collection
     */
-    public List<ParseNode> getAnnotations() throws Exception {
+    public List<ParseNode> getAnnotations()  {
         return _annotations;
     }
 
-    public void setAnnotations(List<ParseNode> value) throws Exception {
+    public void setAnnotations(List<ParseNode> value)  {
         _annotations = value;
     }
 

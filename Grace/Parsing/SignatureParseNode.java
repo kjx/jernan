@@ -47,7 +47,7 @@ public class SignatureParseNode  extends ParseNode
     * Name of the method described by this signature
     * This value is computed on demand and cached.
     */
-    public String getName() throws Exception {
+    public String getName()  {
         if (_name == null)
         {
 	    //C# _name = String.Join(" ", from p in _parts select p.Name)
