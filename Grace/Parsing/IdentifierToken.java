@@ -9,20 +9,20 @@ import Grace.Parsing.Token;
 public class IdentifierToken  extends Token 
 {
     private String _name;
-    public String getName() throws Exception {
+    public String getName()  {
         return _name;
     }
 
-    public void setName(String value) throws Exception {
+    public void setName(String value)  {
         _name = value;
     }
 
-    public IdentifierToken(String module, int line, int column, String val) throws Exception {
+    public IdentifierToken(String module, int line, int column, String val)  {
         super(module, line, column);
         _name = val;
     }
 
-    protected String describe() throws Exception {
+    protected String describe()  {
         return "Identifier:" + _name;
     }
 

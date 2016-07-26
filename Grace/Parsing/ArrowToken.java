@@ -8,11 +8,11 @@ import Grace.Parsing.Token;
 
 public class ArrowToken  extends Token 
 {
-    public ArrowToken(String module, int line, int column) throws Exception {
+    public ArrowToken(String module, int line, int column)  {
         super(module, line, column);
     }
 
-    protected String describe() throws Exception {
+    protected String describe()  {
         return "Arrow";
     }
 

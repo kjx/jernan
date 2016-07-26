@@ -21,11 +21,11 @@ public class TypeParseNode  extends ParseNode
     /**
     * Body of this type
     */
-    public List<ParseNode> getBody() throws Exception {
+    public List<ParseNode> getBody()  {
         return _body;
     }
 
-    public void setBody(List<ParseNode> value) throws Exception {
+    public void setBody(List<ParseNode> value)  {
         _body = value;
     }
 
@@ -41,7 +41,7 @@ public class TypeParseNode  extends ParseNode
         __Name = value;
     }
 
-    public TypeParseNode(Token tok, List<ParseNode> body) throws Exception {
+    public TypeParseNode(Token tok, List<ParseNode> body)  {
         super(tok);
         this._body = body;
     }
@@ -49,7 +49,7 @@ public class TypeParseNode  extends ParseNode
     /**
     * 
     */
-    public void debugPrint(PrintStream tw, String prefix) throws Exception {
+    public void debugPrint(PrintStream tw, String prefix)  {
         tw.println(prefix + "Type:");
         for (ParseNode n : _body)
         {
@@ -61,7 +61,7 @@ public class TypeParseNode  extends ParseNode
     /**
     * 
     */
-    public <T>T visit(ParseNodeVisitor<T> visitor) throws Exception {
+    public <T>T visit(ParseNodeVisitor<T> visitor)  {
         return visitor.visit(this);
     }
 

@@ -20,11 +20,11 @@ public class VarDeclarationParseNode  extends ParseNode
     /**
     * Name of the var
     */
-    public ParseNode getName() throws Exception {
+    public ParseNode getName()  {
         return _name;
     }
 
-    public void setName(ParseNode value) throws Exception {
+    public void setName(ParseNode value)  {
         _name = value;
     }
 
@@ -32,11 +32,11 @@ public class VarDeclarationParseNode  extends ParseNode
     /**
     * Initial value of the var
     */
-    public ParseNode getValue() throws Exception {
+    public ParseNode getValue()  {
         return _val;
     }
 
-    public void setValue(ParseNode value) throws Exception {
+    public void setValue(ParseNode value)  {
         _val = value;
     }
 
@@ -44,11 +44,11 @@ public class VarDeclarationParseNode  extends ParseNode
     /**
     * Type of the var, if any
     */
-    public ParseNode getType() throws Exception {
+    public ParseNode getType()  {
         return _type;
     }
 
-    public void setType(ParseNode value) throws Exception {
+    public void setType(ParseNode value)  {
         _type = value;
     }
 
@@ -56,15 +56,15 @@ public class VarDeclarationParseNode  extends ParseNode
     /**
     * Annotations of the var, if any
     */
-    public AnnotationsParseNode getAnnotations() throws Exception {
+    public AnnotationsParseNode getAnnotations()  {
         return _annotations;
     }
 
-    public void setAnnotations(AnnotationsParseNode value) throws Exception {
+    public void setAnnotations(AnnotationsParseNode value)  {
         _annotations = value;
     }
 
-    public VarDeclarationParseNode(Token tok, ParseNode name, ParseNode val, ParseNode type, AnnotationsParseNode annotations) throws Exception {
+    public VarDeclarationParseNode(Token tok, ParseNode name, ParseNode val, ParseNode type, AnnotationsParseNode annotations)  {
         super(tok);
         this._name = name;
         this._val = val;
@@ -75,7 +75,7 @@ public class VarDeclarationParseNode  extends ParseNode
     /**
     * 
     */
-    public void debugPrint(PrintStream tw, String prefix) throws Exception {
+    public void debugPrint(PrintStream tw, String prefix)  {
         tw.println(prefix + "VarDeclaration:");
         tw.println(prefix + "  Name:");
         _name.debugPrint(tw,prefix + "    ");
@@ -103,7 +103,7 @@ public class VarDeclarationParseNode  extends ParseNode
     /**
     * 
     */
-    public <T>T visit(ParseNodeVisitor<T> visitor) throws Exception {
+    public <T>T visit(ParseNodeVisitor<T> visitor)  {
         return visitor.visit(this);
     }
 

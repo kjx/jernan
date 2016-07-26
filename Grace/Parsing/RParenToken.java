@@ -8,11 +8,11 @@ import Grace.Parsing.Token;
 
 public class RParenToken  extends Token 
 {
-    public RParenToken(String module, int line, int column) throws Exception {
+    public RParenToken(String module, int line, int column)  {
         super(module, line, column);
     }
 
-    protected String describe() throws Exception {
+    protected String describe()  {
         return "RParen";
     }
 

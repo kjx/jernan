@@ -19,15 +19,15 @@ public class DialectParseNode  extends ParseNode
     /**
     * Given import path in the syntax
     */
-    public ParseNode getPath() throws Exception {
+    public ParseNode getPath()  {
         return _path;
     }
 
-    public void setPath(ParseNode value) throws Exception {
+    public void setPath(ParseNode value)  {
         _path = value;
     }
 
-    public DialectParseNode(Token tok, ParseNode path) throws Exception {
+    public DialectParseNode(Token tok, ParseNode path)  {
         super(tok);
         this._path = path;
     }
@@ -35,7 +35,7 @@ public class DialectParseNode  extends ParseNode
     /**
     * 
     */
-    public void debugPrint(PrintStream tw, String prefix) throws Exception {
+    public void debugPrint(PrintStream tw, String prefix)  {
         tw.println(prefix + "Dialect:");
         _path.debugPrint(tw,prefix + "    ");
         writeComment(tw,prefix);
@@ -44,7 +44,7 @@ public class DialectParseNode  extends ParseNode
     /**
     * 
     */
-    public <T>T visit(ParseNodeVisitor<T> visitor) throws Exception {
+    public <T>T visit(ParseNodeVisitor<T> visitor)  {
         return visitor.visit(this);
     }
 

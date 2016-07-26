@@ -18,15 +18,15 @@ public class InterpolatedStringParseNode  extends ParseNode
     /**
     * List of component strings and stringifiables
     */
-    public List<ParseNode> getParts() throws Exception {
+    public List<ParseNode> getParts()  {
         return _parts;
     }
 
-    public void setParts(List<ParseNode> value) throws Exception {
+    public void setParts(List<ParseNode> value)  {
         _parts = value;
     }
 
-    public InterpolatedStringParseNode(Token tok) throws Exception {
+    public InterpolatedStringParseNode(Token tok)  {
         super(tok);
         _parts = new ArrayList<ParseNode>();
     }
@@ -34,7 +34,7 @@ public class InterpolatedStringParseNode  extends ParseNode
     /**
     * 
     */
-    public void debugPrint(PrintStream tw, String prefix) throws Exception {
+    public void debugPrint(PrintStream tw, String prefix)  {
         tw.println(prefix + "InterpolatedString:");
         for (ParseNode n : _parts)
             n.debugPrint(tw,prefix + "    ");
@@ -44,7 +44,7 @@ public class InterpolatedStringParseNode  extends ParseNode
     /**
     * 
     */
-    public <T>T visit(ParseNodeVisitor<T> visitor) throws Exception {
+    public <T>T visit(ParseNodeVisitor<T> visitor)  {
         return visitor.visit(this);
     }
 

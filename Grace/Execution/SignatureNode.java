@@ -83,7 +83,7 @@ public class SignatureNode  extends Node implements Iterable<SignaturePartNode>
         __Annotations = value;
     }
 
-    public SignatureNode(Token location, SignatureParseNode source) throws Exception {
+    public SignatureNode(Token location, SignatureParseNode source)  {
         super(location, source);
         setParts(new ArrayList<SignaturePartNode>());
         setAnnotations(new AnnotationsNode(location, source != null ? source.getAnnotations() : null));
@@ -92,7 +92,7 @@ public class SignatureNode  extends Node implements Iterable<SignaturePartNode>
     /**
     * 
     */
-    public void debugPrint(PrintStream tw, String prefix) throws Exception {
+    public void debugPrint(PrintStream tw, String prefix)  {
         tw.println(prefix + "Signature: " + getName());
         if (getAnnotations() != null && getAnnotations().size() > 0)
         {
@@ -108,7 +108,7 @@ public class SignatureNode  extends Node implements Iterable<SignaturePartNode>
     /**
     * Add a part to this method name
     */
-    public void addPart(SignaturePartNode spn) throws Exception {
+    public void addPart(SignaturePartNode spn)  {
         getParts().add(spn);
         if (!(spn instanceof OrdinarySignaturePartNode))
             Linear = false;

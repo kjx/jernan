@@ -50,21 +50,21 @@ public class ExecutionTreeTranslator implements ParseNodeVisitor<Node>
     * object into the corresponding Node tree
     *  @param obj Root of the tree
     */
-    public Node translate(ObjectParseNode obj) throws Exception {
+    public Node translate(ObjectParseNode obj)  {
         return obj.visit(this);
     }
 
     /**
     * Default visit, which reports an error
     */
-    public Node visit(ParseNode pn) throws Exception {
-        throw new Exception("No ParseNodeVisitor override provided for " + pn);
+    public Node visit(ParseNode pn)  {
+        throw new RuntimeException("No ParseNodeVisitor override provided for " + pn);
     }
 
     /**
     * 
     */
-    public Node visit(ObjectParseNode obj) throws Exception {
+    public Node visit(ObjectParseNode obj)  {
         ObjectConstructorNode ret = new ObjectConstructorNode(obj.getToken(), obj);
         if (module == null)
             module = ret;
@@ -83,21 +83,21 @@ public class ExecutionTreeTranslator implements ParseNodeVisitor<Node>
     /**
     * 
     */
-    public Node visit(NumberParseNode n) throws Exception {
+    public Node visit(NumberParseNode n)  {
         return new NumberLiteralNode(n.getToken(),n);
     }
 
     /**
     * 
     */
-    public Node visit(StringLiteralParseNode n) throws Exception {
+    public Node visit(StringLiteralParseNode n)  {
         return new StringLiteralNode(n.getToken(),n);
     }
 
     /**
     * 
     */
-    public Node visit(InterpolatedStringParseNode n) throws Exception {
+    public Node visit(InterpolatedStringParseNode n)  {
         Node ret = null;
         for (Object __dummyForeachVar1 : n.getParts())
         {
@@ -132,7 +132,7 @@ public class ExecutionTreeTranslator implements ParseNodeVisitor<Node>
     /**
     * 
     */
-    public Node visit(SignatureParseNode spn) throws Exception {
+    public Node visit(SignatureParseNode spn)  {
         SignatureNode ret = new SignatureNode(spn.getToken(),spn);
         for (SignaturePartParseNode part : spn.getParts())
         {
@@ -145,7 +145,7 @@ public class ExecutionTreeTranslator implements ParseNodeVisitor<Node>
         return ret;
     }
 
-    private void addAnnotations(AnnotationsParseNode source, AnnotationsNode dest) throws Exception {
+    private void addAnnotations(AnnotationsParseNode source, AnnotationsNode dest)  {
         if (source != null)
             dest.addAnnotations(source.getAnnotations().stream()
 				.map(x -> x.visit(this))
@@ -155,7 +155,7 @@ public class ExecutionTreeTranslator implements ParseNodeVisitor<Node>
     /**
     * 
     */
-    public Node visit(OrdinarySignaturePartParseNode osppn) throws Exception {
+    public Node visit(OrdinarySignaturePartParseNode osppn)  {
         List<Node> parameters = new ArrayList<Node>();
         for (ParseNode p : osppn.getParameters())
         {
@@ -211,7 +211,7 @@ public class ExecutionTreeTranslator implements ParseNodeVisitor<Node>
             }
             else
             {
-                throw new Exception("unimplemented - unusual parameters");
+                throw new RuntimeException("unimplemented - unusual parameters");
             }   
         }
         List<Node>  generics = new ArrayList<Node>();
@@ -226,7 +226,7 @@ public class ExecutionTreeTranslator implements ParseNodeVisitor<Node>
             }
             else
             {
-                throw new Exception("unimplemented - bad generic parameters");
+                throw new RuntimeException("unimplemented - bad generic parameters");
             } 
         }
         if (osppn.getName().startsWith("circumfix"))
@@ -238,7 +238,7 @@ public class ExecutionTreeTranslator implements ParseNodeVisitor<Node>
     /**
     * 
     */
-    public Node visit(MethodDeclarationParseNode d) throws Exception {
+    public Node visit(MethodDeclarationParseNode d)  {
         MethodNode ret = new MethodNode(d.getToken(), d);
         SignatureNode sig = (SignatureNode)d.getSignature().visit(this);
         ret.setSignature(sig);
@@ -262,7 +262,7 @@ public class ExecutionTreeTranslator implements ParseNodeVisitor<Node>
     /**
     * 
     */
-    public Node visit(IdentifierParseNode i) throws Exception {
+    public Node visit(IdentifierParseNode i)  {
         ImplicitReceiverRequestNode ret = new ImplicitReceiverRequestNode(i.getToken(), i);
         RequestPartNode rpn = new RequestPartNode(i.getName(), new ArrayList<Node>(), new ArrayList<Node>());
         ret.addPart(rpn);
@@ -272,7 +272,7 @@ public class ExecutionTreeTranslator implements ParseNodeVisitor<Node>
     /**
     * 
     */
-    public Node visit(ImplicitReceiverRequestParseNode irrpn) throws Exception {
+    public Node visit(ImplicitReceiverRequestParseNode irrpn)  {
         ImplicitReceiverRequestNode ret = null;
         if (StringSupport.equals(irrpn.getName(), "if then"))
         {
@@ -301,7 +301,7 @@ public class ExecutionTreeTranslator implements ParseNodeVisitor<Node>
     /**
     * 
     */
-    public Node visit(ExplicitReceiverRequestParseNode irrpn) throws Exception {
+    public Node visit(ExplicitReceiverRequestParseNode irrpn)  {
         ExplicitReceiverRequestNode ret = 
 	    new ExplicitReceiverRequestNode(
 	      irrpn.getToken(), irrpn, irrpn.getReceiver().visit(this));
@@ -320,7 +320,7 @@ public class ExecutionTreeTranslator implements ParseNodeVisitor<Node>
     /**
     * 
     */
-    public Node visit(PrefixOperatorParseNode popn) throws Exception {
+    public Node visit(PrefixOperatorParseNode popn)  {
         ExplicitReceiverRequestNode ret = new ExplicitReceiverRequestNode(popn.getToken(), popn, popn.getReceiver().visit(this));
         RequestPartNode rpn = new RequestPartNode("prefix" + popn.getName(), new ArrayList<Node>(), new ArrayList<Node>());
         ret.addPart(rpn);
@@ -330,7 +330,7 @@ public class ExecutionTreeTranslator implements ParseNodeVisitor<Node>
     /**
     * 
     */
-    public Node visit(OperatorParseNode opn) throws Exception {
+    public Node visit(OperatorParseNode opn)  {
         ExplicitReceiverRequestNode ret = new ExplicitReceiverRequestNode(opn.getToken(), opn, opn.getLeft().visit(this));
         List<Node> args = new ArrayList<Node>();
         args.add(opn.getRight().visit(this));
@@ -342,7 +342,7 @@ public class ExecutionTreeTranslator implements ParseNodeVisitor<Node>
     /**
     * 
     */
-    public Node visit(VarDeclarationParseNode vdpn) throws Exception {
+    public Node visit(VarDeclarationParseNode vdpn)  {
         Node val = null;
         Node type = null;
         if (vdpn.getValue() != null)
@@ -369,7 +369,7 @@ public class ExecutionTreeTranslator implements ParseNodeVisitor<Node>
     /**
     * 
     */
-    public Node visit(DefDeclarationParseNode vdpn) throws Exception {
+    public Node visit(DefDeclarationParseNode vdpn)  {
         Node val = null;
         Node type = null;
         if (vdpn.getValue() != null)
@@ -390,7 +390,7 @@ public class ExecutionTreeTranslator implements ParseNodeVisitor<Node>
     /**
     * 
     */
-    public Node visit(BindParseNode bpn) throws Exception {
+    public Node visit(BindParseNode bpn)  {
 	Node ret = bpn.getLeft().visit(this);
 	Node right = bpn.getRight().visit(this);
         RequestNode lrrn = ret instanceof RequestNode 
@@ -425,7 +425,7 @@ public class ExecutionTreeTranslator implements ParseNodeVisitor<Node>
     /**
     * 
     */
-    public Node visit(BlockParseNode d) throws Exception {
+    public Node visit(BlockParseNode d)  {
 	List<Node> parameters = new ArrayList<Node>();
         Node forcedPattern = null;
         for (Object __dummyForeachVar6 : d.getParameters())
@@ -481,7 +481,7 @@ public class ExecutionTreeTranslator implements ParseNodeVisitor<Node>
             }
             else
             {
-                throw new Exception("unimplemented - unusual parameters");
+                throw new RuntimeException("unimplemented - unusual parameters");
             }     
         }
         BlockNode ret = new BlockNode(d.getToken(), d, parameters, map(d.getBody()), forcedPattern);
@@ -491,7 +491,7 @@ public class ExecutionTreeTranslator implements ParseNodeVisitor<Node>
     /**
     * 
     */
-    public Node visit(ClassDeclarationParseNode d) throws Exception {
+    public Node visit(ClassDeclarationParseNode d)  {
 	MethodDeclarationParseNode constructor = new MethodDeclarationParseNode(d.getToken());
         constructor.setSignature(d.getSignature());
 	ObjectParseNode instanceObj = new ObjectParseNode(d.getToken());
@@ -509,7 +509,7 @@ public class ExecutionTreeTranslator implements ParseNodeVisitor<Node>
     /**
     * 
     */
-    public Node visit(TraitDeclarationParseNode d) throws Exception {
+    public Node visit(TraitDeclarationParseNode d)  {
 	MethodDeclarationParseNode constructor = new MethodDeclarationParseNode(d.getToken());
         constructor.setSignature(d.getSignature());
 	ObjectParseNode instanceObj = new ObjectParseNode(d.getToken());
@@ -527,7 +527,7 @@ public class ExecutionTreeTranslator implements ParseNodeVisitor<Node>
     /**
     * 
     */
-    public Node visit(ReturnParseNode rpn) throws Exception {
+    public Node visit(ReturnParseNode rpn)  {
         if (rpn.getReturnValue() == null)
             return new ReturnNode(rpn.getToken(),rpn,null);
          
@@ -537,14 +537,14 @@ public class ExecutionTreeTranslator implements ParseNodeVisitor<Node>
     /**
     * 
     */
-    public Node visit(CommentParseNode cpn) throws Exception {
+    public Node visit(CommentParseNode cpn)  {
         return new NoopNode(cpn.getToken(), cpn);
     }
 
     /**
     * 
     */
-    public Node visit(TypeStatementParseNode tspn) throws Exception {
+    public Node visit(TypeStatementParseNode tspn)  {
 	MethodDeclarationParseNode meth = 
 	    new MethodDeclarationParseNode(tspn.getToken());
 	SignatureParseNode spn = 
@@ -569,7 +569,7 @@ public class ExecutionTreeTranslator implements ParseNodeVisitor<Node>
     /**
     * 
     */
-    public Node visit(TypeParseNode tpn) throws Exception {
+    public Node visit(TypeParseNode tpn)  {
         TypeNode ret = new TypeNode(tpn.getToken(), tpn);
         if (tpn.getName() != null)
             ret.setName(tpn.getName());
@@ -582,7 +582,7 @@ public class ExecutionTreeTranslator implements ParseNodeVisitor<Node>
     /**
     * 
     */
-    public Node visit(ImportParseNode ipn) throws Exception {
+    public Node visit(ImportParseNode ipn)  {
         Node type = null;
         if (ipn.getType() != null)
             type = ipn.getType().visit(this);
@@ -593,14 +593,14 @@ public class ExecutionTreeTranslator implements ParseNodeVisitor<Node>
     /**
     * 
     */
-    public Node visit(DialectParseNode dpn) throws Exception {
+    public Node visit(DialectParseNode dpn)  {
         return new DialectNode(dpn.getToken(),dpn,module);
     }
 
     /**
     * 
     */
-    public Node visit(InheritsParseNode ipn) throws Exception {
+    public Node visit(InheritsParseNode ipn)  {
 	Node frm = ipn.getFrom().visit(this);
         if (!(frm instanceof RequestNode))
             ErrorReporting.ReportStaticError(ipn.getFrom().getToken().getModule(), ipn.getFrom().getLine(), "P1045", hash(), "Can only inherit from method requests");
@@ -618,7 +618,7 @@ public class ExecutionTreeTranslator implements ParseNodeVisitor<Node>
     /**
     * 
     */
-    public Node visit(UsesParseNode upn) throws Exception {
+    public Node visit(UsesParseNode upn)  {
 	//this method is an exact copy of the method above for InheritsParseNode
 	//with the variable names changed
 	Node frm = upn.getFrom().visit(this);
@@ -638,28 +638,28 @@ public class ExecutionTreeTranslator implements ParseNodeVisitor<Node>
     /**
     * 
     */
-    public Node visit(AliasParseNode ipn) throws Exception {
+    public Node visit(AliasParseNode ipn)  {
         return null;
     }
 
     /**
     * 
     */
-    public Node visit(ExcludeParseNode ipn) throws Exception {
+    public Node visit(ExcludeParseNode ipn)  {
         return null;
     }
 
     /**
     * 
     */
-    public Node visit(ParenthesisedParseNode ppn) throws Exception {
+    public Node visit(ParenthesisedParseNode ppn)  {
         return ppn.getExpression().visit(this);
     }
 
     /**
     * 
     */
-    public Node visit(TypedParameterParseNode tppn) throws Exception {
+    public Node visit(TypedParameterParseNode tppn)  {
         ErrorReporting.ReportStaticError(
 	 tppn.getToken().getModule(), 
 	 tppn.getLine(), "P1023",
@@ -671,7 +671,7 @@ public class ExecutionTreeTranslator implements ParseNodeVisitor<Node>
     /**
     * 
     */
-    public Node visit(ImplicitBracketRequestParseNode ibrpn) throws Exception {
+    public Node visit(ImplicitBracketRequestParseNode ibrpn)  {
         ImplicitReceiverRequestNode ret = new ImplicitReceiverRequestNode(ibrpn.getToken(), ibrpn);
         RequestPartNode rpn = new RequestPartNode("circumfix" + ibrpn.getName(), new ArrayList<Node>(), map(ibrpn.getArguments()), false);
         ret.addPart(rpn);
@@ -681,7 +681,7 @@ public class ExecutionTreeTranslator implements ParseNodeVisitor<Node>
     /**
     * 
     */
-    public Node visit(ExplicitBracketRequestParseNode ebrpn) throws Exception {
+    public Node visit(ExplicitBracketRequestParseNode ebrpn)  {
         ExplicitReceiverRequestNode ret = new ExplicitReceiverRequestNode(ebrpn.getToken(), ebrpn, ebrpn.getReceiver().visit(this));
         RequestPartNode rpn = new RequestPartNode(ebrpn.getName(), new ArrayList<Node>(), map(ebrpn.getArguments()));
         ret.addPart(rpn);
@@ -692,7 +692,7 @@ public class ExecutionTreeTranslator implements ParseNodeVisitor<Node>
     * Transforms a list of ParseNodes into a list of the
     * corresponding Nodes
     */
-    private List<Node> map(Iterable<ParseNode> l) throws Exception {
+    private List<Node> map(Iterable<ParseNode> l)  {
         List<Node> ret = new ArrayList<Node>();
         for (Object __dummyForeachVar8 : l)
         {

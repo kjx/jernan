@@ -41,7 +41,7 @@ public class ImplicitBracketRequestParseNode  extends ParseNode
         __Arguments = value;
     }
 
-    public ImplicitBracketRequestParseNode(Token start, String name, List<ParseNode> arguments) throws Exception {
+    public ImplicitBracketRequestParseNode(Token start, String name, List<ParseNode> arguments)  {
         super(start);
         setName(name);
         setArguments(arguments);
@@ -50,7 +50,7 @@ public class ImplicitBracketRequestParseNode  extends ParseNode
     /**
     * 
     */
-    public void debugPrint(PrintStream tw, String prefix) throws Exception {
+    public void debugPrint(PrintStream tw, String prefix)  {
         tw.println(prefix + "ImplicitBracketRequest: " + getName());
         tw.println(prefix + "  Parts:");
         for (ParseNode arg : getArguments())
@@ -61,7 +61,7 @@ public class ImplicitBracketRequestParseNode  extends ParseNode
     /**
     * 
     */
-    public <T>T visit(ParseNodeVisitor<T> visitor) throws Exception {
+    public <T>T visit(ParseNodeVisitor<T> visitor)  {
         return visitor.visit(this);
     }
 

@@ -9,33 +9,33 @@ import Grace.Parsing.Token;
 public class OperatorToken  extends Token 
 {
     private String _name;
-    public String getName() throws Exception {
+    public String getName()  {
         return _name;
     }
 
-    public void setName(String value) throws Exception {
+    public void setName(String value)  {
         _name = value;
     }
 
     private boolean _spaceBefore;
-    public boolean getSpaceBefore() throws Exception {
+    public boolean getSpaceBefore()  {
         return _spaceBefore;
     }
 
-    public void setSpaceBefore(boolean value) throws Exception {
+    public void setSpaceBefore(boolean value)  {
         _spaceBefore = value;
     }
 
     private boolean _spaceAfter;
-    public boolean getSpaceAfter() throws Exception {
+    public boolean getSpaceAfter()  {
         return _spaceAfter;
     }
 
-    public void setSpaceAfter(boolean value) throws Exception {
+    public void setSpaceAfter(boolean value)  {
         _spaceAfter = value;
     }
 
-    public OperatorToken(String module, int line, int column, String val) throws Exception {
+    public OperatorToken(String module, int line, int column, String val)  {
         super(module, line, column);
         _name = val;
     }
@@ -44,12 +44,12 @@ public class OperatorToken  extends Token
     * Set whether spaces were found before and after
     * this operator symbol
     */
-    public void setSpacing(boolean before, boolean after) throws Exception {
+    public void setSpacing(boolean before, boolean after)  {
         _spaceBefore = before;
         _spaceAfter = after;
     }
 
-    protected String describe() throws Exception {
+    protected String describe()  {
         return "Operator:" + _name;
     }
 

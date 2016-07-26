@@ -20,14 +20,14 @@ public abstract class SignaturePartNode  extends Node
     */
     public abstract String getName()  ;
 
-    public SignaturePartNode(Token location, SignaturePartParseNode source) throws Exception {
+    public SignaturePartNode(Token location, SignaturePartParseNode source)  {
         super(location, source);
     }
 
     /**
     * 
     */
-    public void debugPrint(PrintStream tw, String prefix) throws Exception {
+    public void debugPrint(PrintStream tw, String prefix)  {
         tw.println(prefix + "SignaturePart: " + getName());
     }
 }

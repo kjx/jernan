@@ -22,7 +22,7 @@ import Grace.Execution.ObjectConstructorNode;
 public class DialectNode  extends Node 
 {
     private DialectParseNode origin;
-    public DialectNode(Token location, DialectParseNode source, ObjectConstructorNode module) throws Exception {
+    public DialectNode(Token location, DialectParseNode source, ObjectConstructorNode module)  {
         super(location, source);
         origin = source;
         setModule(module);
@@ -32,7 +32,7 @@ public class DialectNode  extends Node
     * Module pathThis property gets the string value of the
     * path field of the originating parse node
     */
-    public String getPath() throws Exception {
+    public String getPath()  {
 	//KJX hackety hack. no explcit test just a cast. 
 	return ((StringLiteralParseNode) origin.getPath()).getValue();
 
@@ -54,7 +54,7 @@ public class DialectNode  extends Node
     /**
     * 
     */
-    public void debugPrint(PrintStream tw, String prefix) throws Exception {
+    public void debugPrint(PrintStream tw, String prefix)  {
         tw.println(prefix + "Dialect:");
         tw.println(prefix + "    " + getPath());
     }

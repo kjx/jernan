@@ -49,199 +49,199 @@ public interface ParseNodeVisitor <T>
     * Visit a ParseNode
     *  @param p ParseNode to visit
     */
-    T visit(ParseNode p) throws Exception ;
+    T visit(ParseNode p)  ;
 
     /**
     * Visit an ObjectParseNode
     *  @param o ObjectParseNode to visit
     */
-    T visit(ObjectParseNode o) throws Exception ;
+    T visit(ObjectParseNode o)  ;
 
     /**
     * Visit a NumberParseNode
     *  @param n NumberParseNode to visit
     */
-    T visit(NumberParseNode n) throws Exception ;
+    T visit(NumberParseNode n)  ;
 
     /**
     * Visit a MethodDeclarationParseNode
     *  @param d MethodDeclarationParseNode to visit
     */
-    T visit(MethodDeclarationParseNode d) throws Exception ;
+    T visit(MethodDeclarationParseNode d)  ;
 
     /**
     * Visit an IdentifierParseNode
     *  @param i IdentifierParseNode to visit
     */
-    T visit(IdentifierParseNode i) throws Exception ;
+    T visit(IdentifierParseNode i)  ;
 
     /**
     * Visit an ImplicitReceiverRequestParseNode
     *  @param irrpn ImplicitReceiverRequestParseNode to visit
     */
-    T visit(ImplicitReceiverRequestParseNode irrpn) throws Exception ;
+    T visit(ImplicitReceiverRequestParseNode irrpn)  ;
 
     /**
     * Visit an ExplicitReceiverRequestParseNode
     *  @param errpn ExplicitReceiverRequestParseNode to visit
     */
-    T visit(ExplicitReceiverRequestParseNode errpn) throws Exception ;
+    T visit(ExplicitReceiverRequestParseNode errpn)  ;
 
     /**
     * Visit an OperatorParseNode
     *  @param opn OperatorParseNode to visit
     */
-    T visit(OperatorParseNode opn) throws Exception ;
+    T visit(OperatorParseNode opn)  ;
 
     /**
     * Visit a TypedParameterParseNode
     *  @param tppn TypedParameterParseNode to visit
     */
-    T visit(TypedParameterParseNode tppn) throws Exception ;
+    T visit(TypedParameterParseNode tppn)  ;
 
     /**
     * Visit a StringLiteralParseNode
     *  @param slpn StringLiteralParseNode to visit
     */
-    T visit(StringLiteralParseNode slpn) throws Exception ;
+    T visit(StringLiteralParseNode slpn)  ;
 
     /**
     * Visit an InterpolatedStringParseNode
     *  @param ispn InterpolatedStringParseNode to visit
     */
-    T visit(InterpolatedStringParseNode ispn) throws Exception ;
+    T visit(InterpolatedStringParseNode ispn)  ;
 
     /**
     * Visit a VarDeclarationParseNode
     *  @param vdpn VarDeclarationParseNode to visit
     */
-    T visit(VarDeclarationParseNode vdpn) throws Exception ;
+    T visit(VarDeclarationParseNode vdpn)  ;
 
     /**
     * Visit a DefDeclarationParseNode
     *  @param vdpn DefDeclarationParseNode to visit
     */
-    T visit(DefDeclarationParseNode vdpn) throws Exception ;
+    T visit(DefDeclarationParseNode vdpn)  ;
 
     /**
     * Visit a BindParseNode
     *  @param bpn BindParseNode to visit
     */
-    T visit(BindParseNode bpn) throws Exception ;
+    T visit(BindParseNode bpn)  ;
 
     /**
     * Visit a PrefixOperatorParseNode
     *  @param popn PrefixOperatorParseNode to visit
     */
-    T visit(PrefixOperatorParseNode popn) throws Exception ;
+    T visit(PrefixOperatorParseNode popn)  ;
 
     /**
     * Visit a BlockParseNode
     *  @param bpn BlockParseNode to visit
     */
-    T visit(BlockParseNode bpn) throws Exception ;
+    T visit(BlockParseNode bpn)  ;
 
     /**
     * Visit a ClassDeclarationParseNode
     *  @param bpn ClassDeclarationParseNode to visit
     */
-    T visit(ClassDeclarationParseNode bpn) throws Exception ;
+    T visit(ClassDeclarationParseNode bpn)  ;
 
     /**
     * Visit a TraitDeclarationParseNode
     *  @param bpn TraitDeclarationParseNode to visit
     */
-    T visit(TraitDeclarationParseNode bpn) throws Exception ;
+    T visit(TraitDeclarationParseNode bpn)  ;
 
     /**
     * Visit a ReturnParseNode
     *  @param rpn ReturnParseNode to visit
     */
-    T visit(ReturnParseNode rpn) throws Exception ;
+    T visit(ReturnParseNode rpn)  ;
 
     /**
     * Visit a CommentParseNode
     *  @param cpn CommentParseNode to visit
     */
-    T visit(CommentParseNode cpn) throws Exception ;
+    T visit(CommentParseNode cpn)  ;
 
     /**
     * Visit a TypeStatementParseNode
     *  @param tspn TypeStatementParseNode to visit
     */
-    T visit(TypeStatementParseNode tspn) throws Exception ;
+    T visit(TypeStatementParseNode tspn)  ;
 
     /**
     * Visit a TypeParseNode
     *  @param tpn TypeParseNode to visit
     */
-    T visit(TypeParseNode tpn) throws Exception ;
+    T visit(TypeParseNode tpn)  ;
 
     /**
     * Visit a ImportParseNode
     *  @param ipn ImportParseNode to visit
     */
-    T visit(ImportParseNode ipn) throws Exception ;
+    T visit(ImportParseNode ipn)  ;
 
     /**
     * Visit a DialectParseNode
     *  @param dpn DialectParseNode to visit
     */
-    T visit(DialectParseNode dpn) throws Exception ;
+    T visit(DialectParseNode dpn)  ;
 
     /**
     * Visit an InheritsParseNode
     *  @param ipn InheritsParseNode to visit
     */
-    T visit(InheritsParseNode ipn) throws Exception ;
+    T visit(InheritsParseNode ipn)  ;
 
     /**
     * Visit a UsesParseNode
     *  @param upn UsesParseNode to visit
     */
-    T visit(UsesParseNode upn) throws Exception ;
+    T visit(UsesParseNode upn)  ;
 
     /**
     * Visit an AliasParseNode
     *  @param ipn AliasParseNode to visit
     */
-    T visit(AliasParseNode ipn) throws Exception ;
+    T visit(AliasParseNode ipn)  ;
 
     /**
     * Visit an ExcludeParseNode
     *  @param ipn ExcludeParseNode to visit
     */
-    T visit(ExcludeParseNode ipn) throws Exception ;
+    T visit(ExcludeParseNode ipn)  ;
 
     /**
     * Visit a ParenthesisedParseNode
     *  @param ppn ParenthesisedParseNode to visit
     */
-    T visit(ParenthesisedParseNode ppn) throws Exception ;
+    T visit(ParenthesisedParseNode ppn)  ;
 
     /**
     * Visit an ImplicitBracketRequestParseNode
     *  @param ibrpn ImplicitBracketRequestParseNode to visit
     */
-    T visit(ImplicitBracketRequestParseNode ibrpn) throws Exception ;
+    T visit(ImplicitBracketRequestParseNode ibrpn)  ;
 
     /**
     * Visit an ExplicitBracketRequestParseNode
     *  @param ebrpn ExplicitBracketRequestParseNode to visit
     */
-    T visit(ExplicitBracketRequestParseNode ebrpn) throws Exception ;
+    T visit(ExplicitBracketRequestParseNode ebrpn)  ;
 
     /**
     * Visit a SignatureParseNode
     *  @param spn SignatureParseNode to visit
     */
-    T visit(SignatureParseNode spn) throws Exception ;
+    T visit(SignatureParseNode spn)  ;
 
     /**
     * Visit an OrdinarySignaturePartParseNode
     *  @param osppn OrdinarySignaturePartParseNode to visit
     */
-    T visit(OrdinarySignaturePartParseNode osppn) throws Exception ;
+    T visit(OrdinarySignaturePartParseNode osppn)  ;
 
 }
 

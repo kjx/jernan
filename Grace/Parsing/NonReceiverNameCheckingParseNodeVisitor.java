@@ -22,14 +22,14 @@ import java.util.List;
 public class NonReceiverNameCheckingParseNodeVisitor  extends CheckingParseNodeVisitor 
 {
     private HashSet<String> _names = new HashSet<String>();
-    public NonReceiverNameCheckingParseNodeVisitor(HashSet<String> names) throws Exception {
+    public NonReceiverNameCheckingParseNodeVisitor(HashSet<String> names)  {
         _names = names;
     }
 
     /**
     * 
     */
-    public ParseNode visit(IdentifierParseNode ipn) throws Exception {
+    public ParseNode visit(IdentifierParseNode ipn)  {
         // A bare identifier that matches an element of the
         // set of disallowed names will always raise an error,
         // but the other cases below avoid visiting such a
@@ -43,7 +43,7 @@ public class NonReceiverNameCheckingParseNodeVisitor  extends CheckingParseNodeV
     /**
     * 
     */
-    public ParseNode visit(ImplicitReceiverRequestParseNode irrpn) throws Exception {
+    public ParseNode visit(ImplicitReceiverRequestParseNode irrpn)  {
         if (irrpn.getNameParts().size() != 1)
             return super.visit(irrpn);
          
@@ -63,7 +63,7 @@ public class NonReceiverNameCheckingParseNodeVisitor  extends CheckingParseNodeV
     /**
     * 
     */
-    public ParseNode visit(ExplicitReceiverRequestParseNode errpn) throws Exception {
+    public ParseNode visit(ExplicitReceiverRequestParseNode errpn)  {
         if (!(errpn.getReceiver() instanceof IdentifierParseNode))
         {
             return super.visit(errpn);
@@ -84,7 +84,7 @@ public class NonReceiverNameCheckingParseNodeVisitor  extends CheckingParseNodeV
     /**
     * 
     */
-    public ParseNode visit(OperatorParseNode opn) throws Exception {
+    public ParseNode visit(OperatorParseNode opn)  {
         if (!(opn.getLeft() instanceof IdentifierParseNode))
         {
             return super.visit(opn);
@@ -99,7 +99,7 @@ public class NonReceiverNameCheckingParseNodeVisitor  extends CheckingParseNodeV
     /**
     * 
     */
-    public ParseNode visit(PrefixOperatorParseNode popn) throws Exception {
+    public ParseNode visit(PrefixOperatorParseNode popn)  {
         // If the receiver is an identifier, it's ok,
         // and we just return successfully.
         if (popn.getReceiver() instanceof IdentifierParseNode)
@@ -111,7 +111,7 @@ public class NonReceiverNameCheckingParseNodeVisitor  extends CheckingParseNodeV
     /**
     * 
     */
-    public ParseNode visit(InheritsParseNode ipn) throws Exception {
+    public ParseNode visit(InheritsParseNode ipn)  {
         return ipn.getFrom().visit(this);
     }
 

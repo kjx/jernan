@@ -17,7 +17,7 @@ import Grace.Execution.Node;
 public abstract class IdentifierNode  extends Node 
 {
     private IdentifierParseNode origin;
-    public IdentifierNode(Token location, IdentifierParseNode source) throws Exception {
+    public IdentifierNode(Token location, IdentifierParseNode source)  {
         super(location, source);
         origin = source;
     }
@@ -26,14 +26,14 @@ public abstract class IdentifierNode  extends Node
     * The name of this identifierThis property gets the name field of the originating
     * parse node
     */
-    public String getName() throws Exception {
+    public String getName()  {
         return origin.getName();
     }
 
     /**
     * 
     */
-    public void debugPrint(PrintStream tw, String prefix) throws Exception {
+    public void debugPrint(PrintStream tw, String prefix)  {
         tw.println(prefix + "Identifier: " + getName());
     }
 }

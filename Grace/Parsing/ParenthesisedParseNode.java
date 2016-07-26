@@ -19,15 +19,15 @@ public class ParenthesisedParseNode  extends ParseNode
     /**
     * Expression in parentheses
     */
-    public ParseNode getExpression() throws Exception {
+    public ParseNode getExpression()  {
         return _expr;
     }
 
-    public void setExpression(ParseNode value) throws Exception {
+    public void setExpression(ParseNode value)  {
         _expr = value;
     }
 
-    public ParenthesisedParseNode(Token tok, ParseNode expr) throws Exception {
+    public ParenthesisedParseNode(Token tok, ParseNode expr)  {
         super(tok);
         _expr = expr;
     }
@@ -35,7 +35,7 @@ public class ParenthesisedParseNode  extends ParseNode
     /**
     * 
     */
-    public void debugPrint(PrintStream tw, String prefix) throws Exception {
+    public void debugPrint(PrintStream tw, String prefix)  {
         tw.println(prefix + "Parenthesised:");
         _expr.debugPrint(tw,prefix + "    ");
         writeComment(tw,prefix);
@@ -44,7 +44,7 @@ public class ParenthesisedParseNode  extends ParseNode
     /**
     * 
     */
-    public <T>T visit(ParseNodeVisitor<T> visitor) throws Exception {
+    public <T>T visit(ParseNodeVisitor<T> visitor)  {
         return visitor.visit(this);
     }
 

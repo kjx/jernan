@@ -22,11 +22,11 @@ public class PartParameters
     /**
     * Generic parameters
     */
-    public List<ParseNode> getGenerics() throws Exception {
+    public List<ParseNode> getGenerics()  {
         return _generics;
     }
 
-    public void setGenerics(List<ParseNode> value) throws Exception {
+    public void setGenerics(List<ParseNode> value)  {
         _generics = value;
     }
 
@@ -34,11 +34,11 @@ public class PartParameters
     /**
     * Ordinary parameters
     */
-    public List<ParseNode> getOrdinary() throws Exception {
+    public List<ParseNode> getOrdinary()  {
         return _ordinary;
     }
 
-    public void setOrdinary(List<ParseNode> value) throws Exception {
+    public void setOrdinary(List<ParseNode> value)  {
         _ordinary = value;
     }
 
@@ -46,7 +46,7 @@ public class PartParameters
     * @param g Generic parameters
     *  @param o Ordinary parameters
     */
-    public PartParameters(List<ParseNode> g, List<ParseNode> o) throws Exception {
+    public PartParameters(List<ParseNode> g, List<ParseNode> o)  {
         _generics = g;
         _ordinary = o;
     }

@@ -24,11 +24,11 @@ public class InheritsParseNode  extends ParseNode
     /**
     * RHS of the inherits clause
     */
-    public ParseNode getFrom() throws Exception {
+    public ParseNode getFrom()  {
         return _from;
     }
 
-    public void setFrom(ParseNode value) throws Exception {
+    public void setFrom(ParseNode value)  {
         _from = value;
     }
 
@@ -56,7 +56,7 @@ public class InheritsParseNode  extends ParseNode
         __Excludes = value;
     }
 
-    public InheritsParseNode(Token tok, ParseNode expr) throws Exception {
+    public InheritsParseNode(Token tok, ParseNode expr)  {
         super(tok);
         _from = expr;
         setAliases(new ArrayList<AliasParseNode>());
@@ -66,7 +66,7 @@ public class InheritsParseNode  extends ParseNode
     /**
     * 
     */
-    public void debugPrint(PrintStream tw, String prefix) throws Exception {
+    public void debugPrint(PrintStream tw, String prefix)  {
         tw.println(prefix + "Inherits:");
         tw.println(prefix + "    From:");
         _from.debugPrint(tw,prefix + "        ");
@@ -84,7 +84,7 @@ public class InheritsParseNode  extends ParseNode
     /**
     * 
     */
-    public <T>T visit(ParseNodeVisitor<T> visitor) throws Exception {
+    public <T>T visit(ParseNodeVisitor<T> visitor)  {
         return visitor.visit(this);
     }
 
@@ -95,7 +95,7 @@ public class InheritsParseNode  extends ParseNode
     *  @param n New name
     *  @param o Old name
     */
-    public void addAlias(Token tok, SignatureParseNode n, SignatureParseNode o) throws Exception {
+    public void addAlias(Token tok, SignatureParseNode n, SignatureParseNode o)  {
         getAliases().add(new AliasParseNode(tok,n,o));
     }
 
@@ -105,7 +105,7 @@ public class InheritsParseNode  extends ParseNode
     *  @param tok Token
     *  @param n Name to exclude
     */
-    public void addExclude(Token tok, SignatureParseNode n) throws Exception {
+    public void addExclude(Token tok, SignatureParseNode n)  {
         getExcludes().add(new ExcludeParseNode(tok,n));
     }
 

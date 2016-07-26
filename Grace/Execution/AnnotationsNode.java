@@ -20,7 +20,7 @@ import java.io.PrintStream;
 public class AnnotationsNode  extends Node implements Iterable<Node>
 {
     private List<Node> annotations = new ArrayList<Node>();
-    public AnnotationsNode(Token location, AnnotationsParseNode source) throws Exception {
+    public AnnotationsNode(Token location, AnnotationsParseNode source)  {
         super(location, source);
     }
 
@@ -29,7 +29,7 @@ public class AnnotationsNode  extends Node implements Iterable<Node>
     * 
     *  @param ann Annotation
     */
-    public void addAnnotation(Node ann) throws Exception {
+    public void addAnnotation(Node ann)  {
         annotations.add(ann);
     }
 
@@ -38,7 +38,7 @@ public class AnnotationsNode  extends Node implements Iterable<Node>
     * 
     *  @param anns Enumerable of annotations
     */
-    public void addAnnotations(Collection<Node> anns) throws Exception {
+    public void addAnnotations(Collection<Node> anns)  {
         annotations.addAll(anns);
     }
 
@@ -52,14 +52,14 @@ public class AnnotationsNode  extends Node implements Iterable<Node>
     /**
     * Number of annotations in this group.
     */
-    public int size() throws Exception {
+    public int size()  {
         return annotations.size();
     }
 
     /**
     * 
     */
-    public void debugPrint(PrintStream tw, String prefix) throws Exception {
+    public void debugPrint(PrintStream tw, String prefix)  {
         tw.println(prefix + "Annotations:");
         for (Node a : annotations) 
             a.debugPrint(tw, prefix + "    ");

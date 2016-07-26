@@ -231,7 +231,7 @@ public class Lexer
     * @param module Module of this code
     *  @param code Code of this module as a string
     */
-    public Lexer(String module, String code) throws Exception {
+    public Lexer(String module, String code)  {
         this.code = code;
         this.moduleName = module;
         if (code.charAt(code.length() - 1) != '\n')
@@ -243,7 +243,7 @@ public class Lexer
     /**
     * @param code Code of this module as a string
     */
-    public Lexer(String code) throws Exception {
+    public Lexer(String code)  {
         this.code = code;
         if (code.charAt(code.length() - 1) != '\n')
             this.code += "\n";
@@ -252,15 +252,15 @@ public class Lexer
     }
 
 
-    private void reportError(String code, HashMap<String,String> vars, String localDescription) throws Exception {
+    private void reportError(String code, HashMap<String,String> vars, String localDescription)  {
         ErrorReporting.ReportStaticError(moduleName, line, code, vars, localDescription);
     }
 
-    private void reportError(String code, String localDescription) throws Exception {
+    private void reportError(String code, String localDescription)  {
         ErrorReporting.ReportStaticError(moduleName, line, code, localDescription);
     }
 
-    public boolean done() throws Exception {
+    public boolean done()  {
         return index == code.length();
     }
 
@@ -269,7 +269,7 @@ public class Lexer
     * were immediately after the opening quote of a string
     * literal
     */
-    public void treatAsString() throws Exception {
+    public void treatAsString()  {
         column = index - lineStart;
         current = lexStringRemainder();
         return ;
@@ -279,7 +279,7 @@ public class Lexer
     * Look at what the next token would be, without
     * changing the state of the lexer
     */
-    public Token peek() throws Exception {
+    public Token peek()  {
         int startIndex = index;
         Token startCurrent = current;
         int startLine = line;
@@ -292,12 +292,12 @@ public class Lexer
         return ret;
     }
 
-    private String formatCodepoint(int cp) throws Exception {
+    private String formatCodepoint(int cp)  {
 	//KJX could be BUGGY
         return "U+" + String.format("%4X",cp);
     }
 
-    private UnicodeCategory validateChar() throws Exception {
+    private UnicodeCategory validateChar()  {
         char c = code.charAt(index);
         if (c >= 0xD800 && c <= 0xDBFF)
         {
@@ -337,7 +337,7 @@ public class Lexer
         return cat;
     }
 
-    private void advanceIndex() throws Exception {
+    private void advanceIndex()  {
         if (code.charAt(index) >= 0xD800 && code.charAt(index) <= 0xDBFF)
         {
             // Leading surrogate - skip the trailing one
@@ -356,7 +356,7 @@ public class Lexer
     * Get the next token from the stream and
     * advance the lexer
     */
-    public Token nextToken() throws Exception {
+    public Token nextToken()  {
         previous = current;
         if (index >= code.length())
         {
@@ -453,7 +453,7 @@ public class Lexer
         return ret;
     }
 
-    private Token lexIdentifier() throws Exception {
+    private Token lexIdentifier()  {
         int start = index;
         advanceIndex();
         UnicodeCategory cat = validateChar();
@@ -529,7 +529,7 @@ public class Lexer
     * 
     *  @param s String to check
     */
-    public static boolean isIdentifier(String s) throws Exception {
+    public static boolean isIdentifier(String s)  {
 	String first = StringInfo.GetNextTextElement(s,0);
         UnicodeCategory cat = UnicodeLookup.GetUnicodeCategory(s, 0);
         if (!isIdentifierStartCharacter(first.charAt(0), cat))
@@ -547,19 +547,19 @@ public class Lexer
         return true;
     }
 
-    private static boolean isIdentifierStartCharacter(char c, UnicodeCategory cat) throws Exception {
+    private static boolean isIdentifierStartCharacter(char c, UnicodeCategory cat)  {
         return (cat == UnicodeCategory.LowercaseLetter || cat == UnicodeCategory.UppercaseLetter || cat == UnicodeCategory.TitlecaseLetter || cat == UnicodeCategory.ModifierLetter || cat == UnicodeCategory.OtherLetter || c == '_' || (!isOperatorCharacter(c,cat) && (cat == UnicodeCategory.OtherSymbol)));
     }
 
-    private static boolean isIdentifierCharacter(char c, UnicodeCategory cat) throws Exception {
+    private static boolean isIdentifierCharacter(char c, UnicodeCategory cat)  {
         return (cat == UnicodeCategory.LowercaseLetter || cat == UnicodeCategory.UppercaseLetter || cat == UnicodeCategory.TitlecaseLetter || cat == UnicodeCategory.ModifierLetter || cat == UnicodeCategory.OtherLetter || cat == UnicodeCategory.DecimalDigitNumber || cat == UnicodeCategory.LetterNumber || cat == UnicodeCategory.OtherNumber || cat == UnicodeCategory.NonSpacingMark || cat == UnicodeCategory.SpacingCombiningMark || cat == UnicodeCategory.EnclosingMark || (!isOperatorCharacter(c,cat) && (cat == UnicodeCategory.OtherSymbol)) || c == '\'' || c == '_');
     }
 
-    private boolean isNumberStartCharacter(char c) throws Exception {
+    private boolean isNumberStartCharacter(char c)  {
         return (c >= '0' && c <= '9');
     }
 
-    private boolean isDigitInBase(char c, int numBase) throws Exception {
+    private boolean isDigitInBase(char c, int numBase)  {
         if (c >= '0' && c <= '9')
             return (c - '0') < numBase;
          
@@ -572,7 +572,7 @@ public class Lexer
         return false;
     }
 
-    private Token lexOperator() throws Exception {
+    private Token lexOperator()  {
         boolean spaceBefore = false, spaceAfter = false;
         int start = index;
         if (start > 0 && (code.charAt(start - 1) == ' '))
@@ -636,7 +636,7 @@ public class Lexer
         return ret;
     }
 
-    private Token lexComment() throws Exception {
+    private Token lexComment()  {
         advanceIndex();
         advanceIndex();
         int start = index;
@@ -654,7 +654,7 @@ public class Lexer
         return new CommentToken(moduleName,line,column,body);
     }
 
-    private static boolean isOperatorCharacter(char c, UnicodeCategory cat) throws Exception {
+    private static boolean isOperatorCharacter(char c, UnicodeCategory cat)  {
         return c != '"' && c != ',' && c != ';' && (c == '+' || c == '-' || c == '*' || c == '/' || c == '=' || c == '!' || c == '.' || c == '>' || c == '<' || c == '@' || c == '$' || c == '?' || c == '&' || c == '|' || c == '^' || c == '%' || c == '#' || c == '~' || c == ':' || c == '\\' || c == '¬' || c == '±' || c == '×' || c == '÷' || c == '¡' || c == '¢' || c == '£' || c == '¤' || c == '¥' || c == '§' || c == '¿' || c == '‽' || c == '⁂' || (c >= 0x2200 && c <= 0x22ff) || (c >= 0x2a00 && c <= 0x2aff) || (c >= 0x27c0 && c <= 0x27ef) || (c >= 0x2980 && c <= 0x29ff) || (c >= 0x2b00 && c <= 0x2bff) || (c >= 0x2190 && c <= 0x21ff) || (c >= 0x27f0 && c <= 0x27ff) || (c >= 0x2900 && c <= 0x297f) || (c >= 0x2300 && c <= 0x23ff) || (c >= 0x20a0 && c <= 0x20cf) || (c >= 0x25a0 && c <= 0x25ff));
     }
 
@@ -673,7 +673,7 @@ public class Lexer
     // Block: Supplemental Technical
     // Block: Currency Symbols
     // Block: Geometric Shapes
-    private void skipSpaces() throws Exception {
+    private void skipSpaces()  {
         advanceIndex();
         while (' ' == code.charAt(index))
         {
@@ -683,7 +683,7 @@ public class Lexer
     }
 
     // new SpaceToken(moduleName, line, column, index - start);
-    private Token lexNumber() throws Exception {
+    private Token lexNumber()  {
         char base1 = code.charAt(index);
         char base2 = '\0';
         char base3 = '\0';
@@ -737,12 +737,12 @@ public class Lexer
         return new NumberToken(moduleName,line,column,numbase,digits);
     }
 
-    private Token lexString() throws Exception {
+    private Token lexString()  {
         advanceIndex();
         return lexStringRemainder();
     }
 
-    private void appendHexEscape(StringBuilder b, String hex) throws Exception {
+    private void appendHexEscape(StringBuilder b, String hex)  {
         for (int i = 0;i < hex.length();i++)
         {
             char c = hex.charAt(i);
@@ -763,7 +763,7 @@ public class Lexer
         b.appendCodePoint(cp); //KJXBUGGY
     }
 
-    private Token lexStringRemainder() throws Exception {
+    private Token lexStringRemainder()  {
         int start = index;
         StringBuilder b = new StringBuilder();
         boolean escaped = false;
@@ -852,7 +852,7 @@ public class Lexer
         return new StringToken(moduleName,line,column,b.toString(),code.substring(start, (start) + (index - start - 1)));
     }
 
-    private Token lexOpenBracket() throws Exception {
+    private Token lexOpenBracket()  {
         int start = index;
         advanceIndex();
         UnicodeCategory cat = validateChar();
@@ -881,7 +881,7 @@ public class Lexer
         return new OpenBracketToken(moduleName,line,column,bracket);
     }
 
-    private Token lexCloseBracket() throws Exception {
+    private Token lexCloseBracket()  {
         int start = index;
         advanceIndex();
         UnicodeCategory cat = validateChar();
@@ -927,32 +927,32 @@ public class Lexer
         return new CloseBracketToken(moduleName,line,column,bracket);
     }
 
-    private Token lexLParen() throws Exception {
+    private Token lexLParen()  {
         advanceIndex();
         return new LParenToken(moduleName,line,column);
     }
 
-    private Token lexRParen() throws Exception {
+    private Token lexRParen()  {
         advanceIndex();
         return new RParenToken(moduleName,line,column);
     }
 
-    private Token lexLBrace() throws Exception {
+    private Token lexLBrace()  {
         advanceIndex();
         return new LBraceToken(moduleName,line,column);
     }
 
-    private Token lexRBrace() throws Exception {
+    private Token lexRBrace()  {
         advanceIndex();
         return new RBraceToken(moduleName,line,column);
     }
 
-    private Token lexSemicolon() throws Exception {
+    private Token lexSemicolon()  {
         advanceIndex();
         return new SemicolonToken(moduleName,line,column);
     }
 
-    private Token lexComma() throws Exception {
+    private Token lexComma()  {
         advanceIndex();
         return new CommaToken(moduleName,line,column);
     }

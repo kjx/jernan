@@ -20,7 +20,7 @@ import Grace.Execution.RequestPartNode;
 public class ExplicitReceiverRequestNode  extends RequestNode 
 {
     private Node receiver;
-    public ExplicitReceiverRequestNode(Token location, ParseNode source, Node receiver) throws Exception {
+    public ExplicitReceiverRequestNode(Token location, ParseNode source, Node receiver)  {
         super(location, source);
         this.receiver = receiver;
     }
@@ -28,7 +28,7 @@ public class ExplicitReceiverRequestNode  extends RequestNode
     /**
     * 
     */
-    public void debugPrint(PrintStream tw, String prefix) throws Exception {
+    public void debugPrint(PrintStream tw, String prefix)  {
         tw.println(prefix + "ExplicitReceiverRequest: " + getName());
         tw.println(prefix + "  Receiver:");
         receiver.debugPrint(tw,prefix + "    ");

@@ -21,11 +21,11 @@ public class TypeStatementParseNode  extends ParseNode
     /**
     * Name of this type
     */
-    public ParseNode getBaseName() throws Exception {
+    public ParseNode getBaseName()  {
         return _baseName;
     }
 
-    public void setBaseName(ParseNode value) throws Exception {
+    public void setBaseName(ParseNode value)  {
         _baseName = value;
     }
 
@@ -33,11 +33,11 @@ public class TypeStatementParseNode  extends ParseNode
     /**
     * Value of this type declaration
     */
-    public ParseNode getBody() throws Exception {
+    public ParseNode getBody()  {
         return _body;
     }
 
-    public void setBody(ParseNode value) throws Exception {
+    public void setBody(ParseNode value)  {
         _body = value;
     }
 
@@ -48,11 +48,11 @@ public class TypeStatementParseNode  extends ParseNode
     /**
     * Generic parameters of this type
     */
-    public List<ParseNode> getGenericParameters() throws Exception {
+    public List<ParseNode> getGenericParameters()  {
         return genericParameters;
     }
 
-    public TypeStatementParseNode(Token tok, ParseNode baseName, ParseNode body, List<ParseNode> generics) throws Exception {
+    public TypeStatementParseNode(Token tok, ParseNode baseName, ParseNode body, List<ParseNode> generics)  {
         super(tok);
         this._baseName = baseName;
         this._body = body;
@@ -62,7 +62,7 @@ public class TypeStatementParseNode  extends ParseNode
     /**
     * 
     */
-    public void debugPrint(PrintStream tw, String prefix) throws Exception {
+    public void debugPrint(PrintStream tw, String prefix)  {
         tw.println(prefix + "TypeStatement:");
         tw.println(prefix + "  Name:");
         _baseName.debugPrint(tw,prefix + "    ");
@@ -81,7 +81,7 @@ public class TypeStatementParseNode  extends ParseNode
     /**
     * 
     */
-    public <T>T visit(ParseNodeVisitor<T> visitor) throws Exception {
+    public <T>T visit(ParseNodeVisitor<T> visitor)  {
         return visitor.visit(this);
     }
 

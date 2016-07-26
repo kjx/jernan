@@ -25,7 +25,7 @@ public class DefDeclarationNode  extends Node
     /**
     * The type given to this def declarationThis property gets the value of the field type
     */
-    public Node getType() throws Exception {
+    public Node getType()  {
         return type;
     }
 
@@ -53,7 +53,7 @@ public class DefDeclarationNode  extends Node
         __Annotations = value;
     }
 
-    public DefDeclarationNode(Token location, DefDeclarationParseNode source, Node val, Node type) throws Exception {
+    public DefDeclarationNode(Token location, DefDeclarationParseNode source, Node val, Node type)  {
         super(location, source);
         this.type = type;
         setValue(val);
@@ -77,7 +77,7 @@ public class DefDeclarationNode  extends Node
     * The name of this def declarationThis property accesses the name field of the originating
     * parse node
     */
-    public String getName() throws Exception {
+    public String getName()  {
         return (origin.getName() instanceof IdentifierParseNode ? ((IdentifierParseNode)origin.getName()).getName() : "KJX_SHOULD_NOT_HAPPEN");
     }
 
@@ -88,7 +88,7 @@ public class DefDeclarationNode  extends Node
     /**
     * 
     */
-    public void debugPrint(PrintStream tw, String prefix) throws Exception {
+    public void debugPrint(PrintStream tw, String prefix)  {
         tw.println(prefix + "DefDeclaration:");
         tw.println(prefix + "  Name:");
         tw.println(prefix + "    " + getName());

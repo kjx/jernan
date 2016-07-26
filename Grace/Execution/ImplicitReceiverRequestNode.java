@@ -18,14 +18,14 @@ import Grace.Execution.RequestPartNode;
 */
 public class ImplicitReceiverRequestNode  extends RequestNode 
 {
-    public ImplicitReceiverRequestNode(Token location, ParseNode source) throws Exception {
+    public ImplicitReceiverRequestNode(Token location, ParseNode source)  {
         super(location, source);
     }
 
     /**
     * 
     */
-    public void debugPrint(PrintStream tw, String prefix) throws Exception {
+    public void debugPrint(PrintStream tw, String prefix)  {
         tw.println(prefix + "ImplicitReceiverRequest: " + getName());
         if (parts.size() == 1)
         {

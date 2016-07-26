@@ -18,15 +18,15 @@ public class VarArgsParameterParseNode  extends ParseNode
     /**
     * Name of the parameter
     */
-    public ParseNode getName() throws Exception {
+    public ParseNode getName()  {
         return _name;
     }
 
-    public void setName(ParseNode value) throws Exception {
+    public void setName(ParseNode value)  {
         _name = value;
     }
 
-    public VarArgsParameterParseNode(ParseNode name) throws Exception {
+    public VarArgsParameterParseNode(ParseNode name)  {
         super(name);
         this._name = name;
     }
@@ -34,7 +34,7 @@ public class VarArgsParameterParseNode  extends ParseNode
     /**
     * 
     */
-    public void debugPrint(PrintStream tw, String prefix) throws Exception {
+    public void debugPrint(PrintStream tw, String prefix)  {
         tw.println(prefix + "VarArgsParameter:");
         tw.println(prefix + "  Name:");
         _name.debugPrint(tw,prefix + "    ");
@@ -44,7 +44,7 @@ public class VarArgsParameterParseNode  extends ParseNode
     /**
     * 
     */
-    public <T>T visit(ParseNodeVisitor<T> visitor) throws Exception {
+    public <T>T visit(ParseNodeVisitor<T> visitor)  {
         return visitor.visit(this);
     }
 

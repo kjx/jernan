@@ -33,38 +33,38 @@ public class IdentifierParseNode  extends ParseNode
         _name = value;
     }
 
-    public IdentifierParseNode(Token tok) throws Exception {
+    public IdentifierParseNode(Token tok)  {
         super(tok);
         IdentifierToken it = tok instanceof IdentifierToken ? (IdentifierToken)tok : (IdentifierToken)null;
         _name = it.getName();
     }
 
-    public IdentifierParseNode(Token tok, String name) throws Exception {
+    public IdentifierParseNode(Token tok, String name)  {
         super(tok);
         _name = name;
     }
 
-    public IdentifierParseNode(OperatorToken tok) throws Exception {
+    public IdentifierParseNode(OperatorToken tok)  {
         super(tok);
         _name = tok.getName();
     }
 
-    public IdentifierParseNode(OpenBracketToken tok) throws Exception {
+    public IdentifierParseNode(OpenBracketToken tok)  {
         super(tok);
         _name = tok.getName() + tok.getOther();
     }
 
-    public IdentifierParseNode(SelfKeywordToken tok) throws Exception {
+    public IdentifierParseNode(SelfKeywordToken tok)  {
         super(tok);
         _name = "self";
     }
 
-    public IdentifierParseNode(OuterKeywordToken tok) throws Exception {
+    public IdentifierParseNode(OuterKeywordToken tok)  {
         super(tok);
         _name = "outer";
     }
 
-    public IdentifierParseNode(BindToken tok) throws Exception {
+    public IdentifierParseNode(BindToken tok)  {
         super(tok);
         _name = ":=";
     }
@@ -72,7 +72,7 @@ public class IdentifierParseNode  extends ParseNode
     /**
     * 
     */
-    public void debugPrint(PrintStream tw, String prefix) throws Exception {
+    public void debugPrint(PrintStream tw, String prefix)  {
         tw.println(prefix + "Identifier: " + _name);
         writeComment(tw,prefix);
     }
@@ -80,7 +80,7 @@ public class IdentifierParseNode  extends ParseNode
     /**
     * 
     */
-    public <T>T visit(ParseNodeVisitor<T> visitor) throws Exception {
+    public <T>T visit(ParseNodeVisitor<T> visitor)  {
         return visitor.visit(this);
     }
 

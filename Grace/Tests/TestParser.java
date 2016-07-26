@@ -10,7 +10,7 @@ import java.nio.file.Files;
 
 public class TestParser {
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args)  {
 
 	String source = readFile(args[0]);
 	Parser parser = new Parser(args[0],source);

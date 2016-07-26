@@ -26,7 +26,7 @@ public class SignatureParseNode  extends ParseNode
     * Parts in this signature
     * This property gets the value of the string field _parts
     */
-    public List<SignaturePartParseNode> getParts() throws Exception {
+    public List<SignaturePartParseNode> getParts()  {
         return _parts;
     }
 
@@ -77,7 +77,7 @@ public class SignatureParseNode  extends ParseNode
     /**
     * @param t Representative token of this signature
     */
-    public SignatureParseNode(Token t) throws Exception {
+    public SignatureParseNode(Token t)  {
         super(t);
     }
 
@@ -86,14 +86,14 @@ public class SignatureParseNode  extends ParseNode
     * 
     *  @param part Part to add
     */
-    public void addPart(SignaturePartParseNode part) throws Exception {
+    public void addPart(SignaturePartParseNode part)  {
         _parts.add(part);
     }
 
     /**
     * 
     */
-    public void debugPrint(PrintStream tw, String prefix) throws Exception {
+    public void debugPrint(PrintStream tw, String prefix)  {
         tw.println(prefix + "Signature: " + getName());
         for (SignaturePartParseNode p : _parts)
             p.debugPrint(tw,prefix + "    ");
@@ -109,7 +109,7 @@ public class SignatureParseNode  extends ParseNode
     /**
     * 
     */
-    public <T>T visit(ParseNodeVisitor<T> visitor) throws Exception {
+    public <T>T visit(ParseNodeVisitor<T> visitor)  {
         return visitor.visit(this);
     }
 

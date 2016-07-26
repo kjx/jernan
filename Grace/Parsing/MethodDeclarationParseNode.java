@@ -32,11 +32,11 @@ public class MethodDeclarationParseNode  extends ParseNode
     /**
     * Body of this method
     */
-    public List<ParseNode> getBody() throws Exception {
+    public List<ParseNode> getBody()  {
         return _body;
     }
 
-    public void setBody(List<ParseNode> value) throws Exception {
+    public void setBody(List<ParseNode> value)  {
         _body = value;
     }
 
@@ -52,7 +52,7 @@ public class MethodDeclarationParseNode  extends ParseNode
         __ReturnType = value;
     }
 
-    public MethodDeclarationParseNode(Token tok) throws Exception {
+    public MethodDeclarationParseNode(Token tok)  {
         super(tok);
         _body = new ArrayList<ParseNode>();
     }
@@ -60,7 +60,7 @@ public class MethodDeclarationParseNode  extends ParseNode
     /**
     * 
     */
-    public void debugPrint(PrintStream tw, String prefix) throws Exception {
+    public void debugPrint(PrintStream tw, String prefix)  {
         tw.println(prefix + "MethodDeclaration: " + getSignature().getName());
         tw.println(prefix + "  Signature:");
         getSignature().debugPrint(tw,prefix + "    ");
@@ -75,7 +75,7 @@ public class MethodDeclarationParseNode  extends ParseNode
     /**
     * 
     */
-    public <T>T visit(ParseNodeVisitor<T> visitor) throws Exception {
+    public <T>T visit(ParseNodeVisitor<T> visitor)  {
         return visitor.visit(this);
     }
 

@@ -22,18 +22,18 @@ public class ImplicitReceiverRequestParseNode  extends ParseNode
     /**
     * Name of this method
     */
-    public String getName() throws Exception {
+    public String getName()  {
         return _name;
     }
 
     /**
     * Parts of this method
     */
-    public List<ParseNode> getNameParts() throws Exception {
+    public List<ParseNode> getNameParts()  {
         return _nameParts;
     }
 
-    public void setNameParts(List<ParseNode> value) throws Exception {
+    public void setNameParts(List<ParseNode> value)  {
         _nameParts = value;
     }
 
@@ -41,11 +41,11 @@ public class ImplicitReceiverRequestParseNode  extends ParseNode
     /**
     * Argument lists of each part
     */
-    public List<List<ParseNode>> getArguments() throws Exception {
+    public List<List<ParseNode>> getArguments()  {
         return _arguments;
     }
 
-    public void setArguments(List<List<ParseNode>> value) throws Exception {
+    public void setArguments(List<List<ParseNode>> value)  {
         _arguments = value;
     }
 
@@ -53,15 +53,15 @@ public class ImplicitReceiverRequestParseNode  extends ParseNode
     /**
     * Generic argument lists of each part
     */
-    public List<List<ParseNode>> getGenericArguments() throws Exception {
+    public List<List<ParseNode>> getGenericArguments()  {
         return _genericArguments;
     }
 
-    public void setGenericArguments(List<List<ParseNode>> value) throws Exception {
+    public void setGenericArguments(List<List<ParseNode>> value)  {
         _genericArguments = value;
     }
 
-    public ImplicitReceiverRequestParseNode(ParseNode id) throws Exception {
+    public ImplicitReceiverRequestParseNode(ParseNode id)  {
         super(id);
         _nameParts = new ArrayList<ParseNode>();
         _arguments = new ArrayList<List<ParseNode>>();
@@ -72,7 +72,7 @@ public class ImplicitReceiverRequestParseNode  extends ParseNode
     /**
     * Add a part to the method requested here
     */
-    public void addPart(ParseNode id) throws Exception {
+    public void addPart(ParseNode id)  {
         _nameParts.add(id);
         _arguments.add(new ArrayList<ParseNode>());
         _genericArguments.add(new ArrayList<ParseNode>());
@@ -86,7 +86,7 @@ public class ImplicitReceiverRequestParseNode  extends ParseNode
     /**
     * 
     */
-    public void debugPrint(PrintStream tw, String prefix) throws Exception {
+    public void debugPrint(PrintStream tw, String prefix)  {
         String name = "";
         for (ParseNode n : _nameParts)
         {
@@ -114,7 +114,7 @@ public class ImplicitReceiverRequestParseNode  extends ParseNode
     /**
     * 
     */
-    public <T>T visit(ParseNodeVisitor<T> visitor) throws Exception {
+    public <T>T visit(ParseNodeVisitor<T> visitor)  {
         return visitor.visit(this);
     }
 

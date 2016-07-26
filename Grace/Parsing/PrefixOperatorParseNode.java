@@ -19,11 +19,11 @@ public class PrefixOperatorParseNode  extends ParseNode
     /**
     * Name (symbol) of the operator
     */
-    public String getName() throws Exception {
+    public String getName()  {
         return _name;
     }
 
-    public void setName(String value) throws Exception {
+    public void setName(String value)  {
         _name = value;
     }
 
@@ -31,15 +31,15 @@ public class PrefixOperatorParseNode  extends ParseNode
     /**
     * Receiver of the operator request
     */
-    public ParseNode getReceiver() throws Exception {
+    public ParseNode getReceiver()  {
         return _receiver;
     }
 
-    public void setReceiver(ParseNode value) throws Exception {
+    public void setReceiver(ParseNode value)  {
         _receiver = value;
     }
 
-    public PrefixOperatorParseNode(OperatorToken tok, ParseNode expr) throws Exception {
+    public PrefixOperatorParseNode(OperatorToken tok, ParseNode expr)  {
         super(tok);
         this._name = tok.getName();
         this._receiver = expr;
@@ -48,7 +48,7 @@ public class PrefixOperatorParseNode  extends ParseNode
     /**
     * 
     */
-    public void debugPrint(PrintStream tw, String prefix) throws Exception {
+    public void debugPrint(PrintStream tw, String prefix)  {
         tw.println(prefix + "PrefixOperator: " + _name);
         _receiver.debugPrint(tw,prefix + "    ");
         writeComment(tw,prefix);
@@ -57,7 +57,7 @@ public class PrefixOperatorParseNode  extends ParseNode
     /**
     * 
     */
-    public <T>T visit(ParseNodeVisitor<T> visitor) throws Exception {
+    public <T>T visit(ParseNodeVisitor<T> visitor)  {
         return visitor.visit(this);
     }
 

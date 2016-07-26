@@ -24,14 +24,14 @@ public class ForDoRequestNode  extends ImplicitReceiverRequestNode
     /**
     * 
     */
-    public ForDoRequestNode(Token location, ParseNode source) throws Exception {
+    public ForDoRequestNode(Token location, ParseNode source)  {
         super(location, source);
     }
 
     /**
     * 
     */
-    public void debugPrint(PrintStream tw, String prefix) throws Exception {
+    public void debugPrint(PrintStream tw, String prefix)  {
         tw.println(prefix + "ForDoRequest: " + getName());
         if (parts.size() == 1)
         {

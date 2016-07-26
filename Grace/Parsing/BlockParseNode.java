@@ -21,11 +21,11 @@ public class BlockParseNode  extends ParseNode
     /**
     * Parameters of the block
     */
-    public List<ParseNode> getParameters() throws Exception {
+    public List<ParseNode> getParameters()  {
         return _parameters;
     }
 
-    public void setParameters(List<ParseNode> value) throws Exception {
+    public void setParameters(List<ParseNode> value)  {
         _parameters = value;
     }
 
@@ -33,15 +33,15 @@ public class BlockParseNode  extends ParseNode
     /**
     * Body of the block
     */
-    public List<ParseNode> getBody() throws Exception {
+    public List<ParseNode> getBody()  {
         return _body;
     }
 
-    public void setBody(List<ParseNode> value) throws Exception {
+    public void setBody(List<ParseNode> value)  {
         _body = value;
     }
 
-    public BlockParseNode(Token tok) throws Exception {
+    public BlockParseNode(Token tok)  {
         super(tok);
         _body = new ArrayList<ParseNode>();
         _parameters = new ArrayList<ParseNode>();
@@ -50,7 +50,7 @@ public class BlockParseNode  extends ParseNode
     /**
     * 
     */
-    public void debugPrint(PrintStream tw, String prefix) throws Exception {
+    public void debugPrint(PrintStream tw, String prefix)  {
         tw.println(prefix + "Block:");
         tw.println(prefix + "  Parameters:");
         for (ParseNode n : _parameters)
@@ -68,7 +68,7 @@ public class BlockParseNode  extends ParseNode
     /**
     * 
     */
-    public <T>T visit(ParseNodeVisitor<T> visitor) throws Exception {
+    public <T>T visit(ParseNodeVisitor<T> visitor)  {
         return visitor.visit(this);
     }
 

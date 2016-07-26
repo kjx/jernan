@@ -39,7 +39,7 @@ public class AliasParseNode  extends ParseNode
         __OldName = value;
     }
 
-    public AliasParseNode(Token tok, SignatureParseNode n, SignatureParseNode o) throws Exception {
+    public AliasParseNode(Token tok, SignatureParseNode n, SignatureParseNode o)  {
         super(tok);
         setNewName(n);
         setOldName(o);
@@ -48,7 +48,7 @@ public class AliasParseNode  extends ParseNode
     /**
     * 
     */
-    public void debugPrint(PrintStream tw, String prefix) throws Exception {
+    public void debugPrint(PrintStream tw, String prefix)  {
         tw.println(prefix + "Alias:");
         tw.println(prefix + "  New name:");
         getNewName().debugPrint(tw,prefix + "    ");
@@ -60,7 +60,7 @@ public class AliasParseNode  extends ParseNode
     /**
     * 
     */
-    public <T>T visit(ParseNodeVisitor<T> visitor) throws Exception {
+    public <T>T visit(ParseNodeVisitor<T> visitor)  {
         return visitor.visit(this);
     }
 

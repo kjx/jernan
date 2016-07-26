@@ -17,7 +17,7 @@ import Grace.Execution.StringLiteralNode;
 public class StringLiteralNode  extends Node 
 {
     private StringLiteralParseNode origin;
-    public StringLiteralNode(Token location, StringLiteralParseNode source) throws Exception {
+    public StringLiteralNode(Token location, StringLiteralParseNode source)  {
         super(location, source);
         origin = source;
     }
@@ -33,7 +33,7 @@ public class StringLiteralNode  extends Node
     /**
     * 
     */
-    public void debugPrint(PrintStream tw, String prefix) throws Exception {
+    public void debugPrint(PrintStream tw, String prefix)  {
         tw.println(prefix + "String: " + getValue());
     }
 }

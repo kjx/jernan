@@ -8,11 +8,11 @@ import Grace.Parsing.KeywordToken;
 
 public class ClassKeywordToken  extends KeywordToken 
 {
-    public ClassKeywordToken(String module, int line, int column) throws Exception {
+    public ClassKeywordToken(String module, int line, int column)  {
         super(module, line, column);
     }
 
-    protected String describe() throws Exception {
+    protected String describe()  {
         return "ClassKeyword";
     }
 

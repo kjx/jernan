@@ -43,22 +43,22 @@ public class ParameterNode  extends IdentifierNode
         __Variadic = value;
     }
 
-    public ParameterNode(Token location, IdentifierParseNode source) throws Exception {
+    public ParameterNode(Token location, IdentifierParseNode source)  {
         super(location, source);
     }
 
-    public ParameterNode(Token location, IdentifierParseNode source, Node type) throws Exception {
+    public ParameterNode(Token location, IdentifierParseNode source, Node type)  {
         super(location, source);
         setType(type);
     }
 
-    public ParameterNode(Token location, IdentifierParseNode source, boolean variadic, Node type) throws Exception {
+    public ParameterNode(Token location, IdentifierParseNode source, boolean variadic, Node type)  {
         super(location, source);
         setVariadic(variadic);
         setType(type);
     }
 
-    public ParameterNode(Token location, IdentifierParseNode source, boolean variadic) throws Exception {
+    public ParameterNode(Token location, IdentifierParseNode source, boolean variadic)  {
         super(location, source);
         setVariadic(variadic);
     }
@@ -66,7 +66,7 @@ public class ParameterNode  extends IdentifierNode
     /**
     * 
     */
-    public void debugPrint(PrintStream tw, String prefix) throws Exception {
+    public void debugPrint(PrintStream tw, String prefix)  {
         tw.println(prefix + "Parameter: " + getName());
         tw.println(prefix + "  Variadic: " + getVariadic());
         if (getType() != null)

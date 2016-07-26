@@ -32,7 +32,7 @@ public class TypeNode  extends Node
         __Name = value;
     }
 
-    public TypeNode(Token token, ParseNode source) throws Exception {
+    public TypeNode(Token token, ParseNode source)  {
         super(token, source);
         setName("Anonymous");
     }
@@ -47,7 +47,7 @@ public class TypeNode  extends Node
     /**
     * 
     */
-    public void debugPrint(PrintStream tw, String prefix) throws Exception {
+    public void debugPrint(PrintStream tw, String prefix)  {
         tw.println(prefix + "Type:");
         tw.println(prefix + "  Methods:");
         for (SignatureNode meth : body)

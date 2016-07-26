@@ -15,14 +15,14 @@ import Grace.Execution.Node;
 */
 public class NoopNode  extends Node 
 {
-    public NoopNode(Token location, ParseNode source) throws Exception {
+    public NoopNode(Token location, ParseNode source)  {
         super(location, source);
     }
 
     /**
     * 
     */
-    public void debugPrint(PrintStream tw, String prefix) throws Exception {
+    public void debugPrint(PrintStream tw, String prefix)  {
         tw.println(prefix + "Noop");
     }
 }

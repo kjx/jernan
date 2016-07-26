@@ -29,7 +29,7 @@ public class AnnotationsParseNode  extends ParseNode
         _annotations = value;
     }
 
-    public AnnotationsParseNode(Token tok) throws Exception {
+    public AnnotationsParseNode(Token tok)  {
         super(tok);
     }
 
@@ -37,7 +37,7 @@ public class AnnotationsParseNode  extends ParseNode
     * Add an annotation to this collection
     *  @param ann Annotation to add
     */
-    public void addAnnotation(ParseNode ann) throws Exception {
+    public void addAnnotation(ParseNode ann)  {
         _annotations.add(ann);
     }
 
@@ -45,7 +45,7 @@ public class AnnotationsParseNode  extends ParseNode
     * Check for a named annotation
     *  @param name Annotation to search for
     */
-    public boolean hasAnnotation(String name) throws Exception {
+    public boolean hasAnnotation(String name)  {
         for (ParseNode p : _annotations)
         {
             IdentifierParseNode aid = p instanceof IdentifierParseNode ? (IdentifierParseNode)p : (IdentifierParseNode)null;
@@ -63,7 +63,7 @@ public class AnnotationsParseNode  extends ParseNode
     /**
     * 
     */
-    public void debugPrint(PrintStream tw, String prefix) throws Exception {
+    public void debugPrint(PrintStream tw, String prefix)  {
         tw.println(prefix + "Annotations:");
         for (ParseNode ann : _annotations)
             ann.debugPrint(tw,prefix + "    ");
@@ -73,7 +73,7 @@ public class AnnotationsParseNode  extends ParseNode
     /**
     * 
     */
-    public <T>T visit(ParseNodeVisitor<T> visitor) throws Exception {
+    public <T>T visit(ParseNodeVisitor<T> visitor)  {
         return visitor.visit(this);
     }
 

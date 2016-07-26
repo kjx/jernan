@@ -51,7 +51,7 @@ public class ImportParseNode  extends ParseNode
         _type = value;
     }
 
-    public ImportParseNode(Token tok, ParseNode path, ParseNode name, ParseNode type) throws Exception {
+    public ImportParseNode(Token tok, ParseNode path, ParseNode name, ParseNode type)  {
         super(tok);
         this._path = path;
         this._name = name;
@@ -61,7 +61,7 @@ public class ImportParseNode  extends ParseNode
     /**
     * 
     */
-    public void debugPrint(PrintStream tw, String prefix) throws Exception {
+    public void debugPrint(PrintStream tw, String prefix)  {
         tw.println(prefix + "Import:");
         tw.println(prefix + "  Path:");
         _path.debugPrint(tw,prefix + "    ");
@@ -79,7 +79,7 @@ public class ImportParseNode  extends ParseNode
     /**
     * 
     */
-    public <T>T visit(ParseNodeVisitor<T> visitor) throws Exception {
+    public <T>T visit(ParseNodeVisitor<T> visitor)  {
         return visitor.visit(this);
     }
 

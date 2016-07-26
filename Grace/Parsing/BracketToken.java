@@ -11,11 +11,11 @@ public class BracketToken  extends Token
 {
     private String _name;
     private String _other;
-    public String getName() throws Exception {
+    public String getName()  {
         return _name;
     }
 
-    public void setName(String value) throws Exception {
+    public void setName(String value)  {
         _name = value;
     }
 
@@ -37,7 +37,7 @@ public class BracketToken  extends Token
         __Closing = value;
     }
 
-    public String getOther() throws Exception {
+    public String getOther()  {
         if (_other == null)
         {
             _other = computeOther();
@@ -46,12 +46,12 @@ public class BracketToken  extends Token
         return _other;
     }
 
-    public BracketToken(String module, int line, int column, String val) throws Exception {
+    public BracketToken(String module, int line, int column, String val)  {
         super(module, line, column);
         _name = val;
     }
 
-    private String computeOther() throws Exception {
+    private String computeOther()  {
         StringBuilder sb = new StringBuilder();
         int[] graphemeIndices = StringInfo.ParseCombiningCharacters(_name);
         for (int i = graphemeIndices.length - 1;i >= 0;i--)
@@ -65,7 +65,7 @@ public class BracketToken  extends Token
         return sb.toString();
     }
 
-    protected String describe() throws Exception {
+    protected String describe()  {
         return "Bracket:" + _name;
     }
 

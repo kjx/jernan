@@ -8,11 +8,11 @@ import Grace.Parsing.KeywordToken;
 
 public class WhereKeywordToken  extends KeywordToken 
 {
-    public WhereKeywordToken(String module, int line, int column) throws Exception {
+    public WhereKeywordToken(String module, int line, int column)  {
         super(module, line, column);
     }
 
-    protected String describe() throws Exception {
+    protected String describe()  {
         return "WhereKeyword";
     }
 

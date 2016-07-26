@@ -31,7 +31,7 @@ public abstract class Token
     *  @param line Line this token was found at
     *  @param column Column this token was found at
     */
-    public Token(String module, int line, int column) throws Exception {
+    public Token(String module, int line, int column)  {
         this.module = module;
         this.line = line;
         this.column = column;
@@ -59,7 +59,7 @@ public abstract class Token
     /**
     * Subclass-specific description of the value of this token.
     */
-    abstract protected String describe() throws Exception ;
+    abstract protected String describe()  ;
 
     /**
     * Module this token was found in.
@@ -73,7 +73,7 @@ public abstract class Token
     * use in an error message.
     * Class to describe
     */
-    public static <T extends Token>String describeSubclass() throws Exception {
+    public static <T extends Token>String describeSubclass()  {
 	return "KJX-FUCKED-KJX-Token-FUCKED";
 	//KJX MUST FIX
 //        if (ArrowToken.class.equals(T.class))

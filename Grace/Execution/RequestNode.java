@@ -25,7 +25,7 @@ public abstract class RequestNode  extends Node implements Iterable<RequestPartN
     * The name parts making up this request
     */
     protected List<RequestPartNode> parts = new ArrayList<RequestPartNode>();
-    public RequestNode(Token location, ParseNode source) throws Exception {
+    public RequestNode(Token location, ParseNode source)  {
         super(location, source);
         this.parts = new ArrayList<RequestPartNode>();
     }
@@ -34,7 +34,7 @@ public abstract class RequestNode  extends Node implements Iterable<RequestPartN
     * Make this request into a := bind request
     *  @param val Value to assign
     */
-    public void makeBind(Node val) throws Exception {
+    public void makeBind(Node val)  {
 	List<Node> tmp = new ArrayList<Node>();
 	tmp.add(val); 
         RequestPartNode rpn = 
@@ -48,14 +48,14 @@ public abstract class RequestNode  extends Node implements Iterable<RequestPartN
     * Add another part to this request
     *  @param part Part to append
     */
-    public void addPart(RequestPartNode part) throws Exception {
+    public void addPart(RequestPartNode part)  {
         parts.add(part);
     }
 
     /**
     * The name of the method being requestedThis property gets the value of the field name
     */
-    public String getName() throws Exception {
+    public String getName()  {
         if (name == null)
         {
             //C# name = String.Join(" ", from x in _parts select x.Name)

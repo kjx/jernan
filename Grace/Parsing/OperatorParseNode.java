@@ -19,11 +19,11 @@ public class OperatorParseNode  extends ParseNode
     /**
     * LHS of the operator
     */
-    public ParseNode getLeft() throws Exception {
+    public ParseNode getLeft()  {
         return _left;
     }
 
-    public void setLeft(ParseNode value) throws Exception {
+    public void setLeft(ParseNode value)  {
         _left = value;
     }
 
@@ -31,11 +31,11 @@ public class OperatorParseNode  extends ParseNode
     /**
     * RHS of the operator
     */
-    public ParseNode getRight() throws Exception {
+    public ParseNode getRight()  {
         return _right;
     }
 
-    public void setRight(ParseNode value) throws Exception {
+    public void setRight(ParseNode value)  {
         _right = value;
     }
 
@@ -46,11 +46,11 @@ public class OperatorParseNode  extends ParseNode
     /**
     * The name (symbol) of the operator
     */
-    public String getName() throws Exception {
+    public String getName()  {
         return name;
     }
 
-    public OperatorParseNode(Token tok, String name, ParseNode l, ParseNode r) throws Exception {
+    public OperatorParseNode(Token tok, String name, ParseNode l, ParseNode r)  {
         super(tok);
         this.name = name;
         _left = l;
@@ -60,7 +60,7 @@ public class OperatorParseNode  extends ParseNode
     /**
     * 
     */
-    public void debugPrint(PrintStream tw, String prefix) throws Exception {
+    public void debugPrint(PrintStream tw, String prefix)  {
         tw.println(prefix + "Operator: " + name);
         _left.debugPrint(tw,prefix + "    ");
         _right.debugPrint(tw,prefix + "    ");
@@ -70,7 +70,7 @@ public class OperatorParseNode  extends ParseNode
     /**
     * 
     */
-    public <T>T visit(ParseNodeVisitor<T> visitor) throws Exception {
+    public <T>T visit(ParseNodeVisitor<T> visitor)  {
         return visitor.visit(this);
     }
 

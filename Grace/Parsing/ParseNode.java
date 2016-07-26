@@ -18,11 +18,11 @@ public abstract class ParseNode
     /**
     * Line number this node began on
     */
-    public int getLine() throws Exception {
+    public int getLine()  {
         return _line;
     }
 
-    public void setLine(int value) throws Exception {
+    public void setLine(int value)  {
         _line = value;
     }
 
@@ -30,11 +30,11 @@ public abstract class ParseNode
     /**
     * Column number this node began at
     */
-    public int getColumn() throws Exception {
+    public int getColumn()  {
         return _column;
     }
 
-    public void setColumn(int value) throws Exception {
+    public void setColumn(int value)  {
         _column = value;
     }
 
@@ -42,11 +42,11 @@ public abstract class ParseNode
     /**
     * Comment on this node, if any
     */
-    public ParseNode getComment() throws Exception {
+    public ParseNode getComment()  {
         return _comment;
     }
 
-    public void setComment(ParseNode value) throws Exception {
+    public void setComment(ParseNode value)  {
         _comment = value;
     }
 
@@ -66,7 +66,7 @@ public abstract class ParseNode
     /**
     * @param tok Token that gave rise to this node
     */
-    public ParseNode(Token tok) throws Exception {
+    public ParseNode(Token tok)  {
         this._line = tok.line;
         this._column = tok.column;
         setToken(tok);
@@ -75,7 +75,7 @@ public abstract class ParseNode
     /**
     * @param basis ParseNode that gave rise to this node
     */
-    public ParseNode(ParseNode basis) throws Exception {
+    public ParseNode(ParseNode basis)  {
         setToken(basis.getToken());
         this._line = basis._line;
         this._column = basis._column;
@@ -87,14 +87,14 @@ public abstract class ParseNode
     *  @param tw Sink to write output into
     *  @param prefix Prefix string to print before each line
     */
-    public abstract void debugPrint(PrintStream tw, String prefix) throws Exception ;
+    public abstract void debugPrint(PrintStream tw, String prefix)  ;
 
     /**
     * Write out this node's comment to a stream, if any
     *  @param tw Sink to write output into
     *  @param prefix Prefix string to print before each line
     */
-    public void writeComment(PrintStream tw, String prefix) throws Exception {
+    public void writeComment(PrintStream tw, String prefix)  {
         if (this._comment != null)
         {
             tw.println(prefix + "  Comment:");
@@ -107,7 +107,7 @@ public abstract class ParseNode
     * Double-dispatch visitor for parse nodes
     *  @param visitor Visitor to double-dispatch toReturn type of visitor
     */
-    public <T>T visit(ParseNodeVisitor<T> visitor) throws Exception {
+    public <T>T visit(ParseNodeVisitor<T> visitor)  {
         return visitor.visit(this);
     }
 

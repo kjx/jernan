@@ -57,7 +57,7 @@ public class ParseNodeMeta
     /**
     * Get dictionary of parse node names to patterns.
     */
-    public static HashMap<String,GraceObject> getPatternDict() throws Exception {
+    public static HashMap<String,GraceObject> getPatternDict()  {
         if (parseNodes == null)
             parseNodes = new HashMap<String,GraceObject>{ { "Object", new NativeTypePattern<ObjectParseNode>() }, { "MethodDeclaration", new NativeTypePattern<MethodDeclarationParseNode>() }, { "ClassDeclaration", new NativeTypePattern<ClassDeclarationParseNode>() }, { "TraitDeclaration", new NativeTypePattern<TraitDeclarationParseNode>() }, { "TypeStatement", new NativeTypePattern<TypeStatementParseNode>() }, { "Type", new NativeTypePattern<TypeParseNode>() }, { "Signature", new NativeTypePattern<SignatureParseNode>() }, { "SignaturePart", new NativeTypePattern<SignaturePartParseNode>() }, { "Block", new NativeTypePattern<BlockParseNode>() }, { "VarArgsParameter", new NativeTypePattern<VarArgsParameterParseNode>() }, { "TypedParameter", new NativeTypePattern<TypedParameterParseNode>() }, { "VarDeclaration", new NativeTypePattern<VarDeclarationParseNode>() }, { "DefDeclaration", new NativeTypePattern<DefDeclarationParseNode>() }, { "Annotations", new NativeTypePattern<AnnotationsParseNode>() }, { "Operator", new NativeTypePattern<OperatorParseNode>() }, { "PrefixOperator", new NativeTypePattern<PrefixOperatorParseNode>() }, { "Bind", new NativeTypePattern<BindParseNode>() }, { "Number", new NativeTypePattern<NumberParseNode>() }, { "Identifier", new NativeTypePattern<IdentifierParseNode>() }, { "StringLiteral", new NativeTypePattern<StringLiteralParseNode>() }, { "InterpolatedString", new NativeTypePattern<InterpolatedStringParseNode>() }, { "ImplicitBracketRequest", new NativeTypePattern<ImplicitBracketRequestParseNode>() }, { "ExplicitBracketRequest", new NativeTypePattern<ExplicitBracketRequestParseNode>() }, { "ImplicitReceiverRequest", new NativeTypePattern<ImplicitReceiverRequestParseNode>() }, { "ExplicitReceiverRequest", new NativeTypePattern<ExplicitReceiverRequestParseNode>() }, { "Inherits", new NativeTypePattern<InheritsParseNode>() }, { "Uses", new NativeTypePattern<UsesParseNode>() }, { "Alias", new NativeTypePattern<AliasParseNode>() }, { "Exclude", new NativeTypePattern<ExcludeParseNode>() }, { "Import", new NativeTypePattern<ImportParseNode>() }, { "Dialect", new NativeTypePattern<DialectParseNode>() }, { "Return", new NativeTypePattern<ReturnParseNode>() }, { "Parenthesised", new NativeTypePattern<ParenthesisedParseNode>() }, { "Comment", new NativeTypePattern<CommentParseNode>() } };
          
@@ -65,7 +65,7 @@ public class ParseNodeMeta
     }
 
     private static GraceObject prettyPrinter = new GraceObject();
-    private static GraceObject getPrettyPrinter(EvaluationContext ctx) throws Exception {
+    private static GraceObject getPrettyPrinter(EvaluationContext ctx)  {
         String dir = Path.GetDirectoryName(Interpreter.class.Assembly.Location);
         String path = (new File(dir, "pretty_printer.grace")).toString();
         GraceObject ret = new GraceObject();
@@ -102,7 +102,7 @@ public class ParseNodeMeta
     *  @param p 
     * Parse node to pretty-print.
     */
-    public static String prettyPrint(EvaluationContext ctx, ParseNode p) throws Exception {
+    public static String prettyPrint(EvaluationContext ctx, ParseNode p)  {
         if (prettyPrinter == null)
             prettyPrinter = getPrettyPrinter(ctx);
          
@@ -128,7 +128,7 @@ public class ParseNodeMeta
     *  @param useSemicolons 
     * True to insert semicolons after every statement.
     */
-    public static String prettyPrintModule(EvaluationContext ctx, ObjectParseNode p, boolean useSemicolons) throws Exception {
+    public static String prettyPrintModule(EvaluationContext ctx, ObjectParseNode p, boolean useSemicolons)  {
         if (prettyPrinter == null)
             prettyPrinter = getPrettyPrinter(ctx);
          

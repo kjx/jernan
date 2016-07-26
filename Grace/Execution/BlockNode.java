@@ -22,7 +22,7 @@ public class BlockNode  extends Node
     private Node _forcedPattern;
     private boolean variadic;
 
-    public BlockNode(Token token, ParseNode source, List<Node> parameters, List<Node> body, Node forcedPattern) throws Exception {
+    public BlockNode(Token token, ParseNode source, List<Node> parameters, List<Node> body, Node forcedPattern)  {
         super(token, source);
         this.parameters = parameters;
         this.body = body;
@@ -39,21 +39,21 @@ public class BlockNode  extends Node
     /**
     * The parameters of this blockThis property gets the value of the field parameters
     */
-    public List<Node> getParameters() throws Exception {
+    public List<Node> getParameters()  {
         return parameters;
     }
 
     /**
     * The body of this blockThis property gets the value of the field body
     */
-    public List<Node> getBody() throws Exception {
+    public List<Node> getBody()  {
         return body;
     }
 
     /**
     * 
     */
-    public void debugPrint(PrintStream tw, String prefix) throws Exception {
+    public void debugPrint(PrintStream tw, String prefix)  {
         tw.println(prefix + "Block:");
         if (_forcedPattern != null)
         {

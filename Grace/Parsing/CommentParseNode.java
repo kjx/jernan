@@ -20,15 +20,15 @@ public class CommentParseNode  extends ParseNode
     /**
     * String body of comment
     */
-    public String getValue() throws Exception {
+    public String getValue()  {
         return _value;
     }
 
-    public void setValue(String value) throws Exception {
+    public void setValue(String value)  {
         _value = value;
     }
 
-    public CommentParseNode(Token tok) throws Exception {
+    public CommentParseNode(Token tok)  {
         super(tok);
         CommentToken comm = tok instanceof CommentToken ? (CommentToken)tok : (CommentToken)null;
         _value = comm.getValue();
@@ -37,7 +37,7 @@ public class CommentParseNode  extends ParseNode
     /**
     * 
     */
-    public void debugPrint(PrintStream tw, String prefix) throws Exception {
+    public void debugPrint(PrintStream tw, String prefix)  {
         tw.println(prefix + "Comment: " + _value);
         if (this.getComment() != null)
             this.getComment().debugPrint(tw,prefix);
@@ -47,7 +47,7 @@ public class CommentParseNode  extends ParseNode
     /**
     * 
     */
-    public <T>T visit(ParseNodeVisitor<T> visitor) throws Exception {
+    public <T>T visit(ParseNodeVisitor<T> visitor)  {
         return visitor.visit(this);
     }
 

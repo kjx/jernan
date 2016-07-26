@@ -8,11 +8,11 @@ import Grace.Parsing.IdentifierToken;
 
 public class AsToken  extends IdentifierToken 
 {
-    public AsToken(String module, int line, int column) throws Exception {
+    public AsToken(String module, int line, int column)  {
         super(module, line, column, "as");
     }
 
-    protected String describe() throws Exception {
+    protected String describe()  {
         return "As (contextual keyword 'as')";
     }
 

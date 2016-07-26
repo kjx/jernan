@@ -8,11 +8,11 @@ import Grace.Parsing.Token;
 
 public class LGenericToken  extends Token 
 {
-    public LGenericToken(String module, int line, int column) throws Exception {
+    public LGenericToken(String module, int line, int column)  {
         super(module, line, column);
     }
 
-    protected String describe() throws Exception {
+    protected String describe()  {
         return "LGeneric";
     }
 

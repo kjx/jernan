@@ -24,7 +24,7 @@ public class VarDeclarationNode  extends Node
     /**
     * The type given to this var declarationThis property gets the value of the field type
     */
-    public Node getType() throws Exception {
+    public Node getType()  {
         return type;
     }
 
@@ -64,7 +64,7 @@ public class VarDeclarationNode  extends Node
         __Annotations = value;
     }
 
-    public VarDeclarationNode(Token location, VarDeclarationParseNode source, Node val, Node type) throws Exception {
+    public VarDeclarationNode(Token location, VarDeclarationParseNode source, Node val, Node type)  {
         super(location, source);
         this.type = type;
         setValue(val);
@@ -88,14 +88,14 @@ public class VarDeclarationNode  extends Node
     * The name of this var declarationThis property accesses the name field of the originating
     * parse node
     */
-    public String getName() throws Exception {
+    public String getName()  {
         return (origin.getName() instanceof IdentifierParseNode ? ((IdentifierParseNode)origin.getName()).getName() : "KJX_SHOULD_NOT_HAPPEN");
     }
 
     /**
     * 
     */
-    public void debugPrint(PrintStream tw, String prefix) throws Exception {
+    public void debugPrint(PrintStream tw, String prefix)  {
         tw.println(prefix + "VarDeclaration:");
         tw.println(prefix + "  As:");
         tw.println(prefix + "    " + getName());

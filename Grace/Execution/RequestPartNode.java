@@ -24,14 +24,14 @@ public class RequestPartNode //kjx really not a Node?
     private List<Node> generics;
     private List<Node> arguments;
 
-    public RequestPartNode(String name, List<Node> generics, List<Node> arguments) throws Exception {
+    public RequestPartNode(String name, List<Node> generics, List<Node> arguments)  {
         this.baseName = name;
         this.name = MethodHelper.ArityNamePart(name, arguments.size());
         this.generics = generics;
         this.arguments = arguments;
     }
 
-    public RequestPartNode(String name, List<Node> generics, List<Node> arguments, boolean allowArityOverloading) throws Exception {
+    public RequestPartNode(String name, List<Node> generics, List<Node> arguments, boolean allowArityOverloading)  {
         this.baseName = name;
         this.name = allowArityOverloading ? MethodHelper.ArityNamePart(name, arguments.size()) : name;
         this.generics = generics;
@@ -69,7 +69,7 @@ public class RequestPartNode //kjx really not a Node?
     /**
     * Ordinary arguments to this partThis property gets the field arguments
     */
-    public List<Node> getArguments() throws Exception {
+    public List<Node> getArguments()  {
         return arguments;
     }
 

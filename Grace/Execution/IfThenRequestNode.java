@@ -26,14 +26,14 @@ public class IfThenRequestNode  extends ImplicitReceiverRequestNode
     /**
     * 
     */
-    public IfThenRequestNode(Token location, ParseNode source) throws Exception {
+    public IfThenRequestNode(Token location, ParseNode source)  {
         super(location, source);
     }
 
     /**
     * 
     */
-    public void debugPrint(PrintStream tw, String prefix) throws Exception {
+    public void debugPrint(PrintStream tw, String prefix)  {
         tw.println(prefix + "IfThenRequest: " + getName());
         if (parts.size() == 1)
         {

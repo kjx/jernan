@@ -9,7 +9,7 @@ package Grace;
 /**
 * Represents the fact that a static error occurred
 */
-public class StaticErrorException  extends Exception 
+public class StaticErrorException  extends RuntimeException 
 {
     /**
     * Error code (X####) of this error
@@ -65,7 +65,7 @@ public class StaticErrorException  extends Exception
     *  @param module Module of this error
     *  @param message Message of this error
     */
-    public StaticErrorException(String code, int line, String module, String message) throws Exception {
+    public StaticErrorException(String code, int line, String module, String message)  {
         setCode(code);
         setLine(line);
         setModule(module);

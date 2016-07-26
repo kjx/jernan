@@ -25,7 +25,7 @@ public abstract class Node //KJX removed extending GraceObject
     /**
     * The ParseNode whence this Node originatedThis property gets the value of the field parseNode
     */
-    public ParseNode getOrigin() throws Exception {
+    public ParseNode getOrigin()  {
         return parseNode;
     }
 
@@ -33,7 +33,7 @@ public abstract class Node //KJX removed extending GraceObject
     * @param location Token spawning this node
     *  @param source ParseNode spawning this node
     */
-    public Node(Token location, ParseNode source) throws Exception {
+    public Node(Token location, ParseNode source)  {
         this.Location = location;
         this.parseNode = source;
     }
@@ -41,7 +41,7 @@ public abstract class Node //KJX removed extending GraceObject
     /**
     * @param source ParseNode spawning this node
     */
-    public Node(ParseNode source) throws Exception {
+    public Node(ParseNode source)  {
         this.parseNode = source;
     }
 
@@ -51,13 +51,13 @@ public abstract class Node //KJX removed extending GraceObject
     *  @param tw Destination for debugging string
     *  @param prefix String to prepend to each line
     */
-    public abstract void debugPrint(PrintStream tw, String prefix) throws Exception ;
+    public abstract void debugPrint(PrintStream tw, String prefix)  ;
 
     /**
     * Gets the name used for user-visible tasks (such as
     * visitors) for this node.
     */
-    protected String getVisibleName() throws Exception {
+    protected String getVisibleName()  {
         String name = this.getClass().getName(); 
         return "KJX-WTFFF" + name.substring(0, name.length() - 4); ///WTFFFF
     }

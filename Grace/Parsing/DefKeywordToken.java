@@ -8,11 +8,11 @@ import Grace.Parsing.KeywordToken;
 
 public class DefKeywordToken  extends KeywordToken 
 {
-    public DefKeywordToken(String module, int line, int column) throws Exception {
+    public DefKeywordToken(String module, int line, int column)  {
         super(module, line, column);
     }
 
-    protected String describe() throws Exception {
+    protected String describe()  {
         return "DefKeyword";
     }
 

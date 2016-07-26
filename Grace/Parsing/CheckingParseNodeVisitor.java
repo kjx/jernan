@@ -49,14 +49,14 @@ public abstract class CheckingParseNodeVisitor   implements ParseNodeVisitor<Par
     /**
     * 
     */
-    public ParseNode visit(ParseNode p) throws Exception {
+    public ParseNode visit(ParseNode p)  {
         return p;
     }
 
     /**
     * 
     */
-    public ParseNode visit(ObjectParseNode o) throws Exception {
+    public ParseNode visit(ObjectParseNode o)  {
         for (ParseNode p : o.getBody())
         {
             p.visit(this);
@@ -67,14 +67,14 @@ public abstract class CheckingParseNodeVisitor   implements ParseNodeVisitor<Par
     /**
     * 
     */
-    public ParseNode visit(NumberParseNode n) throws Exception {
+    public ParseNode visit(NumberParseNode n)  {
         return n;
     }
 
     /**
     * 
     */
-    public ParseNode visit(MethodDeclarationParseNode d) throws Exception {
+    public ParseNode visit(MethodDeclarationParseNode d)  {
         d.getSignature().visit(this);
         for (ParseNode p : d.getBody())
             p.visit(this);
@@ -84,14 +84,14 @@ public abstract class CheckingParseNodeVisitor   implements ParseNodeVisitor<Par
     /**
     * 
     */
-    public ParseNode visit(IdentifierParseNode i) throws Exception {
+    public ParseNode visit(IdentifierParseNode i)  {
         return i;
     }
 
     /**
     * 
     */
-    public ParseNode visit(ImplicitReceiverRequestParseNode irrpn) throws Exception {
+    public ParseNode visit(ImplicitReceiverRequestParseNode irrpn)  {
         for (List<ParseNode> args : irrpn.getArguments())
             for (ParseNode a : args)
                 a.visit(this);
@@ -104,7 +104,7 @@ public abstract class CheckingParseNodeVisitor   implements ParseNodeVisitor<Par
     /**
     * 
     */
-    public ParseNode visit(ExplicitReceiverRequestParseNode errpn) throws Exception {
+    public ParseNode visit(ExplicitReceiverRequestParseNode errpn)  {
         for (List<ParseNode> args : errpn.getArguments())
             for (ParseNode a : args)
                 a.visit(this);
@@ -118,7 +118,7 @@ public abstract class CheckingParseNodeVisitor   implements ParseNodeVisitor<Par
     /**
     * 
     */
-    public ParseNode visit(OperatorParseNode opn) throws Exception {
+    public ParseNode visit(OperatorParseNode opn)  {
         opn.getLeft().visit(this);
         opn.getRight().visit(this);
         return opn;
@@ -127,7 +127,7 @@ public abstract class CheckingParseNodeVisitor   implements ParseNodeVisitor<Par
     /**
     * 
     */
-    public ParseNode visit(TypedParameterParseNode tppn) throws Exception {
+    public ParseNode visit(TypedParameterParseNode tppn)  {
         tppn.getType().visit(this);
         return tppn;
     }
@@ -135,14 +135,14 @@ public abstract class CheckingParseNodeVisitor   implements ParseNodeVisitor<Par
     /**
     * 
     */
-    public ParseNode visit(StringLiteralParseNode slpn) throws Exception {
+    public ParseNode visit(StringLiteralParseNode slpn)  {
         return slpn;
     }
 
     /**
     * 
     */
-    public ParseNode visit(InterpolatedStringParseNode ispn) throws Exception {
+    public ParseNode visit(InterpolatedStringParseNode ispn)  {
         for (ParseNode p : ispn.getParts())
             p.visit(this);
         return ispn;
@@ -151,7 +151,7 @@ public abstract class CheckingParseNodeVisitor   implements ParseNodeVisitor<Par
     /**
     * 
     */
-    public ParseNode visit(VarDeclarationParseNode vdpn) throws Exception {
+    public ParseNode visit(VarDeclarationParseNode vdpn)  {
         vdpn.getName().visit(this);
         if (vdpn.getValue() != null)
             vdpn.getValue().visit(this);
@@ -168,7 +168,7 @@ public abstract class CheckingParseNodeVisitor   implements ParseNodeVisitor<Par
     /**
     * 
     */
-    public ParseNode visit(DefDeclarationParseNode vdpn) throws Exception {
+    public ParseNode visit(DefDeclarationParseNode vdpn)  {
         vdpn.getName().visit(this);
         if (vdpn.getValue() != null)
             vdpn.getValue().visit(this);
@@ -185,7 +185,7 @@ public abstract class CheckingParseNodeVisitor   implements ParseNodeVisitor<Par
     /**
     * 
     */
-    public ParseNode visit(BindParseNode bpn) throws Exception {
+    public ParseNode visit(BindParseNode bpn)  {
         bpn.getLeft().visit(this);
         bpn.getRight().visit(this);
         return bpn;
@@ -194,7 +194,7 @@ public abstract class CheckingParseNodeVisitor   implements ParseNodeVisitor<Par
     /**
     * 
     */
-    public ParseNode visit(PrefixOperatorParseNode popn) throws Exception {
+    public ParseNode visit(PrefixOperatorParseNode popn)  {
         popn.getReceiver().visit(this);
         return popn;
     }
@@ -202,7 +202,7 @@ public abstract class CheckingParseNodeVisitor   implements ParseNodeVisitor<Par
     /**
     * 
     */
-    public ParseNode visit(BlockParseNode bpn) throws Exception {
+    public ParseNode visit(BlockParseNode bpn)  {
         for (ParseNode p : bpn.getParameters())
             p.visit(this);
         for (ParseNode s : bpn.getBody())
@@ -213,7 +213,7 @@ public abstract class CheckingParseNodeVisitor   implements ParseNodeVisitor<Par
     /**
     * 
     */
-    public ParseNode visit(ClassDeclarationParseNode bpn) throws Exception {
+    public ParseNode visit(ClassDeclarationParseNode bpn)  {
         bpn.getSignature().visit(this);
         for (ParseNode s : bpn.getBody())
             s.visit(this);
@@ -223,7 +223,7 @@ public abstract class CheckingParseNodeVisitor   implements ParseNodeVisitor<Par
     /**
     * 
     */
-    public ParseNode visit(TraitDeclarationParseNode bpn) throws Exception {
+    public ParseNode visit(TraitDeclarationParseNode bpn)  {
         bpn.getSignature().visit(this);
         for (ParseNode s : bpn.getBody())
             s.visit(this);
@@ -233,7 +233,7 @@ public abstract class CheckingParseNodeVisitor   implements ParseNodeVisitor<Par
     /**
     * 
     */
-    public ParseNode visit(ReturnParseNode rpn) throws Exception {
+    public ParseNode visit(ReturnParseNode rpn)  {
         if (rpn.getReturnValue() != null)
             rpn.getReturnValue().visit(this);
          
@@ -243,14 +243,14 @@ public abstract class CheckingParseNodeVisitor   implements ParseNodeVisitor<Par
     /**
     * 
     */
-    public ParseNode visit(CommentParseNode cpn) throws Exception {
+    public ParseNode visit(CommentParseNode cpn)  {
         return cpn;
     }
 
     /**
     * 
     */
-    public ParseNode visit(TypeStatementParseNode tspn) throws Exception {
+    public ParseNode visit(TypeStatementParseNode tspn)  {
         tspn.getBaseName().visit(this);
         tspn.getBody().visit(this);
         return tspn;
@@ -259,7 +259,7 @@ public abstract class CheckingParseNodeVisitor   implements ParseNodeVisitor<Par
     /**
     * 
     */
-    public ParseNode visit(TypeParseNode tpn) throws Exception {
+    public ParseNode visit(TypeParseNode tpn)  {
         for (ParseNode t : tpn.getBody())
             t.visit(this);
         return tpn;
@@ -268,7 +268,7 @@ public abstract class CheckingParseNodeVisitor   implements ParseNodeVisitor<Par
     /**
     * 
     */
-    public ParseNode visit(ImportParseNode ipn) throws Exception {
+    public ParseNode visit(ImportParseNode ipn)  {
         ipn.getPath().visit(this);
         ipn.getName().visit(this);
         return ipn;
@@ -277,7 +277,7 @@ public abstract class CheckingParseNodeVisitor   implements ParseNodeVisitor<Par
     /**
     * 
     */
-    public ParseNode visit(DialectParseNode dpn) throws Exception {
+    public ParseNode visit(DialectParseNode dpn)  {
         dpn.getPath().visit(this);
         return dpn;
     }
@@ -285,7 +285,7 @@ public abstract class CheckingParseNodeVisitor   implements ParseNodeVisitor<Par
     /**
     * 
     */
-    public ParseNode visit(InheritsParseNode ipn) throws Exception {
+    public ParseNode visit(InheritsParseNode ipn)  {
         ipn.getFrom().visit(this);
         for (AliasParseNode ap : ipn.getAliases())
             ap.visit(this);
@@ -295,7 +295,7 @@ public abstract class CheckingParseNodeVisitor   implements ParseNodeVisitor<Par
     /**
     * 
     */
-    public ParseNode visit(UsesParseNode upn) throws Exception {
+    public ParseNode visit(UsesParseNode upn)  {
         upn.getFrom().visit(this);
         for (AliasParseNode ap : upn.getAliases())
             ap.visit(this);
@@ -305,7 +305,7 @@ public abstract class CheckingParseNodeVisitor   implements ParseNodeVisitor<Par
     /**
     * 
     */
-    public ParseNode visit(AliasParseNode ipn) throws Exception {
+    public ParseNode visit(AliasParseNode ipn)  {
         ipn.getNewName().visit(this);
         ipn.getOldName().visit(this);
         return ipn;
@@ -314,7 +314,7 @@ public abstract class CheckingParseNodeVisitor   implements ParseNodeVisitor<Par
     /**
     * 
     */
-    public ParseNode visit(ExcludeParseNode ipn) throws Exception {
+    public ParseNode visit(ExcludeParseNode ipn)  {
         ipn.getName().visit(this);
         return ipn;
     }
@@ -322,7 +322,7 @@ public abstract class CheckingParseNodeVisitor   implements ParseNodeVisitor<Par
     /**
     * 
     */
-    public ParseNode visit(ParenthesisedParseNode ppn) throws Exception {
+    public ParseNode visit(ParenthesisedParseNode ppn)  {
         ppn.getExpression().visit(this);
         return ppn;
     }
@@ -330,7 +330,7 @@ public abstract class CheckingParseNodeVisitor   implements ParseNodeVisitor<Par
     /**
     * 
     */
-    public ParseNode visit(ImplicitBracketRequestParseNode ibrpn) throws Exception {
+    public ParseNode visit(ImplicitBracketRequestParseNode ibrpn)  {
         for (ParseNode a : ibrpn.getArguments())
             a.visit(this);
         return ibrpn;
@@ -339,7 +339,7 @@ public abstract class CheckingParseNodeVisitor   implements ParseNodeVisitor<Par
     /**
     * 
     */
-    public ParseNode visit(ExplicitBracketRequestParseNode ebrpn) throws Exception {
+    public ParseNode visit(ExplicitBracketRequestParseNode ebrpn)  {
         ebrpn.getReceiver().visit(this);
         for (ParseNode a : ebrpn.getArguments())
             a.visit(this);
@@ -349,7 +349,7 @@ public abstract class CheckingParseNodeVisitor   implements ParseNodeVisitor<Par
     /**
     * 
     */
-    public ParseNode visit(SignatureParseNode spn) throws Exception {
+    public ParseNode visit(SignatureParseNode spn)  {
         for (SignaturePartParseNode n : spn.getParts())
             n.visit(this);
         return spn;
@@ -358,7 +358,7 @@ public abstract class CheckingParseNodeVisitor   implements ParseNodeVisitor<Par
     /**
     * 
     */
-    public ParseNode visit(OrdinarySignaturePartParseNode osppn) throws Exception {
+    public ParseNode visit(OrdinarySignaturePartParseNode osppn)  {
         for (ParseNode p : osppn.getParameters())
             p.visit(this);
         for (ParseNode p : osppn.getGenericParameters())

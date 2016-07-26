@@ -28,7 +28,7 @@ public class ExcludeParseNode  extends ParseNode
         __Name = value;
     }
 
-    public ExcludeParseNode(Token tok, SignatureParseNode n) throws Exception {
+    public ExcludeParseNode(Token tok, SignatureParseNode n)  {
         super(tok);
         setName(n);
     }
@@ -36,7 +36,7 @@ public class ExcludeParseNode  extends ParseNode
     /**
     * 
     */
-    public void debugPrint(PrintStream tw, String prefix) throws Exception {
+    public void debugPrint(PrintStream tw, String prefix)  {
         tw.println(prefix + "Exclude:");
         getName().debugPrint(tw,prefix + "    ");
         writeComment(tw,prefix);
@@ -45,7 +45,7 @@ public class ExcludeParseNode  extends ParseNode
     /**
     * 
     */
-    public <T>T visit(ParseNodeVisitor<T> visitor) throws Exception {
+    public <T>T visit(ParseNodeVisitor<T> visitor)  {
         return visitor.visit(this);
     }
 

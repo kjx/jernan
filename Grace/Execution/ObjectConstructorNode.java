@@ -36,7 +36,7 @@ public class ObjectConstructorNode  extends Node
     private List<Node> imports = new ArrayList<Node>();
     private Set<String> fieldNames = new HashSet<String>();
     private List<Node> statements = new ArrayList<Node>();
-    public ObjectConstructorNode(Token token, ParseNode source) throws Exception {
+    public ObjectConstructorNode(Token token, ParseNode source)  {
         super(token, source);
     }
 
@@ -45,7 +45,7 @@ public class ObjectConstructorNode  extends Node
     * object
     *  @param node Node to add
     */
-    public void add(Node node) throws Exception {
+    public void add(Node node)  {
         MethodNode meth = node instanceof MethodNode ? (MethodNode)node : (MethodNode)null;
         InheritsNode i = node instanceof InheritsNode ? (InheritsNode)node : (InheritsNode)null;
         DefDeclarationNode d = node instanceof DefDeclarationNode ? (DefDeclarationNode)node : (DefDeclarationNode)null;
@@ -101,21 +101,21 @@ public class ObjectConstructorNode  extends Node
     /**
     * The body of this object constructorThis property gets the value of the field body
     */
-    public List<Node> getBody() throws Exception {
+    public List<Node> getBody()  {
         return body;
     }
 
     /**
     * The methods of this object constructorThis property gets the value of the field methods
     */
-    public Map<String, MethodNode> getMethods() throws Exception {
+    public Map<String, MethodNode> getMethods()  {
         return methods;
     }
 
     /**
     * 
     */
-    public void debugPrint(PrintStream tw, String prefix) throws Exception {
+    public void debugPrint(PrintStream tw, String prefix)  {
         tw.println(prefix + "ObjectConstructor:");
         tw.println(prefix + "  Methods:");
         for (Object __dummyForeachVar0 : methods.keySet())

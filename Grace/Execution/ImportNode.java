@@ -28,7 +28,7 @@ public class ImportNode  extends Node
         return type;
     }
 
-    public ImportNode(Token location, ImportParseNode source, Node type) throws Exception {
+    public ImportNode(Token location, ImportParseNode source, Node type)  {
         super(location, source);
         this.type = type;
         this.origin = source;
@@ -53,7 +53,7 @@ public class ImportNode  extends Node
     /**
     * 
     */
-    public void debugPrint(PrintStream tw, String prefix) throws Exception {
+    public void debugPrint(PrintStream tw, String prefix)  {
         tw.println(prefix + "Import:");
         tw.println(prefix + "  Path:");
         tw.println(prefix + "    " + getPath());

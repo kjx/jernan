@@ -21,11 +21,11 @@ public class ExplicitReceiverRequestParseNode  extends ParseNode
     /**
     * Receiver of this request
     */
-    public ParseNode getReceiver() throws Exception {
+    public ParseNode getReceiver()  {
         return _receiver;
     }
 
-    public void setReceiver(ParseNode value) throws Exception {
+    public void setReceiver(ParseNode value)  {
         _receiver = value;
     }
 
@@ -33,11 +33,11 @@ public class ExplicitReceiverRequestParseNode  extends ParseNode
     /**
     * Parts of this method
     */
-    public List<ParseNode> getNameParts() throws Exception {
+    public List<ParseNode> getNameParts()  {
         return _nameParts;
     }
 
-    public void setNameParts(List<ParseNode> value) throws Exception {
+    public void setNameParts(List<ParseNode> value)  {
         _nameParts = value;
     }
 
@@ -45,11 +45,11 @@ public class ExplicitReceiverRequestParseNode  extends ParseNode
     /**
     * Argument lists of each part
     */
-    public List<List<ParseNode>> getArguments() throws Exception {
+    public List<List<ParseNode>> getArguments()  {
         return _arguments;
     }
 
-    public void setArguments(List<List<ParseNode>> value) throws Exception {
+    public void setArguments(List<List<ParseNode>> value)  {
         _arguments = value;
     }
 
@@ -57,15 +57,15 @@ public class ExplicitReceiverRequestParseNode  extends ParseNode
     /**
     * Generic argument lists of each part
     */
-    public List<List<ParseNode>> getGenericArguments() throws Exception {
+    public List<List<ParseNode>> getGenericArguments()  {
         return _genericArguments;
     }
 
-    public void setGenericArguments(List<List<ParseNode>> value) throws Exception {
+    public void setGenericArguments(List<List<ParseNode>> value)  {
         _genericArguments = value;
     }
 
-    public ExplicitReceiverRequestParseNode(ParseNode receiver) throws Exception {
+    public ExplicitReceiverRequestParseNode(ParseNode receiver)  {
         super(receiver);
         this._receiver = receiver;
         _nameParts = new ArrayList<ParseNode>();
@@ -76,7 +76,7 @@ public class ExplicitReceiverRequestParseNode  extends ParseNode
     /**
     * Add a part to the method requested here
     */
-    public void addPart(ParseNode id) throws Exception {
+    public void addPart(ParseNode id)  {
         _nameParts.add(id);
         _arguments.add(new ArrayList<ParseNode>());
         _genericArguments.add(new ArrayList<ParseNode>());
@@ -85,7 +85,7 @@ public class ExplicitReceiverRequestParseNode  extends ParseNode
     /**
     * 
     */
-    public void debugPrint(PrintStream tw, String prefix) throws Exception {
+    public void debugPrint(PrintStream tw, String prefix)  {
         String name = "";
         for (ParseNode n : _nameParts)
         {
@@ -115,7 +115,7 @@ public class ExplicitReceiverRequestParseNode  extends ParseNode
     /**
     * 
     */
-    public <T>T visit(ParseNodeVisitor<T> visitor) throws Exception {
+    public <T>T visit(ParseNodeVisitor<T> visitor)  {
         return visitor.visit(this);
     }
 

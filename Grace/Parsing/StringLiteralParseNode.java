@@ -37,7 +37,7 @@ public class StringLiteralParseNode  extends ParseNode
         return raw;
     }
 
-    public StringLiteralParseNode(Token tok) throws Exception {
+    public StringLiteralParseNode(Token tok)  {
         super(tok);
         StringToken comm = tok instanceof StringToken ? (StringToken)tok : (StringToken)null;
         _value = comm.getValue();
@@ -47,7 +47,7 @@ public class StringLiteralParseNode  extends ParseNode
     /**
     * 
     */
-    public void debugPrint(PrintStream tw, String prefix) throws Exception {
+    public void debugPrint(PrintStream tw, String prefix)  {
         tw.println(prefix + "StringLiteral: " + raw);
         writeComment(tw,prefix);
     }
@@ -55,7 +55,7 @@ public class StringLiteralParseNode  extends ParseNode
     /**
     * 
     */
-    public <T>T visit(ParseNodeVisitor<T> visitor) throws Exception {
+    public <T>T visit(ParseNodeVisitor<T> visitor)  {
         return visitor.visit(this);
     }
 

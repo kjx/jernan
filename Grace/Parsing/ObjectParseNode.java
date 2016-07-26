@@ -21,15 +21,15 @@ public class ObjectParseNode  extends ParseNode
     /**
     * Body of the object
     */
-    public List<ParseNode> getBody() throws Exception {
+    public List<ParseNode> getBody()  {
         return _body;
     }
 
-    public void setBody(List<ParseNode> value) throws Exception {
+    public void setBody(List<ParseNode> value)  {
         _body = value;
     }
 
-    public ObjectParseNode(Token tok) throws Exception {
+    public ObjectParseNode(Token tok)  {
         super(tok);
         _body = new ArrayList<ParseNode>();
     }
@@ -37,7 +37,7 @@ public class ObjectParseNode  extends ParseNode
     /**
     * 
     */
-    public void debugPrint(PrintStream tw, String prefix) throws Exception {
+    public void debugPrint(PrintStream tw, String prefix)  {
         tw.println(prefix + "Object:");
         for (ParseNode n : _body)
         {
@@ -49,7 +49,7 @@ public class ObjectParseNode  extends ParseNode
     /**
     * 
     */
-    public <T>T visit(ParseNodeVisitor<T> visitor) throws Exception {
+    public <T>T visit(ParseNodeVisitor<T> visitor)  {
         return visitor.visit(this);
     }
 

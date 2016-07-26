@@ -54,7 +54,7 @@ public class OrdinarySignaturePartParseNode  extends SignaturePartParseNode
     /**
     * @param name Name of this part
     */
-    public OrdinarySignaturePartParseNode(IdentifierParseNode name) throws Exception {
+    public OrdinarySignaturePartParseNode(IdentifierParseNode name)  {
         super(name);
         _name = name.getName();
         setParameters(new ArrayList<ParseNode>());
@@ -64,7 +64,7 @@ public class OrdinarySignaturePartParseNode  extends SignaturePartParseNode
     /**
     * 
     */
-    public void debugPrint(PrintStream tw, String prefix) throws Exception {
+    public void debugPrint(PrintStream tw, String prefix)  {
         tw.println(prefix + "Part: " + getName());
         if (getGenericParameters().size() > 0)
         {
@@ -86,7 +86,7 @@ public class OrdinarySignaturePartParseNode  extends SignaturePartParseNode
     /**
     * 
     */
-    public <T>T visit(ParseNodeVisitor<T> visitor) throws Exception {
+    public <T>T visit(ParseNodeVisitor<T> visitor)  {
         return visitor.visit(this);
     }
 

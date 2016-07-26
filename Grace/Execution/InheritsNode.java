@@ -65,7 +65,7 @@ public class InheritsNode  extends Node
 			ParseNode source, 
 			Node from, 
 			Map<String, SignatureNode> aliases,
-			Collection<String> excludes) throws Exception {
+			Collection<String> excludes)  {
         super(location, source);
         setFrom(from);
         setAliases(new HashMap<String, SignatureNode>());
@@ -78,7 +78,7 @@ public class InheritsNode  extends Node
     /**
     * 
     */
-    public void debugPrint(PrintStream tw, String prefix) throws Exception {
+    public void debugPrint(PrintStream tw, String prefix)  {
         tw.println(prefix + "Inherits: ");
         getFrom().debugPrint(tw,prefix + "    ");
         for (Map.Entry<String,SignatureNode> a : getAliases().entrySet())

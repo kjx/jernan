@@ -8,7 +8,7 @@ import java.nio.file.Files;
 
 public class TestLexer {
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args)  {
 
 	String source = readFile(args[0]);
 	Lexer lexer = new Lexer(args[0],source);

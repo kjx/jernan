@@ -19,7 +19,7 @@ public class ImplicitNode  extends Node
     /**
     * @param n Kind of implicit this is
     */
-    public ImplicitNode(String n) throws Exception {
+    public ImplicitNode(String n)  {
         super(null, null);
         kind = n;
     }
@@ -28,7 +28,7 @@ public class ImplicitNode  extends Node
     * @param n Kind of implicit this is
     *  @param basis ParseNode location of this Implicit
     */
-    public ImplicitNode(String n, ParseNode basis) throws Exception {
+    public ImplicitNode(String n, ParseNode basis)  {
         super(basis.getToken(), basis);
         kind = n;
     }
@@ -36,7 +36,7 @@ public class ImplicitNode  extends Node
     /**
     * 
     */
-    protected String getVisibleName() throws Exception {
+    protected String getVisibleName()  {
         return "Implicit" + kind;
     }
 
@@ -46,7 +46,7 @@ public class ImplicitNode  extends Node
     * 
     */
 
-    public void debugPrint(PrintStream tw, String prefix) throws Exception {
+    public void debugPrint(PrintStream tw, String prefix)  {
         tw.println(prefix + "Implicit" + kind);
     }
 

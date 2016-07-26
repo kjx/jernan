@@ -9,20 +9,20 @@ import Grace.Parsing.Token;
 public class SpaceToken  extends Token 
 {
     private int _size;
-    public int getSize() throws Exception {
+    public int getSize()  {
         return _size;
     }
 
-    public void setSize(int value) throws Exception {
+    public void setSize(int value)  {
         _size = value;
     }
 
-    public SpaceToken(String module, int line, int column, int size) throws Exception {
+    public SpaceToken(String module, int line, int column, int size)  {
         super(module, line, column);
         this._size = size;
     }
 
-    protected String describe() throws Exception {
+    protected String describe()  {
         return "Space:" + _size;
     }
 

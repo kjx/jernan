@@ -8,12 +8,12 @@ import Grace.Parsing.BracketToken;
 
 public class OpenBracketToken  extends BracketToken 
 {
-    public OpenBracketToken(String module, int line, int column, String val) throws Exception {
+    public OpenBracketToken(String module, int line, int column, String val)  {
         super(module, line, column, val);
         setOpening(true);
     }
 
-    protected String describe() throws Exception {
+    protected String describe()  {
         return "OpenBracket:" + getName();
     }
 

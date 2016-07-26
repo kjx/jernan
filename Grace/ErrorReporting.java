@@ -61,7 +61,7 @@ public class ErrorReporting
     * Only the last of these is shipped with the default
     * distribution. The first matching entry will be used.
     */
-    public static String getMessage(String code, HashMap<String,String> data) throws Exception {
+    public static String getMessage(String code, HashMap<String,String> data)  {
 	System.err.println("KJX BUGGY NO ERROR MESSAGES");
 	return null;
     }
@@ -87,7 +87,7 @@ public class ErrorReporting
     * 
     *  @see ErrorReporting.GetMessage
     */
-    public static String getMessageFromFile(String code, String dir, String filename, HashMap<String,String> data) throws Exception {
+    public static String getMessageFromFile(String code, String dir, String filename, HashMap<String,String> data)  {
 	System.err.println("KJX BUGGY NO ERROR MESSAGES");
 	return null;
     }
@@ -110,7 +110,7 @@ public class ErrorReporting
     * any substitutions made.
     *  @see ErrorReporting.GetMessage
     */
-    public static String formatMessage(String message, Map<String,String> vars) throws Exception {
+    public static String formatMessage(String message, Map<String,String> vars)  {
         String ret = message;
         for (String k : vars.keySet())
         {
@@ -143,7 +143,7 @@ public class ErrorReporting
     *  @see ErrorReporting.GetMessage
     */
 
-    public static void ReportStaticError(String module, int line, String code, HashMap<String,String> vars, String localDescription) throws Exception {
+    public static void ReportStaticError(String module, int line, String code, HashMap<String,String> vars, String localDescription)  {
         String baseMessage = getMessage(code,vars) != null ? getMessage(code,vars) : localDescription;
         String formattedMessage = formatMessage(baseMessage,vars);
         if (!SilencedErrors.contains(code) && !getSuppressAllErrors())
@@ -173,7 +173,7 @@ public class ErrorReporting
     *  @see WriteError
     *  @see ErrorReporting.GetMessage
     */
-    public static void ReportStaticError(String module, int line, String code, String localDescription) throws Exception {
+    public static void ReportStaticError(String module, int line, String code, String localDescription)  {
         String baseMessage = getMessage(code,new HashMap<String,String>()) != null ? getMessage(code,new HashMap<String,String>()) : localDescription;
         if (!SilencedErrors.contains(code) && !getSuppressAllErrors())
             WriteError(module,line,code,baseMessage);
@@ -197,7 +197,7 @@ public class ErrorReporting
     *  @see WriteError
     *  @see ErrorReporting.GetMessage
     */
-    public static void WriteError(String module, int line, String code, String message) throws Exception {
+    public static void WriteError(String module, int line, String code, String message)  {
 
 // KJX BUGGY
 //         if (!Console.IsErrorRedirected)
@@ -221,7 +221,7 @@ public class ErrorReporting
     *  @param line 
     * Output
     */
-    public static void writeLine(String line) throws Exception {
+    public static void writeLine(String line)  {
         sink.WriteLine(line);
     }
 
@@ -239,7 +239,7 @@ public class ErrorReporting
     */
 //KJX BUGGY
 //Not so much buggy as I don't think I'll need this actually
-    //    public static void writeException(GraceExceptionPacket gep) throws Exception {
+    //    public static void writeException(GraceExceptionPacket gep)  {
 
 //         if (!Console.IsErrorRedirected)
 //         {
@@ -279,7 +279,7 @@ public class ErrorReporting
     */
 //  OOPS: never expect to get this far - jernan won't have EvaluationContexts like this
 //
-//     public static void raiseError(EvaluationContext ctx, String code, HashMap<String,String> vars, String localDescription) throws Exception {
+//     public static void raiseError(EvaluationContext ctx, String code, HashMap<String,String> vars, String localDescription)  {
 //         String baseMessage = getMessage(code,vars) != null ? getMessage(code,vars) : localDescription;
 // 	String[] parts = baseMessage.split("[ :]", 2); //KJX BUGGY
 // 	System.err.println("KJX BUGGY");
@@ -294,7 +294,7 @@ public class ErrorReporting
     * 
     *  @param s Destination for error messages
     */
-    public static void setSink(OutputSink s) throws Exception {
+    public static void setSink(OutputSink s)  {
         sink = s;
     }
 
@@ -303,7 +303,7 @@ public class ErrorReporting
     * 
     *  @param code Error to silence
     */
-    public static void silenceError(String code) throws Exception {
+    public static void silenceError(String code)  {
         SilencedErrors.add(code);
     }
 
@@ -317,7 +317,7 @@ public class ErrorReporting
     *  @param message Error message
     *  @param vars Mapping of replacement variables
     */
-    public static void record(Token t, String code, String message, HashMap<String,String> vars) throws Exception {
+    public static void record(Token t, String code, String message, HashMap<String,String> vars)  {
         reportedErrors.add(new ErrorRecord(t, code, message, vars));
     }
 
@@ -342,7 +342,7 @@ public class ErrorReporting
     * Write all recorded (likely dialect) errors to
     * the screen.
     */
-    public static void writeAllRecorded() throws Exception {
+    public static void writeAllRecorded()  {
         for (ErrorRecord tp : reportedErrors)
         {
 
@@ -368,7 +368,7 @@ public class ErrorReporting
     /**
     * Empty the collected list of errors reported so far.
     */
-    public static void clearRecordedErrors() throws Exception {
+    public static void clearRecordedErrors()  {
         reportedErrors.clear();
     }
 
@@ -376,7 +376,7 @@ public class ErrorReporting
     * True iff at least one recorded, but not immediately fatal,
     * error has been given already.
     */
-    public static boolean getHasRecordedError() throws Exception {
+    public static boolean getHasRecordedError()  {
         return reportedErrors.size() != 0;
     }
 

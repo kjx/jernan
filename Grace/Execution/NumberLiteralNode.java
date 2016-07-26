@@ -21,7 +21,7 @@ public class NumberLiteralNode  extends Node
 //KJX removes dependency on Kernan's Rational class
 //     Rational numbase = 10;
 //     Rational val;
-    public NumberLiteralNode(Token location, NumberParseNode source) throws Exception {
+    public NumberLiteralNode(Token location, NumberParseNode source)  {
         super(location, source);
         origin = source;
 //         numbase = Rational.Create(origin.getNumericBase());
@@ -82,7 +82,7 @@ public class NumberLiteralNode  extends Node
     /**
     * 
     */
-    public void debugPrint(PrintStream tw, String prefix) throws Exception {
+    public void debugPrint(PrintStream tw, String prefix)  {
         String desc = "";
         if (origin.getNumericBase() == 10)
             desc += origin.getDigits();

@@ -19,15 +19,15 @@ public class ReturnParseNode  extends ParseNode
     /**
     * Expression returned, if any
     */
-    public ParseNode getReturnValue() throws Exception {
+    public ParseNode getReturnValue()  {
         return _returnValue;
     }
 
-    public void setReturnValue(ParseNode value) throws Exception {
+    public void setReturnValue(ParseNode value)  {
         _returnValue = value;
     }
 
-    public ReturnParseNode(Token tok, ParseNode val) throws Exception {
+    public ReturnParseNode(Token tok, ParseNode val)  {
         super(tok);
         _returnValue = val;
     }
@@ -35,7 +35,7 @@ public class ReturnParseNode  extends ParseNode
     /**
     * 
     */
-    public void debugPrint(PrintStream tw, String prefix) throws Exception {
+    public void debugPrint(PrintStream tw, String prefix)  {
         tw.println(prefix + "Return:");
         if (_returnValue == null)
             tw.println(prefix + "    (nothing)");
@@ -47,7 +47,7 @@ public class ReturnParseNode  extends ParseNode
     /**
     * 
     */
-    public <T>T visit(ParseNodeVisitor<T> visitor) throws Exception {
+    public <T>T visit(ParseNodeVisitor<T> visitor)  {
         return visitor.visit(this);
     }
 

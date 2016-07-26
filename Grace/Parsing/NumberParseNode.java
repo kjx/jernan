@@ -40,7 +40,7 @@ public class NumberParseNode  extends ParseNode
         _digits = value;
     }
 
-    public NumberParseNode(Token tok) throws Exception {
+    public NumberParseNode(Token tok)  {
         super(tok);
         NumberToken it = tok instanceof NumberToken ? (NumberToken)tok : (NumberToken)null;
         _base = it.getNumericBase();
@@ -50,7 +50,7 @@ public class NumberParseNode  extends ParseNode
     /**
     * 
     */
-    public void debugPrint(PrintStream tw, String prefix) throws Exception {
+    public void debugPrint(PrintStream tw, String prefix)  {
         String desc = "";
         if (_base == 10)
             desc += _digits;
@@ -65,7 +65,7 @@ public class NumberParseNode  extends ParseNode
     /**
     * 
     */
-    public <T>T visit(ParseNodeVisitor<T> visitor) throws Exception {
+    public <T>T visit(ParseNodeVisitor<T> visitor)  {
         return visitor.visit(this);
     }
 

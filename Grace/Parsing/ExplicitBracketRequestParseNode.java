@@ -53,7 +53,7 @@ public class ExplicitBracketRequestParseNode  extends ParseNode
         __Arguments = value;
     }
 
-    public ExplicitBracketRequestParseNode(Token start, String name, ParseNode receiver, List<ParseNode> arguments) throws Exception {
+    public ExplicitBracketRequestParseNode(Token start, String name, ParseNode receiver, List<ParseNode> arguments)  {
         super(start);
         setName(name);
         setReceiver(receiver);
@@ -63,7 +63,7 @@ public class ExplicitBracketRequestParseNode  extends ParseNode
     /**
     * 
     */
-    public void debugPrint(PrintStream tw, String prefix) throws Exception {
+    public void debugPrint(PrintStream tw, String prefix)  {
         tw.println(prefix + "ExplicitBracketRequest: " + getName());
         tw.println(prefix + "  Receiver:");
         getReceiver().debugPrint(tw,prefix + "    ");
@@ -76,7 +76,7 @@ public class ExplicitBracketRequestParseNode  extends ParseNode
     /**
     * 
     */
-    public <T>T visit(ParseNodeVisitor<T> visitor) throws Exception {
+    public <T>T visit(ParseNodeVisitor<T> visitor)  {
         return visitor.visit(this);
     }
 

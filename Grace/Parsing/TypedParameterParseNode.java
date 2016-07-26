@@ -19,11 +19,11 @@ public class TypedParameterParseNode  extends ParseNode
     /**
     * Name of the parameter
     */
-    public ParseNode getName() throws Exception {
+    public ParseNode getName()  {
         return _name;
     }
 
-    public void setName(ParseNode value) throws Exception {
+    public void setName(ParseNode value)  {
         _name = value;
     }
 
@@ -31,21 +31,21 @@ public class TypedParameterParseNode  extends ParseNode
     /**
     * Type of the parameter
     */
-    public ParseNode getType() throws Exception {
+    public ParseNode getType()  {
         return _type;
     }
 
-    public void setType(ParseNode value) throws Exception {
+    public void setType(ParseNode value)  {
         _type = value;
     }
 
-    public TypedParameterParseNode(ParseNode name, ParseNode type) throws Exception {
+    public TypedParameterParseNode(ParseNode name, ParseNode type)  {
         super(name);
         this._name = name;
         this._type = type;
     }
 
-    public TypedParameterParseNode(ParseNode name, ParseNode type, Token token) throws Exception {
+    public TypedParameterParseNode(ParseNode name, ParseNode type, Token token)  {
         super(token);
         this._name = name;
         this._type = type;
@@ -54,7 +54,7 @@ public class TypedParameterParseNode  extends ParseNode
     /**
     * 
     */
-    public void debugPrint(PrintStream tw, String prefix) throws Exception {
+    public void debugPrint(PrintStream tw, String prefix)  {
         tw.println(prefix + "TypedParameter:");
         tw.println(prefix + "  Name:");
         _name.debugPrint(tw,prefix + "    ");
@@ -66,7 +66,7 @@ public class TypedParameterParseNode  extends ParseNode
     /**
     * 
     */
-    public <T>T visit(ParseNodeVisitor<T> visitor) throws Exception {
+    public <T>T visit(ParseNodeVisitor<T> visitor)  {
         return visitor.visit(this);
     }
 

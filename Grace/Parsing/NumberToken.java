@@ -9,30 +9,30 @@ import Grace.Parsing.Token;
 public class NumberToken  extends Token 
 {
     private int _base;
-    public int getNumericBase() throws Exception {
+    public int getNumericBase()  {
         return _base;
     }
 
-    public void setNumericBase(int value) throws Exception {
+    public void setNumericBase(int value)  {
         _base = value;
     }
 
     private String _digits;
-    public String getDigits() throws Exception {
+    public String getDigits()  {
         return _digits;
     }
 
-    public void setDigits(String value) throws Exception {
+    public void setDigits(String value)  {
         _digits = value;
     }
 
-    public NumberToken(String module, int line, int column, int b, String digits) throws Exception {
+    public NumberToken(String module, int line, int column, int b, String digits)  {
         super(module, line, column);
         _base = b;
         this._digits = digits;
     }
 
-    protected String describe() throws Exception {
+    protected String describe()  {
         String ret = "Number:";
         if (_base == 10)
             ret += _digits;

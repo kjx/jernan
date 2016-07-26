@@ -36,21 +36,21 @@ public abstract class SignaturePartParseNode  extends ParseNode
     /**
     * @param name Name of this part
     */
-    public SignaturePartParseNode(IdentifierParseNode name) throws Exception {
+    public SignaturePartParseNode(IdentifierParseNode name)  {
         super(name.getToken());
     }
 
     /**
     * @param t Representative token for this part
     */
-    public SignaturePartParseNode(Token t) throws Exception {
+    public SignaturePartParseNode(Token t)  {
         super(t);
     }
 
     /**
     * 
     */
-    public void debugPrint(PrintStream tw, String prefix) throws Exception {
+    public void debugPrint(PrintStream tw, String prefix)  {
         tw.println(prefix + "SignaturePart:");
         writeComment(tw,prefix);
     }
@@ -58,7 +58,7 @@ public abstract class SignaturePartParseNode  extends ParseNode
     /**
     * 
     */
-    public <T>T visit(ParseNodeVisitor<T> visitor) throws Exception {
+    public <T>T visit(ParseNodeVisitor<T> visitor)  {
         return visitor.visit(this);
     }
 

@@ -51,14 +51,14 @@ public class OrdinarySignaturePartNode  extends SignaturePartNode
         __Parameters = value;
     }
 
-    public OrdinarySignaturePartNode(Token location, OrdinarySignaturePartParseNode source, List<Node> parameters, List<Node> genericParameters) throws Exception {
+    public OrdinarySignaturePartNode(Token location, OrdinarySignaturePartParseNode source, List<Node> parameters, List<Node> genericParameters)  {
         super(location, source);
         _name = MethodHelper.ArityNamePart(source.getName(), parameters.size());
         setParameters(parameters);
         setGenericParameters(genericParameters);
     }
 
-    public OrdinarySignaturePartNode(Token location, OrdinarySignaturePartParseNode source, List<Node> parameters, List<Node> genericParameters, boolean allowArityOverloading) throws Exception {
+    public OrdinarySignaturePartNode(Token location, OrdinarySignaturePartParseNode source, List<Node> parameters, List<Node> genericParameters, boolean allowArityOverloading)  {
         super(location, source);
         _name = allowArityOverloading ? MethodHelper.ArityNamePart(source.getName(), parameters.size()) : source.getName();
         setParameters(parameters);
@@ -68,7 +68,7 @@ public class OrdinarySignaturePartNode  extends SignaturePartNode
     /**
     * 
     */
-    public void debugPrint(PrintStream tw, String prefix) throws Exception {
+    public void debugPrint(PrintStream tw, String prefix)  {
         tw.println(prefix + "Part: " + getName());
         for (Node p : getParameters())
             p.debugPrint(tw, prefix + "    ");

@@ -99,7 +99,7 @@ public class MethodNode  extends Node
 //         __UseRealReceiver = value;
 //     }
 
-    public MethodNode(Token token, ParseNode source) throws Exception {
+    public MethodNode(Token token, ParseNode source)  {
         super(token, source);
         if (source == null)
             setAnnotations(new AnnotationsNode(token,null));
@@ -109,7 +109,7 @@ public class MethodNode  extends Node
     /**
     * The name of this methodThis property gets the value of the field name
     */
-    public String getName() throws Exception {
+    public String getName()  {
         return getSignature().getName();
     }
 
@@ -117,21 +117,21 @@ public class MethodNode  extends Node
     * Add a node to the body of this method
     *  @param node Node to add
     */
-    public void add(Node node) throws Exception {
+    public void add(Node node)  {
         body.add(node);
     }
 
     /**
     * The body of this methodThis property gets the value of the field body
     */
-    public List<Node> getBody() throws Exception {
+    public List<Node> getBody()  {
         return body;
     }
 
     /**
     * 
     */
-    public void debugPrint(PrintStream tw, String prefix) throws Exception {
+    public void debugPrint(PrintStream tw, String prefix)  {
         tw.println(prefix + "Method: " + getName());
         tw.println(prefix + "  Signature:");
         getSignature().debugPrint(tw,prefix + "    ");

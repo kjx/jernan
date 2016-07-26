@@ -17,7 +17,7 @@ import Grace.Execution.ReturnNode;
 */
 public class ReturnNode  extends Node 
 {
-    public ReturnNode(Token location, ReturnParseNode source, Node val) throws Exception {
+    public ReturnNode(Token location, ReturnParseNode source, Node val)  {
         super(location, source);
         setValue(val);
     }
@@ -37,7 +37,7 @@ public class ReturnNode  extends Node
     /**
     * 
     */
-    public void debugPrint(PrintStream tw, String prefix) throws Exception {
+    public void debugPrint(PrintStream tw, String prefix)  {
         tw.println(prefix + "Return:");
         if (getValue() != null)
         {
