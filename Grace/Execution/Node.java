@@ -8,7 +8,11 @@ import Grace.Execution.ImplicitNode;
 import Grace.Execution.Node;
 import Grace.Parsing.Token;
 import Grace.Parsing.ParseNode;
+
 import java.io.PrintStream;
+
+import som.compiler.MixinDefinition;
+
 
 /**
 * An abstract executable representation of a piece of
@@ -62,6 +66,14 @@ public abstract class Node //KJX removed extending GraceObject
         return "KJX-WTFFF" + name.substring(0, name.length() - 4); ///WTFFFF
     }
     
+
+    public MixinDefinition trans() {
+	throw new UnsupportedOperationException( 
+						"Sorry, cannot yet traslate " +
+						this.getClass().getName() +
+						" to SOM"
+						 );
+    }
 }
 
 
