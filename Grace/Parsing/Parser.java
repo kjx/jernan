@@ -615,6 +615,8 @@ public class Parser
     }
 
     private void rejectVariadicParameters(List<ParseNode> list)  {
+	return;
+
         for (ParseNode p : list)
         {
             if (p instanceof VarArgsParameterParseNode)
