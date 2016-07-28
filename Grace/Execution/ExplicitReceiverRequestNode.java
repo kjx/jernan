@@ -14,6 +14,13 @@ import Grace.Execution.Node;
 import Grace.Execution.RequestNode;
 import Grace.Execution.RequestPartNode;
 
+import static som.vm.Symbols.symbolFor;
+import som.interpreter.nodes.MessageSendNode;
+import som.interpreter.nodes.ExpressionNode;
+import som.vmobjects.SSymbol;
+import com.oracle.truffle.api.source.SourceSection;
+import com.oracle.truffle.api.source.Source;
+
 /**
 * A method request with a syntactic receiver
 */
@@ -64,6 +71,16 @@ public class ExplicitReceiverRequestNode  extends RequestNode
         }
     }
 
+    public ExpressionNode trans() {
+    	Source sourceText = Source.fromText("fake\nfake\nfake\n", "fake source in SOMBridge.java");
+        SourceSection source = sourceText.createSection("fake\nfake\nfake\n",1,1,1);
+
+    	SSymbol selector = symbolFor(getName());
+    	//only handles Unary - needs to do more!
+    	return MessageSendNode.createMessageSend(selector, 
+    			new ExpressionNode[] {receiver.trans()}, source);     	
+    }
+    
 }
 
 

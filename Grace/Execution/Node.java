@@ -11,7 +11,7 @@ import Grace.Execution.Node;
 import Grace.Parsing.Token;
 import Grace.Parsing.ParseNode;
 
-import som.compiler.MixinDefinition;
+import som.interpreter.nodes.ExpressionNode;
 
 /**
 * An abstract executable representation of a piece of
@@ -66,7 +66,7 @@ public abstract class Node //KJX removed extending GraceObject
     }
     
 
-    public MixinDefinition trans() {
+    public ExpressionNode trans() {
 	throw new UnsupportedOperationException( 
 						"Sorry, cannot yet traslate " +
 						this.getClass().getName() +

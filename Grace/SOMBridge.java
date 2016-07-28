@@ -24,6 +24,7 @@ import java.io.PrintStream;
 import Grace.Parsing.Parser;
 import Grace.Execution.Node;
 import Grace.Execution.ExecutionTreeTranslator;
+import Grace.Execution.ObjectConstructorNode;
 import Grace.Parsing.ObjectParseNode;
 import som.VM;
 import som.compiler.MethodBuilder;
@@ -49,7 +50,7 @@ public class SOMBridge {
     public static MixinDefinition parseForSOM(String filename, File file) throws IOException { 
     	System.out.println("KJX in SOMBridge");
     	if 	("fake.grace".equals(filename)) {
-    		return fakeSOM();
+    		return fakeSOM(helloWorldNode());
     	}
     	
     	System.out.println("KJX SOMBridge loading " + filename);
@@ -61,10 +62,32 @@ public class SOMBridge {
 
     	ast.debugPrint(new PrintStream(System.out,true), "");
 
-    	return ast.trans();
+    	ObjectConstructorNode graceOC = (ObjectConstructorNode) ast;
+    	ExpressionNode graceCode = graceOC.getBody().get(0).trans();
+    	System.out.print("KJX SOMBridge returning");
+    	return fakeSOM(graceCode);
     }
     
-    public static MixinDefinition fakeSOM() {
+    public static ExpressionNode helloWorldNode() {
+        SourceCoordinate coord = new SourceCoordinate(1,1,1,1);
+        Source sourceText = Source.fromText("fake\nfake\nfake\n", "fake source in SOMBridge.java");
+        SourceSection source = sourceText.createSection("fake\nfake\nfake\n",1,1,1);
+
+        
+    	       // expressions.add(expression(builder));
+            //evaluation(builder) -> primary(builder) -> literal -> litearlString
+            LiteralNode HelloWorldString = new StringLiteralNode("Hello KJX World", source);
+            // messages(builder, HelloWorldString);
+            //unaryMessage(receiver=HelloWorldString, evenutalSend=false);
+            //createMessageSend(selector=, new ExpressionNode[] {receiver=HelloWorldString},
+            //        eventualSend=false, getSource(coord)-source);
+            SSymbol printLnSelector = symbolFor("println");
+            ExpressionNode printlnHellowWorld =
+              MessageSendNode.createMessageSend(printLnSelector, new ExpressionNode[] {HelloWorldString}, source); 
+            return printlnHellowWorld;
+    }
+    
+    public static MixinDefinition fakeSOM(ExpressionNode exp) {
     	System.out.println("KJX starting fakeSOM");
         MixinBuilder mxnBuilder = new MixinBuilder(null, AccessModifier.PUBLIC, symbolFor("Hello"));
         MethodBuilder primaryFactory = mxnBuilder.getPrimaryFactoryMethodBuilder();
@@ -113,17 +136,12 @@ public class SOMBridge {
         // locals(builder); we have no locals
         // ExpressionNode  blockBody(builder);
         List<ExpressionNode> expressions = new ArrayList<ExpressionNode>();
-        // expressions.add(expression(builder));
-        //evaluation(builder) -> primary(builder) -> literal -> litearlString
-        LiteralNode HelloWorldString = new StringLiteralNode("Hello KJX World", source);
-        // messages(builder, HelloWorldString);
-        //unaryMessage(receiver=HelloWorldString, evenutalSend=false);
-        //createMessageSend(selector=, new ExpressionNode[] {receiver=HelloWorldString},
-        //        eventualSend=false, getSource(coord)-source);
-        SSymbol printLnSelector = symbolFor("println");
-        ExpressionNode printlnHellowWorld =
-          MessageSendNode.createMessageSend(printLnSelector, new ExpressionNode[] {HelloWorldString}, source); 
-        expressions.add(printlnHellowWorld);
+ 
+        
+        expressions.add(exp);
+        
+        
+        
         // the end of the method has been found (EndTerm) - make it implicitly
         // return "self"
         ExpressionNode self = builder.getSelfRead(source);

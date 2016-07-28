@@ -11,6 +11,10 @@ import java.io.PrintStream;
 import Grace.Execution.Node;
 import Grace.Execution.StringLiteralNode;
 
+import com.oracle.truffle.api.source.SourceSection;
+import com.oracle.truffle.api.source.Source;
+
+
 /**
 * A string literal
 */
@@ -35,6 +39,13 @@ public class StringLiteralNode  extends Node
     */
     public void debugPrint(PrintStream tw, String prefix)  {
         tw.println(prefix + "String: " + getValue());
+    }
+    
+    public som.interpreter.nodes.literals.StringLiteralNode trans() {
+    	Source sourceText = Source.fromText("fake\nfake\nfake\n", "fake source in SOMBridge.java");
+        SourceSection source = sourceText.createSection("fake\nfake\nfake\n",1,1,1);
+
+        return new som.interpreter.nodes.literals.StringLiteralNode(getValue(),source);
     }
 }
 
