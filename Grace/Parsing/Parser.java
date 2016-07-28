@@ -615,16 +615,14 @@ public class Parser
     }
 
     private void rejectVariadicParameters(List<ParseNode> list)  {
-	return;
-
-        for (ParseNode p : list)
-        {
-            if (p instanceof VarArgsParameterParseNode)
-                reportError("P1012",p.getToken(),
-			    hash("operator", "*"), 
-			    "Unexpected operator in parameter list.");
-             
-        }
+//         for (ParseNode p : list)
+//         {
+//             if (p instanceof VarArgsParameterParseNode)
+//                 reportError("P1012",p.getToken(),
+// 			    hash("operator", "*"), 
+// 			    "Unexpected operator in parameter list.");
+//             
+//         }
     }
 
     private SignaturePartParseNode parseFirstSignaturePart(Token start)  {

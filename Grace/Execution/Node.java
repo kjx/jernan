@@ -4,15 +4,14 @@
 
 package Grace.Execution;
 
+import java.io.PrintStream;
+
 import Grace.Execution.ImplicitNode;
 import Grace.Execution.Node;
 import Grace.Parsing.Token;
 import Grace.Parsing.ParseNode;
 
-import java.io.PrintStream;
-
 import som.compiler.MixinDefinition;
-
 
 /**
 * An abstract executable representation of a piece of

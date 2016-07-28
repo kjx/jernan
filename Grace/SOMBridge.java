@@ -113,7 +113,17 @@ public class SOMBridge {
         // locals(builder); we have no locals
         // ExpressionNode  blockBody(builder);
         List<ExpressionNode> expressions = new ArrayList<ExpressionNode>();
-      
+        // expressions.add(expression(builder));
+        //evaluation(builder) -> primary(builder) -> literal -> litearlString
+        LiteralNode HelloWorldString = new StringLiteralNode("Hello KJX World", source);
+        // messages(builder, HelloWorldString);
+        //unaryMessage(receiver=HelloWorldString, evenutalSend=false);
+        //createMessageSend(selector=, new ExpressionNode[] {receiver=HelloWorldString},
+        //        eventualSend=false, getSource(coord)-source);
+        SSymbol printLnSelector = symbolFor("println");
+        ExpressionNode printlnHellowWorld =
+          MessageSendNode.createMessageSend(printLnSelector, new ExpressionNode[] {HelloWorldString}, source); 
+        expressions.add(printlnHellowWorld);
         // the end of the method has been found (EndTerm) - make it implicitly
         // return "self"
         ExpressionNode self = builder.getSelfRead(source);

@@ -3,6 +3,7 @@
 	<name>Grace</name>
 	<comment></comment>
 	<projects>
+		<project>SOMns</project>
 	</projects>
 	<buildSpec>
 	</buildSpec>
