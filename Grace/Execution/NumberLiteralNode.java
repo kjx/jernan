@@ -5,11 +5,15 @@
 package Grace.Execution;
 import Grace.Parsing.Token;
 import Grace.Parsing.NumberParseNode;
+import java.lang.Double;
 import java.io.PrintStream;
 
 
 import Grace.Execution.Node;
 import Grace.Execution.NumberLiteralNode;
+
+import com.oracle.truffle.api.source.SourceSection;
+import com.oracle.truffle.api.source.Source;
 
 /**
 * A numeric literal
@@ -93,6 +97,14 @@ public class NumberLiteralNode  extends Node
         tw.println(prefix + "Number: " + desc + " ("+ desc+ ")");
 
     }
+    public som.interpreter.nodes.literals.DoubleLiteralNode trans() {
+    	Source sourceText = Source.fromText("fake\nfake\nfake\n", "fake source in SOMBridge.java");
+        SourceSection source = sourceText.createSection("fake\nfake\nfake\n",1,1,1);
+
+        return new som.interpreter.nodes.literals.DoubleLiteralNode(Double.parseDouble(origin.getDigits()),source);
+    }
+
+    
 }
 
 
