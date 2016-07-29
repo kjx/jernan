@@ -6,7 +6,8 @@ package Grace.Execution;
 import Grace.Parsing.Token;
 import Grace.Parsing.ParseNode;
 import java.io.PrintStream;
-
+import java.util.List;
+import java.util.ArrayList;
 
 import Grace.Execution.ExplicitReceiverRequestNode;
 import Grace.Execution.ImplicitReceiverRequestNode;
@@ -37,6 +38,7 @@ public class ExplicitReceiverRequestNode  extends RequestNode
     */
     public void debugPrint(PrintStream tw, String prefix)  {
         tw.println(prefix + "ExplicitReceiverRequest: " + getName());
+        tw.println(prefix + "SOMnsName:               " + getSOMnsName());
         tw.println(prefix + "  Receiver:");
         receiver.debugPrint(tw,prefix + "    ");
         tw.println(prefix + "  Parts:");
@@ -75,12 +77,16 @@ public class ExplicitReceiverRequestNode  extends RequestNode
     	Source sourceText = Source.fromText("fake\nfake\nfake\n", "fake source in SOMBridge.java");
         SourceSection source = sourceText.createSection("fake\nfake\nfake\n",1,1,1);
 
-    	SSymbol selector = symbolFor(getName());
-    	//only handles Unary - needs to do more!
+    	SSymbol selector = symbolFor(getSOMnsName());
+    	List<ExpressionNode> subs = new ArrayList<>(parts.size() + 1);
+    	subs.add(receiver.trans());
+    	for (RequestPartNode part : parts) {
+    		for (Node arg : part.getArguments()) {
+    			subs.add(arg.trans());
+    		}
+    	}
     	return MessageSendNode.createMessageSend(selector, 
-    			new ExpressionNode[] {receiver.trans()}, source);     	
+    			subs.toArray(new ExpressionNode[0]), source);     	
     }
-    
 }
-
 

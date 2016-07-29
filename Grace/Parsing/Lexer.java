@@ -547,19 +547,22 @@ public class Lexer
         return true;
     }
 
-    private static boolean isIdentifierStartCharacter(char c, UnicodeCategory cat)  {
+    //KJX opening these up because e.g. SOMBridge needs 'em
+    //particularly isOperatorCharacter, to build SOMns format names
+    public static boolean isIdentifierStartCharacter(char c, UnicodeCategory cat)  {
         return (cat == UnicodeCategory.LowercaseLetter || cat == UnicodeCategory.UppercaseLetter || cat == UnicodeCategory.TitlecaseLetter || cat == UnicodeCategory.ModifierLetter || cat == UnicodeCategory.OtherLetter || c == '_' || (!isOperatorCharacter(c,cat) && (cat == UnicodeCategory.OtherSymbol)));
     }
 
-    private static boolean isIdentifierCharacter(char c, UnicodeCategory cat)  {
+    public static boolean isIdentifierCharacter(char c, UnicodeCategory cat)  {
         return (cat == UnicodeCategory.LowercaseLetter || cat == UnicodeCategory.UppercaseLetter || cat == UnicodeCategory.TitlecaseLetter || cat == UnicodeCategory.ModifierLetter || cat == UnicodeCategory.OtherLetter || cat == UnicodeCategory.DecimalDigitNumber || cat == UnicodeCategory.LetterNumber || cat == UnicodeCategory.OtherNumber || cat == UnicodeCategory.NonSpacingMark || cat == UnicodeCategory.SpacingCombiningMark || cat == UnicodeCategory.EnclosingMark || (!isOperatorCharacter(c,cat) && (cat == UnicodeCategory.OtherSymbol)) || c == '\'' || c == '_');
     }
 
-    private boolean isNumberStartCharacter(char c)  {
+    //KJX and these should be static, non?
+    public static boolean isNumberStartCharacter(char c)  {
         return (c >= '0' && c <= '9');
     }
 
-    private boolean isDigitInBase(char c, int numBase)  {
+    public static boolean isDigitInBase(char c, int numBase)  {
         if (c >= '0' && c <= '9')
             return (c - '0') < numBase;
          
@@ -654,7 +657,7 @@ public class Lexer
         return new CommentToken(moduleName,line,column,body);
     }
 
-    private static boolean isOperatorCharacter(char c, UnicodeCategory cat)  {
+    public static boolean isOperatorCharacter(char c, UnicodeCategory cat)  {
         return c != '"' && c != ',' && c != ';' && (c == '+' || c == '-' || c == '*' || c == '/' || c == '=' || c == '!' || c == '.' || c == '>' || c == '<' || c == '@' || c == '$' || c == '?' || c == '&' || c == '|' || c == '^' || c == '%' || c == '#' || c == '~' || c == ':' || c == '\\' || c == '¬' || c == '±' || c == '×' || c == '÷' || c == '¡' || c == '¢' || c == '£' || c == '¤' || c == '¥' || c == '§' || c == '¿' || c == '‽' || c == '⁂' || (c >= 0x2200 && c <= 0x22ff) || (c >= 0x2a00 && c <= 0x2aff) || (c >= 0x27c0 && c <= 0x27ef) || (c >= 0x2980 && c <= 0x29ff) || (c >= 0x2b00 && c <= 0x2bff) || (c >= 0x2190 && c <= 0x21ff) || (c >= 0x27f0 && c <= 0x27ff) || (c >= 0x2900 && c <= 0x297f) || (c >= 0x2300 && c <= 0x23ff) || (c >= 0x20a0 && c <= 0x20cf) || (c >= 0x25a0 && c <= 0x25ff));
     }
 

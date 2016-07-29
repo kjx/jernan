@@ -5,11 +5,15 @@
 package Grace.Execution;
 import Grace.Parsing.Token;
 import Grace.Parsing.ParseNode;
+import static Grace.Parsing.Lexer.isOperatorCharacter;
 import java.io.PrintStream;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.stream.Collectors;
+import java.lang.StringBuilder;
+
 
 import Grace.Execution.Node;
 import Grace.Execution.RequestNode;
@@ -66,6 +70,21 @@ public abstract class RequestNode  extends Node implements Iterable<RequestPartN
         return name;
     }
 
+    //name in SOMns format - colon preceeds arguments except for unary mesages
+    public String getSOMnsName() {
+    	if ((parts.size() == 1) && (parts.get(0).getArguments().size() == 1)) {
+    		if (isOperatorCharacter(parts.get(0).getBaseName().charAt(0),null)) {
+    				    		return parts.get(0).getBaseName();
+    	} }
+    StringBuilder sb = new StringBuilder();
+    for (RequestPartNode p : parts) {
+    	sb.append(p.getBaseName());
+    	for (Object arg : p.getArguments()) {sb.append(":");}
+    }
+    return sb.toString();
+    }
+    
+    
     /**
     * Get an enumerator giving each part of this request
     * in turn
