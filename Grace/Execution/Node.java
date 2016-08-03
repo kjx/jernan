@@ -11,6 +11,8 @@ import Grace.Execution.Node;
 import Grace.Parsing.Token;
 import Grace.Parsing.ParseNode;
 
+import Grace.TranslationContext;
+
 import som.interpreter.nodes.ExpressionNode;
 
 /**
@@ -65,8 +67,8 @@ public abstract class Node //KJX removed extending GraceObject
         return "KJX-WTFFF" + name.substring(0, name.length() - 4); ///WTFFFF
     }
     
-
-    public ExpressionNode trans() {
+    // translate to SOM.ExpressionNode
+    public ExpressionNode trans(TranslationContext tc) {
 	throw new UnsupportedOperationException( 
 						"Sorry, cannot yet traslate " +
 						this.getClass().getName() +

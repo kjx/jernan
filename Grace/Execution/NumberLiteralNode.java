@@ -3,6 +3,7 @@
 //
 
 package Grace.Execution;
+import Grace.TranslationContext;
 import Grace.Parsing.Token;
 import Grace.Parsing.NumberParseNode;
 import java.lang.Double;
@@ -97,7 +98,7 @@ public class NumberLiteralNode  extends Node
         tw.println(prefix + "Number: " + desc + " ("+ desc+ ")");
 
     }
-    public som.interpreter.nodes.literals.DoubleLiteralNode trans() {
+    public som.interpreter.nodes.literals.DoubleLiteralNode trans(TranslationContext tc) {
     	Source sourceText = Source.fromText("fake\nfake\nfake\n", "fake source in SOMBridge.java");
         SourceSection source = sourceText.createSection("fake\nfake\nfake\n",1,1,1);
 

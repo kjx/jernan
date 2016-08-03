@@ -6,9 +6,22 @@ package Grace.Execution;
 import Grace.Parsing.Token;
 import Grace.Parsing.VarDeclarationParseNode;
 import Grace.Parsing.IdentifierParseNode;
+
+import static som.vm.Symbols.symbolFor;
+
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
 
+import com.oracle.truffle.api.source.Source;
+import com.oracle.truffle.api.source.SourceSection;
 
+import som.interpreter.SNodeFactory;
+import som.interpreter.nodes.ExpressionNode;
+import som.interpreter.nodes.MessageSendNode;
+import som.interpreter.nodes.literals.NilLiteralNode;
+import som.vmobjects.SSymbol;
+import Grace.TranslationContext;
 import Grace.Execution.AnnotationsNode;
 import Grace.Execution.ImplicitNode;
 import Grace.Execution.Node;
@@ -115,10 +128,28 @@ public class VarDeclarationNode  extends Node
         {
             tw.println(prefix + "  Value:");
             getValue().debugPrint(tw,prefix + "    ");
-        }
-         
+        }   
     }
 
+   public ExpressionNode trans(TranslationContext tc) {
+    	Source sourceText = Source.fromText("fake\nfake\nfake\n", "fake source in SOMBridge.java");
+        SourceSection source = sourceText.createSection("fake\nfake\nfake\n",1,1,1);
+//        System.out.println("KJX EVIL DEAD");
+//        return new NilLiteralNode(source);
+        		
+        if (getValue() != null)
+        {
+        	return tc.methodBuilder.getSetterSend(symbolFor(getName()), getValue().trans(tc), source);
+        }   
+
+        //this line below is the WRONG THING
+        //variables should be created uninitialised, not assigned by their var or def node!
+        
+        return tc.methodBuilder.getSetterSend(symbolFor(getName()), 
+        		new som.interpreter.nodes.literals.StringLiteralNode("Unitialised var " + getName(), source), 
+        		source);
+   }
+    
 }
 
 

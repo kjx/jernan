@@ -4,10 +4,21 @@
 
 package Grace.Execution;
 import Grace.Parsing.Token;
+import som.interpreter.nodes.ExpressionNode;
+import som.interpreter.nodes.MessageSendNode;
+import som.vmobjects.SSymbol;
 import Grace.Parsing.ParseNode;
+
+import static som.vm.Symbols.symbolFor;
+
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
 
+import com.oracle.truffle.api.source.Source;
+import com.oracle.truffle.api.source.SourceSection;
 
+import Grace.TranslationContext;
 import Grace.Execution.Node;
 import Grace.Execution.RequestNode;
 import Grace.Execution.RequestPartNode;
@@ -19,6 +30,8 @@ public class PreludeRequestNode  extends RequestNode
 {
     public PreludeRequestNode(Token location, ParseNode source)  {
         super(location, source);
+    	System.out.println("AS FAR AS KJX CAN SEE, PreludeRequestNode is never instantiated");
+
     }
 
     /**
@@ -26,6 +39,8 @@ public class PreludeRequestNode  extends RequestNode
     */
     public void debugPrint(PrintStream tw, String prefix)  {
         tw.println(prefix + "PreludeRequest: " + getName());
+        tw.println(prefix + "SOMnsName:               " + getSOMnsName());
+
         if (parts.size() == 1)
         {
             if (parts.get(0).getArguments().size() == 0 && parts.get(0).getGenericArguments().size() == 0)
@@ -63,6 +78,30 @@ public class PreludeRequestNode  extends RequestNode
              
             i++;
         }
+    }
+    public ExpressionNode trans(TranslationContext tc) {
+    	
+    	//For now, we put things in the Grace Prelude 
+    	//into the NS Object class as methosd beginning with the name "gracePrelude"
+    	
+    	Source sourceText = Source.fromText("fake\nfake\nfake\n", "fake source in SOMBridge.java");
+        SourceSection source = sourceText.createSection("fake\nfake\nfake\n",1,1,1);
+
+    	SSymbol selector = symbolFor("gracePrelude" + getSOMnsName());  //EVIL by KJX
+    	List<ExpressionNode> subs = new ArrayList<>(parts.size() + 1);
+    	
+    	ExpressionNode self = tc.methodBuilder.getSelfRead(source);
+    	subs.add(self);                       							//EVIL by KJX
+
+    	for (RequestPartNode part : parts) {
+    		for (Node arg : part.getArguments()) {
+    			subs.add(arg.trans(tc));
+    		}
+    	}
+    	
+    	System.out.println("HERE WE GO!!: " + selector.getString());
+    	return MessageSendNode.createMessageSend(selector, 
+    			subs.toArray(new ExpressionNode[0]), source);     	
     }
 }
 

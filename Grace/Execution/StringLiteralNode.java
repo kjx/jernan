@@ -3,6 +3,8 @@
 //
 
 package Grace.Execution;
+import Grace.TranslationContext;
+
 import Grace.Parsing.Token;
 import Grace.Parsing.StringLiteralParseNode;
 import java.io.PrintStream;
@@ -41,7 +43,7 @@ public class StringLiteralNode  extends Node
         tw.println(prefix + "String: " + getValue());
     }
     
-    public som.interpreter.nodes.literals.StringLiteralNode trans() {
+    public som.interpreter.nodes.literals.StringLiteralNode trans(TranslationContext tc) {
     	Source sourceText = Source.fromText("fake\nfake\nfake\n", "fake source in SOMBridge.java");
         SourceSection source = sourceText.createSection("fake\nfake\nfake\n",1,1,1);
 

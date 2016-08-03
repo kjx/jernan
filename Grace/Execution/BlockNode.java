@@ -4,10 +4,30 @@
 
 package Grace.Execution;
 import Grace.Parsing.Token;
+import som.compiler.AccessModifier;
+import som.compiler.MethodBuilder;
+import som.compiler.Lexer.SourceCoordinate;
+import som.interpreter.SNodeFactory;
+import som.interpreter.nodes.ExpressionNode;
+import som.interpreter.nodes.literals.BlockNode.BlockNodeWithContext;
+import som.vmobjects.SInvokable;
+import tools.highlight.Tags.DelimiterClosingTag;
 import Grace.Parsing.ParseNode;
-import java.io.PrintStream;
-import java.util.List;
 
+import static som.compiler.Symbol.Colon;
+import static som.compiler.Symbol.EndBlock;
+import static som.compiler.Symbol.Or;
+import static som.vm.Symbols.symbolFor;
+
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import com.oracle.truffle.api.source.Source;
+import com.oracle.truffle.api.source.SourceSection;
+
+import Grace.TranslationContext;
 import Grace.Execution.BlockNode;
 import Grace.Execution.Node;
 import Grace.Execution.ParameterNode;
@@ -75,6 +95,75 @@ public class BlockNode  extends Node
         }
     }
 
+  
+    
+    public ExpressionNode trans(TranslationContext tc) {
+    	Source sourceText = Source.fromText("fake\nfake\nfake\n", "fake source in SOMBridge.java");
+        SourceSection source = sourceText.createSection("fake\nfake\nfake\n",1,1,1);
+
+        
+    	//from Parser primary case NewBlock:
+        MethodBuilder builder = new MethodBuilder(tc.methodBuilder);
+
+        //from Parser nestedBlock
+        builder.addArgumentIfAbsent("$blockSelf", source);
+
+        
+        //from Parser blockArguments
+        for (Node pn : parameters)
+        {
+            ParameterNode p = (ParameterNode) pn;
+            builder.addArgumentIfAbsent(p.getName(), source);
+            
+        }
+        
+        //builder.debugPrint();
+        
+        // generate Block signature
+        String blockSig = "$blockMethod@0@0KJXEVIL";
+        int argSize = builder.getNumberOfArguments();
+        for (int i = 1; i < argSize; i++) {
+          blockSig += ":";
+        }
+
+        builder.setSignature(symbolFor(blockSig));
+
+        
+        // ExpressionNode expressions = blockContents(builder);
+        //following from blockContents
+
+        //   locals(builder); 
+        //TODO Locals - cons vs var... 
+        for (Node n : getBody()) {
+        	if (n instanceof DefDeclarationNode) {
+        		builder.addLocalIfAbsent(((DefDeclarationNode)n).getName(), source);	
+        	}
+        	if (n instanceof VarDeclarationNode) {
+        		builder.addLocalIfAbsent(((VarDeclarationNode)n).getName(), source);	
+        	}
+        }
+        
+        //builder.debugPrint();
+        
+        // from blockBody(builder);
+                
+        List<ExpressionNode> exps = getBody().stream().map(n -> n.trans(new TranslationContext(builder,tc.mixinBuilder))).collect(Collectors.toList());
+        
+        //KJX TODO TOO EASY!
+        
+
+        //back to Parser primary case NewBlock
+        SInvokable blockMethod = builder.assemble(SNodeFactory.createSequence(exps, source),
+            AccessModifier.BLOCK_METHOD, null, source);
+        builder.addEmbeddedBlockMethod(blockMethod);
+
+        if (builder.requiresContext()) {
+          return new BlockNodeWithContext(blockMethod, source);
+        } else {
+          return new som.interpreter.nodes.literals.BlockNode(blockMethod, source);
+        }
+
+    }
 
 }
 

@@ -4,7 +4,7 @@ import som.compiler.MixinBuilder;
 import som.compiler.MethodBuilder;
 
 public class TranslationContext {
-	TranslationContext(MethodBuilder meth, MixinBuilder mxn) {
+	public TranslationContext(MethodBuilder meth, MixinBuilder mxn) {
 		    methodBuilder = meth;
 		    mixinBuilder = mxn;   		
 	}

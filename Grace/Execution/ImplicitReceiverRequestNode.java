@@ -3,10 +3,25 @@
 //
 
 package Grace.Execution;
-import Grace.Parsing.Token;
-import Grace.Parsing.ParseNode;
-import java.io.PrintStream;
 
+import Grace.TranslationContext;
+import Grace.Parsing.Token;
+import som.compiler.MixinBuilder;
+import som.compiler.Variable.Local;
+import som.interpreter.SNodeFactory;
+import som.interpreter.nodes.ExpressionNode;
+import som.interpreter.nodes.MessageSendNode;
+import som.vmobjects.SSymbol;
+import Grace.Parsing.ParseNode;
+
+import static som.vm.Symbols.symbolFor;
+
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.oracle.truffle.api.source.Source;
+import com.oracle.truffle.api.source.SourceSection;
 
 import Grace.StringSupport;
 import Grace.Execution.Node;
@@ -27,6 +42,8 @@ public class ImplicitReceiverRequestNode  extends RequestNode
     */
     public void debugPrint(PrintStream tw, String prefix)  {
         tw.println(prefix + "ImplicitReceiverRequest: " + getName());
+        tw.println(prefix + "SOMnsName:               " + getSOMnsName());
+
         if (parts.size() == 1)
         {
             if (parts.get(0).getArguments().size() == 0 && parts.get(0).getGenericArguments().size() == 0)
@@ -65,6 +82,31 @@ public class ImplicitReceiverRequestNode  extends RequestNode
             i++;
         }
     }
+    
+
+    public ExpressionNode trans(TranslationContext tc) {
+    	Source sourceText = Source.fromText("fake\nfake\nfake\n", "fake source in SOMBridge.java");
+        SourceSection source = sourceText.createSection("fake\nfake\nfake\n",1,1,1);
+
+        //System.out.println("ImplicitRR.trans(" + getSOMnsName() + ")");
+    	if (getSOMnsName().endsWith(":=")) {
+ 	   //Kernan parse tree for assignments is FUCKED! FUCKED! FUCKED!
+    		assert parts.size() == 2;
+    		assert parts.get(1).getArguments().size() == 1;
+    		return tc.methodBuilder.getGraceSetterSend(getSOMnsName(), parts.get(1).getArguments().get(0).trans(tc), source);
+    	}	    	  
+
+        //System.out.println("ImplicitRR.trans() not assignment");
+    	SSymbol selector = symbolFor(getSOMnsName());
+    	List<ExpressionNode> subs = new ArrayList<>(parts.size());
+    	for (RequestPartNode part : parts) {
+    		for (Node arg : part.getArguments()) {
+    			subs.add(arg.trans(tc));
+    		}
+    	}
+    	return tc.methodBuilder.getImplicitReceiverSend(selector, source);
+    }
+
 
 }
 

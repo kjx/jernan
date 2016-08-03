@@ -4,6 +4,7 @@
 
 package Grace.Execution;
 import Grace.Parsing.Token;
+import som.interpreter.nodes.ExpressionNode;
 import Grace.Parsing.ReturnParseNode;
 import java.io.PrintStream;
 
@@ -21,7 +22,7 @@ public class ReturnNode  extends Node
         super(location, source);
         setValue(val);
     }
-
+ 
     /**
     * The returned expression
     */
@@ -46,6 +47,10 @@ public class ReturnNode  extends Node
         }
          
     }
+ //   public ExpressionNode trans() {
+   // 	return "NEEDS A BLODDY TRANSLATION CONTEXT";
+    //	
+   // }
 }
 
 

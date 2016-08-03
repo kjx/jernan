@@ -79,7 +79,9 @@ public abstract class RequestNode  extends Node implements Iterable<RequestPartN
     StringBuilder sb = new StringBuilder();
     for (RequestPartNode p : parts) {
     	sb.append(p.getBaseName());
-    	for (Object arg : p.getArguments()) {sb.append(":");}
+    	if (p.getBaseName() != ":=") {
+    		for (Object arg : p.getArguments()) {sb.append(":");}
+    	}
     }
     return sb.toString();
     }

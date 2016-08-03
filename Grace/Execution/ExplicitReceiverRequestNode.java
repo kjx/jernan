@@ -3,6 +3,8 @@
 //
 
 package Grace.Execution;
+
+import Grace.TranslationContext;
 import Grace.Parsing.Token;
 import Grace.Parsing.ParseNode;
 import java.io.PrintStream;
@@ -73,16 +75,16 @@ public class ExplicitReceiverRequestNode  extends RequestNode
         }
     }
 
-    public ExpressionNode trans() {
+    public ExpressionNode trans(TranslationContext tc) {
     	Source sourceText = Source.fromText("fake\nfake\nfake\n", "fake source in SOMBridge.java");
         SourceSection source = sourceText.createSection("fake\nfake\nfake\n",1,1,1);
 
     	SSymbol selector = symbolFor(getSOMnsName());
     	List<ExpressionNode> subs = new ArrayList<>(parts.size() + 1);
-    	subs.add(receiver.trans());
+    	subs.add(receiver.trans(tc));
     	for (RequestPartNode part : parts) {
     		for (Node arg : part.getArguments()) {
-    			subs.add(arg.trans());
+    			subs.add(arg.trans(tc));
     		}
     	}
     	return MessageSendNode.createMessageSend(selector, 

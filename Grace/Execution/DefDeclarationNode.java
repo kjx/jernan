@@ -4,16 +4,22 @@
 
 package Grace.Execution;
 import Grace.Parsing.Token;
+import som.interpreter.nodes.ExpressionNode;
 import Grace.Parsing.ParseNode;
 import Grace.Parsing.IdentifierParseNode;
 import Grace.Parsing.DefDeclarationParseNode;
-
+import Grace.TranslationContext;
 import Grace.Execution.AnnotationsNode;
 import Grace.Execution.DefDeclarationNode;
 import Grace.Execution.ImplicitNode;
 import Grace.Execution.Node;
 
+import static som.vm.Symbols.symbolFor;
+
 import java.io.PrintStream;
+
+import com.oracle.truffle.api.source.Source;
+import com.oracle.truffle.api.source.SourceSection;
 
 /**
 * A def declaration
@@ -116,6 +122,15 @@ public class DefDeclarationNode  extends Node
         }
          
     }
+    
+    
+    public ExpressionNode trans(TranslationContext tc) {
+    	Source sourceText = Source.fromText("fake\nfake\nfake\n", "fake source in SOMBridge.java");
+        SourceSection source = sourceText.createSection("fake\nfake\nfake\n",1,1,1);
+         
+        return tc.methodBuilder.getSetterSend(symbolFor(getName()), getValue().trans(tc), source);
+   }
+    
 
 }
 

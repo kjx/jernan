@@ -4,6 +4,8 @@ import static som.compiler.Symbol.Equal;
 import static som.compiler.Symbol.Identifier;
 import static som.compiler.Symbol.Keyword;
 import static som.compiler.Symbol.Or;
+import static som.compiler.Symbol.Period;
+import static som.compiler.Symbol.SlotMutableAssign;
 import static som.interpreter.SNodeFactory.createMessageSend;
 import static som.interpreter.SNodeFactory.createSequence;
 import static som.vm.Symbols.symbolFor;
@@ -16,8 +18,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.oracle.truffle.api.source.SourceSection;
+
+import Grace.TranslationContext;
+
 import com.oracle.truffle.api.source.Source;
 
 import java.io.PrintStream;
@@ -33,6 +39,7 @@ import som.compiler.MixinDefinition;
 import som.compiler.Lexer.SourceCoordinate;
 import som.compiler.MixinBuilder.MixinDefinitionError;
 import som.compiler.Parser.ParseError;
+import som.interpreter.SNodeFactory;
 import som.interpreter.nodes.ExpressionNode;
 import som.interpreter.nodes.MessageSendNode;
 import som.interpreter.nodes.OuterObjectRead;
@@ -43,16 +50,17 @@ import som.vmobjects.SInvokable;
 import som.vmobjects.SSymbol;
 import tools.highlight.Tags.DelimiterClosingTag;
 import tools.highlight.Tags.KeywordTag;
+import tools.highlight.Tags.StatementSeparatorTag;
 
 
 public class SOMBridge {
 
-    public static MixinDefinition parseForSOM(String filename, File file) throws IOException { 
+    public static MixinDefinition parseForSOM(String filename, File file) throws IOException {
     	System.out.println("KJX in SOMBridge");
-    	if 	("fake.grace".equals(filename)) {
-    		return fakeSOM(helloWorldNode());
-    	}
-    	
+//    	if 	("fake.grace".equals(filename)) {
+//    		return fakeSOM(helloWorldNode());
+//    	}
+  	
     	System.out.println("KJX SOMBridge loading " + filename);
     	byte[] bytes = Files.readAllBytes(file.toPath());
     	Parser parser = new Parser(filename, new String(bytes,"UTF-8"));
@@ -62,41 +70,44 @@ public class SOMBridge {
 
     	ast.debugPrint(new PrintStream(System.out,true), "");
 
-    	ObjectConstructorNode graceOC = (ObjectConstructorNode) ast;
-    	ExpressionNode graceCode = graceOC.getBody().get(0).trans();
     	System.out.print("KJX SOMBridge returning");
-    	return fakeSOM(graceCode);
-    }
+    	return fakeSOM(ast);
+ 
+ }
     
-    public static ExpressionNode helloWorldNode() {
-        SourceCoordinate coord = new SourceCoordinate(1,1,1,1);
-        Source sourceText = Source.fromText("fake\nfake\nfake\n", "fake source in SOMBridge.java");
-        SourceSection source = sourceText.createSection("fake\nfake\nfake\n",1,1,1);
-
-        
-    	       // expressions.add(expression(builder));
-            //evaluation(builder) -> primary(builder) -> literal -> litearlString
-            LiteralNode HelloWorldString = new StringLiteralNode("Hello KJX World", source);
-            // messages(builder, HelloWorldString);
-            //unaryMessage(receiver=HelloWorldString, evenutalSend=false);
-            //createMessageSend(selector=, new ExpressionNode[] {receiver=HelloWorldString},
-            //        eventualSend=false, getSource(coord)-source);
-            SSymbol printLnSelector = symbolFor("println");
-            ExpressionNode printlnHellowWorld =
-              MessageSendNode.createMessageSend(printLnSelector, new ExpressionNode[] {HelloWorldString}, source); 
-            return printlnHellowWorld;
-    }
-    
-    public static MixinDefinition fakeSOM(ExpressionNode exp) {
+//    public static List<ExpressionNode> helloWorldNode() {
+//        SourceCoordinate coord = new SourceCoordinate(1,1,1,1);
+//        Source sourceText = Source.fromText("fake\nfake\nfake\n", "fake source in SOMBridge.java");
+//        SourceSection source = sourceText.createSection("fake\nfake\nfake\n",1,1,1);
+//
+//        
+//    	       // expressions.add(expression(builder));
+//            //evaluation(builder) -> primary(builder) -> literal -> litearlString
+//            LiteralNode HelloWorldString = new StringLiteralNode("Hello KJX World", source);
+//            // messages(builder, HelloWorldString);
+//            //unaryMessage(receiver=HelloWorldString, evenutalSend=false);
+//            //createMessageSend(selector=, new ExpressionNode[] {receiver=HelloWorldString},
+//            //        eventualSend=false, getSource(coord)-source);
+//            SSymbol printLnSelector = symbolFor("println");
+//            ExpressionNode printlnHellowWorld =
+//              MessageSendNode.createMessageSend(printLnSelector, new ExpressionNode[] {HelloWorldString}, source); 
+//            ArrayList<ExpressionNode> ret = new ArrayList<ExpressionNode>();
+//            ret.add(printlnHellowWorld);
+//            return ret;
+//    }
+//    
+    public static MixinDefinition fakeSOM(Node ast)  {
+    	
     	System.out.println("KJX starting fakeSOM");
-        MixinBuilder mxnBuilder = new MixinBuilder(null, AccessModifier.PUBLIC, symbolFor("Hello"));
-        MethodBuilder primaryFactory = mxnBuilder.getPrimaryFactoryMethodBuilder();
+        MixinBuilder mxnBuilder = new MixinBuilder(null, AccessModifier.PUBLIC, symbolFor("fakeSOM"));
+      
         SourceCoordinate coord = new SourceCoordinate(1,1,1,1);
-        Source sourceText = Source.fromText("fake\nfake\nfake\n", "fake source in SOMBridge.java");
-        SourceSection source = sourceText.createSection("fake\nfake\nfake\n",1,1,1);
+	        Source sourceText = Source.fromText("fake\nfake\nfake\n", "fake source in SOMBridge.java");
+	        SourceSection source = sourceText.createSection("fake\nfake\nfake\n",1,1,1);
         		
         //build the primary factory method		
-        primaryFactory.addArgumentIfAbsent("self", source); 	
+	    MethodBuilder primaryFactory = mxnBuilder.getPrimaryFactoryMethodBuilder();	       
+	    primaryFactory.addArgumentIfAbsent("self", source); 	
         MethodBuilder builder = primaryFactory; //make it easier to copy in code
         builder.addArgumentIfAbsent("platform", source);
         builder.setSignature(symbolFor("usingPlatform:"));
@@ -116,6 +127,16 @@ public class SOMBridge {
 
         //slotDeclarations(mxnBuilder)  //variable slots
                 
+        MethodBuilder slotIniterBuilder = mxnBuilder.getInitializerMethodBuilder();
+        ExpressionNode initer = slotIniterBuilder.getImplicitReceiverSend(symbolFor("platform"),source);
+        
+        defSlot(mxnBuilder, 
+				"platform",
+				true,
+				AccessModifier.PUBLIC,
+	    	    initer);
+
+        
         // initExprs(mxnBuilder);  //decode - can do more later to *initialise* (hopefully instances)
         
    	    mxnBuilder.setInitializerSource(source);
@@ -137,17 +158,22 @@ public class SOMBridge {
         // ExpressionNode  blockBody(builder);
         List<ExpressionNode> expressions = new ArrayList<ExpressionNode>();
  
+      	ObjectConstructorNode graceOC = (ObjectConstructorNode) ast;
+      	Grace.TranslationContext tc = new TranslationContext(builder,mxnBuilder);
+    	List<ExpressionNode> exps = graceOC.getBody().stream().map(n -> n.trans(tc)).collect(Collectors.toList());
+  
         
-        expressions.add(exp);
+        expressions.addAll(exps);
         
-        
+       
         
         // the end of the method has been found (EndTerm) - make it implicitly
-        // return "self"
-        ExpressionNode self = builder.getSelfRead(source);
-        expressions.add(self);
+        // return "self" -- EXCEPT GRACE SHOULDN"T DO THIS! - always return last expression!!
+        //ExpressionNode self = builder.getSelfRead(source);
+        // expressions.add(self);
         // createSequence(expressions, source);
-        ExpressionNode body = new SequenceNode(expressions.toArray(new ExpressionNode[0]), source);
+        //ExpressionNode body = new SequenceNode(expressions.toArray(new ExpressionNode[0]), source);
+        ExpressionNode body = SNodeFactory.createSequence(expressions, source);
         SInvokable myMethod = builder.assemble(body, accessModifier, category, source);
         VM.reportNewMethod(myMethod);
           
@@ -169,5 +195,31 @@ public class SOMBridge {
         System.out.println("KJX returning fakeSOM");
 	    return ret; 
        
+    }
+    
+    //init experssion must be build by a methodBuilder which is got by
+    //mxnBuilder.getInitializerMethodBuilder 
+    public static void defSlot(final MixinBuilder mxnBuilder, 
+    							final String slotName,
+    							final boolean immutable,
+    							final AccessModifier acccessModifier,
+    				    	    ExpressionNode init)
+    	       {
+
+    	Source sourceText = Source.fromText("fake\nfake\nfake\n", "fake source in SOMBridge.java");
+        SourceSection source = sourceText.createSection("fake\nfake\nfake\n",1,1,1);
+	
+        	assert !(immutable && (init == null));
+        	
+        	try {
+    	    mxnBuilder.addSlot(symbolFor(slotName), acccessModifier, immutable, init,
+    	        source);
+    	       } catch (MixinDefinitionError pe) {
+    	    	   System.out.println("Defslot Broken");
+    	  	      VM.errorExit(pe.toString());
+    	   	     return;
+    	   	    }
+
+
     }
 }
