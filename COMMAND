@@ -1,0 +1,1 @@
+javac -cp ".:/Users/kjx/SOMns/SOMns/build/som.jar:/Users/kjx/SOMns/SOMns/libs/truffle/mxbuild/dists/truffle-api.jar" Grace/*.java Grace/*/*.java
