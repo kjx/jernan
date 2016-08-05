@@ -99,13 +99,15 @@ public class SOMBridge {
     public static MixinDefinition fakeSOM(Node ast)  {
     	
     	System.out.println("KJX starting fakeSOM");
+    	
+    	//make a new, top-level class called "fakeSOM" to be the Newspeak Module
         MixinBuilder mxnBuilder = new MixinBuilder(null, AccessModifier.PUBLIC, symbolFor("fakeSOM"));
       
-        SourceCoordinate coord = new SourceCoordinate(1,1,1,1);
+            SourceCoordinate coord = new SourceCoordinate(1,1,1,1);
 	        Source sourceText = Source.fromText("fake\nfake\nfake\n", "fake source in SOMBridge.java");
 	        SourceSection source = sourceText.createSection("fake\nfake\nfake\n",1,1,1);
         		
-        //build the primary factory method		
+        //build the primary factory method for the fakeSOM class
 	    MethodBuilder primaryFactory = mxnBuilder.getPrimaryFactoryMethodBuilder();	       
 	    primaryFactory.addArgumentIfAbsent("self", source); 	
         MethodBuilder builder = primaryFactory; //make it easier to copy in code
@@ -203,7 +205,7 @@ public class SOMBridge {
     							final String slotName,
     							final boolean immutable,
     							final AccessModifier acccessModifier,
-    				    	    ExpressionNode init)
+    				    	    final ExpressionNode init)
     	       {
 
     	Source sourceText = Source.fromText("fake\nfake\nfake\n", "fake source in SOMBridge.java");
@@ -219,7 +221,24 @@ public class SOMBridge {
     	  	      VM.errorExit(pe.toString());
     	   	     return;
     	   	    }
+    	       }
+    
+    public static ExpressionNode graceDone() {
+    		Source sourceText = Source.fromText("fake\nfake\nfake\n", "fake source in SOMBridge.java");
+    		SourceSection source = sourceText.createSection("fake\nfake\nfake\n",1,1,1);
+    		return new som.interpreter.nodes.literals.StringLiteralNode("***KJX***DONE***",source);}
+    
+    public static ExpressionNode makeReturn(final MethodBuilder builder,
+    										final ExpressionNode result) {
 
-
+    	Source sourceText = Source.fromText("fake\nfake\nfake\n", "fake source in SOMBridge.java");
+        SourceSection source = sourceText.createSection("fake\nfake\nfake\n",1,1,1);
+	
+        	//KJX force everything to be a non-local return
+    	    //if (builder.isBlockMethod()) {
+    	      return builder.getNonLocalReturn(result, source);
+    	    //} else {
+    	    //  return exp;
+    	    //}	
     }
 }

@@ -72,7 +72,7 @@ public abstract class Node //KJX removed extending GraceObject
 	throw new UnsupportedOperationException( 
 						"Sorry, cannot yet traslate " +
 						this.getClass().getName() +
-						" to SOM"
+						" to SOMns"
 						 );
     }
 }

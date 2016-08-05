@@ -4,11 +4,17 @@
 
 package Grace.Execution;
 import Grace.Parsing.Token;
+import som.interpreter.nodes.ExpressionNode;
 import Grace.Parsing.ParseNode;
 import java.io.PrintStream;
 import java.util.List;
+
+import com.oracle.truffle.api.source.Source;
+import com.oracle.truffle.api.source.SourceSection;
+
 import java.util.ArrayList;
 
+import Grace.TranslationContext;
 import Grace.Execution.AnnotationsNode;
 import Grace.Execution.IdentifierNode;
 import Grace.Execution.MethodNode;
@@ -158,6 +164,45 @@ public class MethodNode  extends Node
             n.debugPrint(tw,prefix + "    ");
         }
     }
+    
+    public boolean isSimpleClass() {
+    	return (getBody().size() == 1) && (getBody().get(0) instanceof ObjectConstructorNode);
+    }
+    
+    public ExpressionNode trans(TranslationContext tc) {
+       System.out.println("KJX translating method node - " + getName());
+       if (getFresh()) {
+    	   if (isSimpleClass()) {
+    		   return transAsClass(tc);
+    	   } else {
+    	       System.out.println("KJX - CANNOT TRANSLATE" + getName() + " is fresh but not a simple class");
+    	       super.trans(tc); //Give up
+    	   }	
+       }
+       System.out.println("KJX translating method node - " + getName() + " as method");
+
+       Source sourceText = Source.fromText("fake\nfake\nfake\n", "fake source in SOMBridge.java");
+       SourceSection source = sourceText.createSection("fake\nfake\nfake\n",1,1,1);
+     
+       return Grace.SOMBridge.graceDone();
+       
+    }
+    
+    public ExpressionNode transAsClass(TranslationContext tc) {
+        System.out.println("KJX translating method node - " + getName() + " as class");
+
+        Source sourceText = Source.fromText("fake\nfake\nfake\n", "fake source in SOMBridge.java");
+        SourceSection source = sourceText.createSection("fake\nfake\nfake\n",1,1,1);
+        
+       
+        
+        
+        for (Node n : ((ObjectConstructorNode)(getBody().get(0))).getBody()) { n.trans(tc2); }
+        
+        return Grace.SOMBridge.graceDone();
+     }
+
+    
 }
 
 

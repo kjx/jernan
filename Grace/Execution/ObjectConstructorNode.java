@@ -4,6 +4,7 @@
 
 package Grace.Execution;
 import Grace.Parsing.Token;
+import som.interpreter.nodes.ExpressionNode;
 import Grace.Parsing.ParseNode;
 import java.io.PrintStream;
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.HashMap;
 
+import Grace.TranslationContext;
 import Grace.Execution.DefDeclarationNode;
 import Grace.Execution.DialectNode;
 import Grace.Execution.ImportNode;
@@ -131,6 +133,20 @@ public class ObjectConstructorNode  extends Node
         }
     }
 
+    
+    
+    
+//    public ExpressionNode trans(TranslationContext tc) {
+//    	System.out.println("KJX here we go...");
+//    	String generatedClassName = "graceOC_" + Location.module + "_" + Location.line + "+" + Location.column;
+//    	System.out.println("KJX transOC " + generatedClassName);
+//    	
+//    	
+//    	
+//    	return Grace.SOMBridge.graceDone();		
+//    }
+    
+    
 }
 
 
