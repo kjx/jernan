@@ -224,7 +224,7 @@ public class MethodNode  extends Node
        Grace.TranslationContext methodTC = new TranslationContext(builder,tc.mixinBuilder);
    	   List<ExpressionNode> expressions = getBody().stream().map(n -> n.trans(methodTC)).collect(Collectors.toList());       
        ExpressionNode body = SNodeFactory.createSequence(expressions, source);
-       SInvokable myMethod = builder.assemble(body, accessModifier, category, source);
+       SInvokable myMethod = builder.assemble(body, accessModifier, category, source); 
          
  	   try {
  		  tc.mixinBuilder.addMethod(myMethod);  //really belongs with code above but throws
@@ -320,18 +320,23 @@ public class MethodNode  extends Node
         	}
   	    }
 
-  	    
-  	    //STILL NEED TO DO
-  	    // - Go through ocBody 
-  	    // - building methods, initialisation vars/defs. running code. See blocks! 
-  	    // -- umm? 
-  	    
-  	            
-        //from  initExprs(mxnBuilder);  //decode - can do more later to *initialise* (hopefully instances)
+  	    //Process the body of the object constructor, running code, adding var inits, returning done for methods...
+        Grace.TranslationContext classTC = new TranslationContext(initializer,mxnBuilder);
+        for (Node n : ocBody) {
+        	mxnBuilder.addInitializerExpression(n.trans(classTC));
+        }
         
+  	    //finally install the class as a nested class in the enclosing mixinBuilder.
+        try {
+      	    tc.mixinBuilder.addNestedMixin(mxnBuilder.assemble(source));  //really belongs with code above but throws
+  	    } catch (MixinDefinitionError pe) {	
+  	    	System.out.println("Crashed trying to install the SOMns class " + getSignature().getSOMnsClassName());
+  	    	VM.errorExit(pe.toString());
+  	     return null;
+  	    }
+      
         System.out.println("KJX making class bridge method for - " + getName() + " as class");
 
-  	       	
   	    //now add the "bridge method" that invokes the class
         final SSymbol category = symbolFor("");  //no category for us
         AccessModifier accessModifier = SOMBridge.getAccessModifier(getConfidential());
@@ -368,7 +373,7 @@ public class MethodNode  extends Node
  
         SInvokable bridgeMethod = builder.assemble(body, accessModifier, category, source);          
         try {
-        	mxnBuilder.addMethod(bridgeMethod);  //really belongs with code above but throws
+        	tc.mixinBuilder.addMethod(bridgeMethod);  //really belongs with code above but throws
   	    } catch (MixinDefinitionError pe) {	
   	    	System.out.println("Crashed trying to install the bridge method " + getName());
   	    	VM.errorExit(pe.toString());
