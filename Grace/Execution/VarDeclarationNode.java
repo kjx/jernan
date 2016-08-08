@@ -136,14 +136,14 @@ public class VarDeclarationNode  extends Node
         SourceSection source = sourceText.createSection("fake\nfake\nfake\n",1,1,1);
 //        System.out.println("KJX EVIL DEAD");
 //        return new NilLiteralNode(source);
-        		
+
+
+        //actual variables (SOM slots) should have already been created uninitialised
+        //translating this node just does the assignment
         if (getValue() != null)
         {
         	return tc.methodBuilder.getSetterSend(symbolFor(getName()), getValue().trans(tc), source);
         }   
-
-        //this line below is the WRONG THING
-        //variables should be created uninitialised, not assigned by their var or def node!
         
         return tc.methodBuilder.getSetterSend(symbolFor(getName()), 
         		new som.interpreter.nodes.literals.StringLiteralNode("Unitialised var " + getName(), source), 

@@ -64,7 +64,7 @@ public abstract class Node //KJX removed extending GraceObject
     */
     protected String getVisibleName()  {
         String name = this.getClass().getName(); 
-        return "KJX-WTFFF" + name.substring(0, name.length() - 4); ///WTFFFF
+        return name.substring(0, name.length() - 4); ///WTFFFF
     }
     
     // translate to SOM.ExpressionNode

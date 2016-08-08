@@ -127,7 +127,9 @@ public class DefDeclarationNode  extends Node
     public ExpressionNode trans(TranslationContext tc) {
     	Source sourceText = Source.fromText("fake\nfake\nfake\n", "fake source in SOMBridge.java");
         SourceSection source = sourceText.createSection("fake\nfake\nfake\n",1,1,1);
-         
+
+        //actual variables (SOM slots) should have already been created uninitialised
+        //translating this node just does the assignment
         return tc.methodBuilder.getSetterSend(symbolFor(getName()), getValue().trans(tc), source);
    }
     

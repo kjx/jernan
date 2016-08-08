@@ -20,11 +20,15 @@ import Grace.Execution.SignaturePartNode;
 public class OrdinarySignaturePartNode  extends SignaturePartNode 
 {
     private String _name;
+    private String _baseName;
     /**
     * Name of the part
     */
     public String getName()  {
         return _name;
+    }
+    public String getBaseName()  {
+        return _baseName;
     }
 
     /**
@@ -53,6 +57,7 @@ public class OrdinarySignaturePartNode  extends SignaturePartNode
 
     public OrdinarySignaturePartNode(Token location, OrdinarySignaturePartParseNode source, List<Node> parameters, List<Node> genericParameters)  {
         super(location, source);
+        _baseName = source.getName();
         _name = MethodHelper.ArityNamePart(source.getName(), parameters.size());
         setParameters(parameters);
         setGenericParameters(genericParameters);
@@ -60,6 +65,7 @@ public class OrdinarySignaturePartNode  extends SignaturePartNode
 
     public OrdinarySignaturePartNode(Token location, OrdinarySignaturePartParseNode source, List<Node> parameters, List<Node> genericParameters, boolean allowArityOverloading)  {
         super(location, source);
+        _baseName = source.getName();
         _name = allowArityOverloading ? MethodHelper.ArityNamePart(source.getName(), parameters.size()) : source.getName();
         setParameters(parameters);
         setGenericParameters(genericParameters);

@@ -6,6 +6,9 @@ package Grace.Execution;
 import Grace.Parsing.Token;
 import Grace.Parsing.ParseNode;
 import Grace.Parsing.SignatureParseNode;
+
+import static Grace.Parsing.Lexer.isOperatorCharacter;
+
 import java.io.PrintStream;
 
 import java.util.List;
@@ -39,10 +42,32 @@ public class SignatureNode  extends Node implements Iterable<SignaturePartNode>
                 .map(i -> i.getName())
                 .collect(Collectors.joining(" "));
         }
-         
         return _name;
     }
 
+    //name in SOMns format - colon preceeds Parameters except for unary mesages
+    public String getSOMnsName() {
+    	if ((getParts().size() == 1) && (((OrdinarySignaturePartNode)getParts().get(0)).getParameters().size() == 1)) {
+    		if (isOperatorCharacter(getParts().get(0).getName().charAt(0),null)) {
+    			//probably wrong test due to prefix operators! 
+    				    		return ((OrdinarySignaturePartNode)getParts().get(0)).getBaseName();
+    	} }
+    StringBuilder sb = new StringBuilder();
+    for (SignaturePartNode pp : getParts()) {
+    	OrdinarySignaturePartNode p = (OrdinarySignaturePartNode)pp;
+    	sb.append(p.getBaseName());
+    	if (p.getBaseName() != ":=") {
+    		for (Object arg : p.getParameters()) {sb.append(":");}
+    	}
+    }
+    return sb.toString();
+    }
+    
+    //name for SOMns Class if this method is "fresh" (i.e. is a class decl)
+    public String getSOMnsClassName() {
+    	return "_class`" + getSOMnsName().replace(":", "_");
+    }
+    
     /**
     * Parts of the method name
     */

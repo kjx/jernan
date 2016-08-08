@@ -107,14 +107,13 @@ public class SOMBridge {
 	        Source sourceText = Source.fromText("fake\nfake\nfake\n", "fake source in SOMBridge.java");
 	        SourceSection source = sourceText.createSection("fake\nfake\nfake\n",1,1,1);
         		
-        //build the primary factory method for the fakeSOM class
-	    MethodBuilder primaryFactory = mxnBuilder.getPrimaryFactoryMethodBuilder();	       
-	    primaryFactory.addArgumentIfAbsent("self", source); 	
-        MethodBuilder builder = primaryFactory; //make it easier to copy in code
-        builder.addArgumentIfAbsent("platform", source);
-        builder.setSignature(symbolFor("usingPlatform:"));
-  	    mxnBuilder.setupInitializerBasedOnPrimaryFactory(source);
-
+	        //build the primary factory method for the fakeSOM class
+		    MethodBuilder primaryFactory = mxnBuilder.getPrimaryFactoryMethodBuilder();	       
+		    primaryFactory.addArgumentIfAbsent("self", source); 	
+		    primaryFactory.addArgumentIfAbsent("platform", source);
+		    primaryFactory.setSignature(symbolFor("usingPlatform:"));
+	  	    mxnBuilder.setupInitializerBasedOnPrimaryFactory(source);
+	  	    
   	    //inheritance List And Or Body 
   	    MethodBuilder meth = mxnBuilder.getClassInstantiationMethodBuilder();
 
@@ -147,7 +146,7 @@ public class SOMBridge {
         //I guess because methods are in categories... (Smalltalk Stylee)???
         final SSymbol category = symbolFor("");  //no category for us
         AccessModifier accessModifier = AccessModifier.PUBLIC;
-        /**CAREFUL**/ builder = new MethodBuilder(
+        MethodBuilder builder = new MethodBuilder(
                 mxnBuilder, mxnBuilder.getScopeForCurrentParserPosition());
         // messagePattern(builder); //decode
         builder.addArgumentIfAbsent("self", source);
@@ -241,4 +240,9 @@ public class SOMBridge {
     	    //  return exp;
     	    //}	
     }
+    
+    public static AccessModifier getAccessModifier(boolean isConfidential) {
+    	return isConfidential ? AccessModifier.PROTECTED : AccessModifier.PUBLIC;
+    }
+    
 }
