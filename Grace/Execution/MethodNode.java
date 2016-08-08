@@ -261,6 +261,8 @@ public class MethodNode  extends Node
         //STUFF FROM THE BEGINNING STARTS HERE
         //STUFF FROM THE BEGINNING STARTS HERE
         //STUFF FROM THE BEGINNING STARTS HERE
+        
+        //make a builder for the class
         MixinBuilder mxnBuilder = new MixinBuilder(tc.mixinBuilder, 	
         			SOMBridge.getAccessModifier(getConfidential()), 
         			symbolFor(getSignature().getSOMnsClassName()));
