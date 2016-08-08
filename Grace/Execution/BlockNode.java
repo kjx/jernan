@@ -128,26 +128,23 @@ public class BlockNode  extends Node
 
         builder.setSignature(symbolFor(blockSig));
 
-        
-        // ExpressionNode expressions = blockContents(builder);
-        //following from blockContents
-
-        //   locals(builder); 
-        //TODO Locals - cons vs var... 
-        for (Node n : getBody()) {
-        	if (n instanceof DefDeclarationNode) {
-        		builder.addLocalIfAbsent(((DefDeclarationNode)n).getName(), source);	
-        	}
-        	if (n instanceof VarDeclarationNode) {
-        		builder.addLocalIfAbsent(((VarDeclarationNode)n).getName(), source);	
-        	}
-        }
+//KJX Code should now be moved into defDecl & varDecl nodes
+//        for (Node n : getBody()) {
+//        	if (n instanceof DefDeclarationNode) {
+//        		builder.addLocalIfAbsent(((DefDeclarationNode)n).getName(), source);	
+//        	}
+//        	if (n instanceof VarDeclarationNode) {
+//        		builder.addLocalIfAbsent(((VarDeclarationNode)n).getName(), source);	
+//        	}
+//        }
         
         //builder.debugPrint();
         
         // from blockBody(builder);
                 
-        List<ExpressionNode> exps = getBody().stream().map(n -> n.trans(new TranslationContext(builder,tc.mixinBuilder))).collect(Collectors.toList());
+        TranslationContext blockBodyTC = new TranslationContext(builder, tc.mixinBuilder, true);
+        System.out.println("blockBlodyTC buildingMethod=" + blockBodyTC.buildingMethod);
+        List<ExpressionNode> exps = getBody().stream().map(n -> n.trans(blockBodyTC)).collect(Collectors.toList());
         
         //KJX TODO TOO EASY!
         

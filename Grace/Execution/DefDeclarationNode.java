@@ -8,6 +8,7 @@ import som.interpreter.nodes.ExpressionNode;
 import Grace.Parsing.ParseNode;
 import Grace.Parsing.IdentifierParseNode;
 import Grace.Parsing.DefDeclarationParseNode;
+import Grace.SOMBridge;
 import Grace.TranslationContext;
 import Grace.Execution.AnnotationsNode;
 import Grace.Execution.DefDeclarationNode;
@@ -128,8 +129,22 @@ public class DefDeclarationNode  extends Node
     	Source sourceText = Source.fromText("fake\nfake\nfake\n", "fake source in SOMBridge.java");
         SourceSection source = sourceText.createSection("fake\nfake\nfake\n",1,1,1);
 
-        //actual variables (SOM slots) should have already been created uninitialised
-        //translating this node just does the assignment
+        //potentally can do better here (I think?) by using slot initialisers
+        //with the actual value, and setting immutable to true?
+        //ALTHOUGH really needs to be redone to catch unitialisation errors
+        if (tc.buildingMethod) {
+        	tc.methodBuilder.addLocalIfAbsent(getName(), source);
+        } else {
+    		ExpressionNode slotInitializer = new som.interpreter.nodes.literals.StringLiteralNode("Unitialised def " + getName(), source);
+      	    SOMBridge.defSlot(tc.mixinBuilder, 
+    	    		getName(),
+    				false,
+    				SOMBridge.getAccessModifier(! getPublic()),
+    				slotInitializer);
+        }
+        
+        
+        //translating this node then does the (grace-level) initialisation
         return tc.methodBuilder.getSetterSend(symbolFor(getName()), getValue().trans(tc), source);
    }
     

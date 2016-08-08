@@ -117,7 +117,7 @@ public class SOMBridge {
   	    //inheritance List And Or Body 
   	    MethodBuilder meth = mxnBuilder.getClassInstantiationMethodBuilder();
 
-  	    SSymbol SCselector = symbolFor("Value");
+  	    SSymbol SCselector = symbolFor("Object"); //was value, but now even defs need mutable slots to be initalised at the right time!
    	    ExpressionNode superClassResolution = meth.getImplicitReceiverSend(SCselector, source);
   	  
    	    mxnBuilder.setSuperClassResolution(superClassResolution);
@@ -160,7 +160,7 @@ public class SOMBridge {
         List<ExpressionNode> expressions = new ArrayList<ExpressionNode>();
  
       	ObjectConstructorNode graceOC = (ObjectConstructorNode) ast;
-      	Grace.TranslationContext tc = new TranslationContext(builder,mxnBuilder);
+      	Grace.TranslationContext tc = new TranslationContext(builder,mxnBuilder, false);
     	List<ExpressionNode> exps = graceOC.getBody().stream().map(n -> n.trans(tc)).collect(Collectors.toList());
   
         

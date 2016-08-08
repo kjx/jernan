@@ -21,6 +21,7 @@ import som.interpreter.nodes.ExpressionNode;
 import som.interpreter.nodes.MessageSendNode;
 import som.interpreter.nodes.literals.NilLiteralNode;
 import som.vmobjects.SSymbol;
+import Grace.SOMBridge;
 import Grace.TranslationContext;
 import Grace.Execution.AnnotationsNode;
 import Grace.Execution.ImplicitNode;
@@ -137,7 +138,23 @@ public class VarDeclarationNode  extends Node
 //        System.out.println("KJX EVIL DEAD");
 //        return new NilLiteralNode(source);
 
+        System.out.println("translating vardecl " + getName() + "buldingMethod=" + tc.buildingMethod);
 
+        if (tc.buildingMethod) {
+            System.out.println("adding as local " + getName());
+  
+        	tc.methodBuilder.addLocalIfAbsent(getName(), source);
+        } else {
+            System.out.println("adding as class slot " + getName());
+
+    		ExpressionNode slotInitializer = new som.interpreter.nodes.literals.StringLiteralNode("Unitialised var " + getName(), source);
+      	    SOMBridge.defSlot(tc.mixinBuilder, 
+    	    		getName(),
+    				false,
+    				SOMBridge.getAccessModifier(! getReadable()),
+    				slotInitializer);
+        }
+ 
         //actual variables (SOM slots) should have already been created uninitialised
         //translating this node just does the assignment
         if (getValue() != null)

@@ -221,7 +221,7 @@ public class MethodNode  extends Node
        buildParametersForMethod(builder);
        
        builder.setSignature(symbolFor(getSignature().getSOMnsName()));
-       Grace.TranslationContext methodTC = new TranslationContext(builder,tc.mixinBuilder);
+       Grace.TranslationContext methodTC = new TranslationContext(builder,tc.mixinBuilder, true);
    	   List<ExpressionNode> expressions = getBody().stream().map(n -> n.trans(methodTC)).collect(Collectors.toList());       
        ExpressionNode body = SNodeFactory.createSequence(expressions, source);
        SInvokable myMethod = builder.assemble(body, accessModifier, category, source); 
@@ -299,31 +299,33 @@ public class MethodNode  extends Node
   	    //now make the slots
   	    MethodBuilder initializer = mxnBuilder.getInitializerMethodBuilder();  	   
    	    mxnBuilder.setInitializerSource(source);
-  	    for (Node nn : ocBody) {
-        	if (nn instanceof DefDeclarationNode) {
-        		DefDeclarationNode n = (DefDeclarationNode)nn;
-        		ExpressionNode slotInitializer = new som.interpreter.nodes.literals.StringLiteralNode("Unitialised def " + n.getName(), source);
-        				
-        	    SOMBridge.defSlot(mxnBuilder, 
-        	    		n.getName(),
-        				false,
-        				SOMBridge.getAccessModifier(! n.getPublic()),
-        				slotInitializer);
-        	}
-        	if (nn instanceof VarDeclarationNode) {
-        		VarDeclarationNode n = (VarDeclarationNode)nn;
-        		ExpressionNode slotInitializer = new som.interpreter.nodes.literals.StringLiteralNode("Unitialised var " + n.getName(), source);
-
-        		SOMBridge.defSlot(mxnBuilder, 
-        	    		n.getName(),
-        				false,
-        				SOMBridge.getAccessModifier(! n.getReadable()),
-        				slotInitializer);              	    
-        	}
-  	    }
+   	    
+//KJX Code should now be moved into defDecl & varDecl nodes
+//  	    for (Node nn : ocBody) {
+//        	if (nn instanceof DefDeclarationNode) {
+//        		DefDeclarationNode n = (DefDeclarationNode)nn;
+//        		ExpressionNode slotInitializer = new som.interpreter.nodes.literals.StringLiteralNode("Unitialised def " + n.getName(), source);
+//        				
+//        	    SOMBridge.defSlot(mxnBuilder, 
+//        	    		n.getName(),
+//        				false,
+//        				SOMBridge.getAccessModifier(! n.getPublic()),
+//        				slotInitializer);
+//        	}
+//        	if (nn instanceof VarDeclarationNode) {
+//        		VarDeclarationNode n = (VarDeclarationNode)nn;
+//        		ExpressionNode slotInitializer = new som.interpreter.nodes.literals.StringLiteralNode("Unitialised var " + n.getName(), source);
+//
+//        		SOMBridge.defSlot(mxnBuilder, 
+//        	    		n.getName(),
+//        				false,
+//        				SOMBridge.getAccessModifier(! n.getReadable()),
+//        				slotInitializer);              	    
+//        	}
+//  	    }
 
   	    //Process the body of the object constructor, running code, adding var inits, returning done for methods...
-        Grace.TranslationContext classTC = new TranslationContext(initializer,mxnBuilder);
+        Grace.TranslationContext classTC = new TranslationContext(initializer, mxnBuilder, false);
         for (Node n : ocBody) {
         	mxnBuilder.addInitializerExpression(n.trans(classTC));
         }
