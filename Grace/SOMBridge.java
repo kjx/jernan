@@ -28,10 +28,18 @@ import com.oracle.truffle.api.source.Source;
 
 import java.io.PrintStream;
 import Grace.Parsing.Parser;
+import Grace.Parsing.SignatureParseNode;
+import Grace.Parsing.Token;
 import Grace.Execution.Node;
 import Grace.Execution.ExecutionTreeTranslator;
+import Grace.Execution.MethodNode;
 import Grace.Execution.ObjectConstructorNode;
+import Grace.Execution.OrdinarySignaturePartNode;
+import Grace.Execution.SignatureNode;
+import Grace.Parsing.IdentifierParseNode;
 import Grace.Parsing.ObjectParseNode;
+import Grace.Parsing.OrdinarySignaturePartParseNode;
+import Grace.Parsing.ParseNode;
 import som.VM;
 import som.compiler.MethodBuilder;
 import som.compiler.MixinBuilder;
@@ -71,7 +79,7 @@ public class SOMBridge {
     	ast.debugPrint(new PrintStream(System.out,true), "");
 
     	System.out.print("KJX SOMBridge returning");
-    	return fakeSOM(ast);
+    	return fakeSOM(ast,"graceModule");
  
  }
     
@@ -96,9 +104,9 @@ public class SOMBridge {
 //            return ret;
 //    }
 //    
-    public static MixinDefinition fakeSOM(Node ast)  {
+    public static MixinDefinition fakeSOM(Node ast, String moduleName)  {
     	
-    	System.out.println("KJX starting fakeSOM");
+    	System.out.println("KJX starting fakeSOM for " + moduleName);
     	
     	//make a new, top-level class called "fakeSOM" to be the Newspeak Module
         MixinBuilder mxnBuilder = new MixinBuilder(null, AccessModifier.PUBLIC, symbolFor("fakeSOM"));
@@ -114,20 +122,16 @@ public class SOMBridge {
 		    primaryFactory.setSignature(symbolFor("usingPlatform:"));
 	  	    mxnBuilder.setupInitializerBasedOnPrimaryFactory(source);
 	  	    
-  	    //inheritance List And Or Body 
   	    MethodBuilder meth = mxnBuilder.getClassInstantiationMethodBuilder();
 
-  	    SSymbol SCselector = symbolFor("Value"); //was value, but now even defs need mutable slots to be initalised at the right time!
+  	    SSymbol SCselector = symbolFor("Value"); 
    	    ExpressionNode superClassResolution = meth.getImplicitReceiverSend(SCselector, source);
-  	  
    	    mxnBuilder.setSuperClassResolution(superClassResolution);
-
         mxnBuilder.setSuperclassFactorySend(
                 mxnBuilder.createStandardSuperFactorySend(
                    source), true);
-
-        //slotDeclarations(mxnBuilder)  //variable slots
                 
+        
         MethodBuilder slotIniterBuilder = mxnBuilder.getInitializerMethodBuilder();
         ExpressionNode initer = slotIniterBuilder.getImplicitReceiverSend(symbolFor("platform"),source);
         
@@ -158,9 +162,17 @@ public class SOMBridge {
         // locals(builder); we have no locals
         // ExpressionNode  blockBody(builder);
  
-      	ObjectConstructorNode graceOC = (ObjectConstructorNode) ast;
-      	Grace.TranslationContext tc = new TranslationContext(builder,mxnBuilder, true);
-    	List<ExpressionNode> expressions = graceOC.getBody().stream().map(n -> n.trans(tc)).collect(Collectors.toList());
+        ExpressionNode self = builder.getSelfRead(source);
+    	ExpressionNode runGraceModule = MessageSendNode.createMessageSend(
+				symbolFor(moduleName),  
+				(new ExpressionNode[] { self } ), source);
+        
+    	//KJX the three lines below is old code that just pasted the grace module AST into the body of hte main method.
+    	//we are now being more "subtle" 
+    	
+      	//ObjectConstructorNode graceOC = (ObjectConstructorNode) ast;
+      	//Grace.TranslationContext tc = new TranslationContext(builder,mxnBuilder, true);
+    	//List<ExpressionNode> expressions = graceOC.getBody().stream().map(n -> n.trans(tc)).collect(Collectors.toList());
   
                 
         // the end of the method has been found (EndTerm) - make it implicitly
@@ -168,25 +180,39 @@ public class SOMBridge {
         //ExpressionNode self = builder.getSelfRead(source);
         // expressions.add(self);
         // createSequence(expressions, source);
-        //ExpressionNode body = new SequenceNode(expressions.toArray(new ExpressionNode[0]), source);
-        ExpressionNode body = SNodeFactory.createSequence(expressions, source);
-        SInvokable myMethod = builder.assemble(body, accessModifier, category, source);
+        // ExpressionNode body = SNodeFactory.createSequence(expressions, source);
+        SInvokable myMethod = builder.assemble(runGraceModule, accessModifier, category, source);
         VM.reportNewMethod(myMethod);
           
-   	   MixinDefinition ret;	
   	   try {
   	      mxnBuilder.addMethod(myMethod);  //really belongs with code above but throws
-
-  		   
-  		   System.out.println("KJX assembling builder fakeSOM");
-
-  	      ret = mxnBuilder.assemble(source);
-  	    } catch (MixinDefinitionError pe) {
+  	   } catch (MixinDefinitionError pe) {
  	      VM.errorExit(pe.toString());
   	     return null;
   	    }
-
+  	   
+   	    System.out.println("KJX building ersaztsmethod for " + moduleName);
+  	    Token tok = new Grace.Parsing.IdentifierToken(moduleName, 1, 1, moduleName);
+  	    MethodNode ersaztsmethod = new MethodNode(tok, null);
+  	    ersaztsmethod.add(ast);
+  	    ersaztsmethod.setFresh(true);
+  	    OrdinarySignaturePartParseNode osppn = new OrdinarySignaturePartParseNode(
+  	    								new IdentifierParseNode(tok));
+  	    SignatureParseNode spn = new SignatureParseNode(tok);
+  	    spn.addPart(osppn);
+  	    SignatureNode sig = new SignatureNode(tok, spn);
+  	    OrdinarySignaturePartNode ospn = new OrdinarySignaturePartNode(tok, osppn, new ArrayList<Node>(), new ArrayList<Node>());
+  	    sig.addPart(ospn);
+  	    ersaztsmethod.setSignature(sig);
   	    
+  	    System.out.println("KJX translating ersaztsmethod " + moduleName);
+  	    TranslationContext ersaztsTC = new TranslationContext(slotIniterBuilder,mxnBuilder,true);
+  	    ExpressionNode moduleSOMversion = ersaztsmethod.trans(ersaztsTC);
+
+  	    System.out.println("KJX assembling builder fakeSOM");
+
+   	   	MixinDefinition ret = mxnBuilder.assemble(source);
+   	
   	    
         System.out.println("KJX returning fakeSOM");
 	    return ret; 
