@@ -3,11 +3,15 @@
 //
 
 package Grace.Execution;
+import Grace.TranslationContext;
 import Grace.Parsing.Token;
+import som.compiler.Lexer.SourceCoordinate;
 import som.interpreter.nodes.ExpressionNode;
 import Grace.Parsing.ReturnParseNode;
 import java.io.PrintStream;
 
+import com.oracle.truffle.api.source.Source;
+import com.oracle.truffle.api.source.SourceSection;
 
 import Grace.Execution.ImplicitNode;
 import Grace.Execution.Node;
@@ -47,10 +51,23 @@ public class ReturnNode  extends Node
         }
          
     }
- //   public ExpressionNode trans() {
-   // 	return "NEEDS A BLODDY TRANSLATION CONTEXT";
-    //	
-   // }
+    
+    //tried th following. didn't work, dunno why.
+    
+    public ExpressionNode trans(TranslationContext tc) {
+        SourceCoordinate coord = new SourceCoordinate(1,1,1,1);
+        Source sourceText = Source.fromText("fake\nfake\nfake\n", "fake source in SOMBridge.java");
+        SourceSection source = sourceText.createSection("fake\nfake\nfake\n",1,1,1);
+       
+        ExpressionNode exp = getValue() == null ? Grace.SOMBridge.graceDone() : getValue().trans(tc);
+        
+    if (tc.methodBuilder.isBlockMethod()) {
+        return tc.methodBuilder.getNonLocalReturn(exp, source);
+      } else {
+    	  System.out.println("KJX CANT RETURN FROM TOP-LEVEL");
+    	  return super.trans(tc);
+      }
+    }
 }
 
 
