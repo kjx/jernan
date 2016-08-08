@@ -117,7 +117,7 @@ public class SOMBridge {
   	    //inheritance List And Or Body 
   	    MethodBuilder meth = mxnBuilder.getClassInstantiationMethodBuilder();
 
-  	    SSymbol SCselector = symbolFor("Object"); //was value, but now even defs need mutable slots to be initalised at the right time!
+  	    SSymbol SCselector = symbolFor("Value"); //was value, but now even defs need mutable slots to be initalised at the right time!
    	    ExpressionNode superClassResolution = meth.getImplicitReceiverSend(SCselector, source);
   	  
    	    mxnBuilder.setSuperClassResolution(superClassResolution);
@@ -157,17 +157,12 @@ public class SOMBridge {
         // ExpressionNode methodBody = blockContents(builder);
         // locals(builder); we have no locals
         // ExpressionNode  blockBody(builder);
-        List<ExpressionNode> expressions = new ArrayList<ExpressionNode>();
  
       	ObjectConstructorNode graceOC = (ObjectConstructorNode) ast;
-      	Grace.TranslationContext tc = new TranslationContext(builder,mxnBuilder, false);
-    	List<ExpressionNode> exps = graceOC.getBody().stream().map(n -> n.trans(tc)).collect(Collectors.toList());
+      	Grace.TranslationContext tc = new TranslationContext(builder,mxnBuilder, true);
+    	List<ExpressionNode> expressions = graceOC.getBody().stream().map(n -> n.trans(tc)).collect(Collectors.toList());
   
-        
-        expressions.addAll(exps);
-        
-       
-        
+                
         // the end of the method has been found (EndTerm) - make it implicitly
         // return "self" -- EXCEPT GRACE SHOULDN"T DO THIS! - always return last expression!!
         //ExpressionNode self = builder.getSelfRead(source);
