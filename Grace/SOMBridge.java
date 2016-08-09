@@ -31,6 +31,7 @@ import Grace.Parsing.Parser;
 import Grace.Parsing.SignatureParseNode;
 import Grace.Parsing.Token;
 import Grace.Execution.Node;
+import Grace.Execution.DialectNode;
 import Grace.Execution.ExecutionTreeTranslator;
 import Grace.Execution.MethodNode;
 import Grace.Execution.ObjectConstructorNode;
@@ -108,7 +109,10 @@ public class SOMBridge {
     	
     	System.out.println("KJX starting fakeSOM for " + moduleName);
     	
-    	//make a new, top-level class called "fakeSOM" to be the Newspeak Module
+    	//make a new, top-level class called "fakeSOM" to be the Newspeak Module class
+    	//corresponding to the Grace Dialect/Prelude
+    	//(the actual Grace module will be a class nested inside this one.)
+    	
         MixinBuilder mxnBuilder = new MixinBuilder(null, AccessModifier.PUBLIC, symbolFor(moduleName));
       
         SourceCoordinate coord = new SourceCoordinate(1,1,1,1);
@@ -143,11 +147,8 @@ public class SOMBridge {
         
    	    mxnBuilder.setInitializerSource(source);
    	    
-   	    //Here we build the main: method
-   	    //sideDeclaration(mxnBuilder);  	//decode   //pretty sure these are nested classes and category tags 
-        //ARGH sideDeclaration -> category -> methodDeclaration
-        //I guess because methods are in categories... (Smalltalk Stylee)???
-        final SSymbol category = symbolFor("");  //no category for us
+   	    //Here we build the main: method, that will instantiate the Grace module class
+          final SSymbol category = symbolFor("");  //no category for us
         AccessModifier accessModifier = AccessModifier.PUBLIC;
         MethodBuilder builder = new MethodBuilder(
                 mxnBuilder, mxnBuilder.getScopeForCurrentParserPosition());
@@ -156,10 +157,7 @@ public class SOMBridge {
         // keywordPattern(builder); //decode, for "main:"
         builder.addArgumentIfAbsent("args", source);  //argument() decoded
         builder.setSignature(symbolFor("main:"));
-        // ExpressionNode body = methodBlock(builder); //decode
-        // ExpressionNode methodBody = blockContents(builder);
-        // locals(builder); we have no locals
-        // ExpressionNode  blockBody(builder);
+  
  
         //we make it instantiate the module-class
         ExpressionNode self = builder.getSelfRead(source);
@@ -196,6 +194,42 @@ public class SOMBridge {
   	    TranslationContext ersaztsTC = new TranslationContext(slotIniterBuilder,mxnBuilder,true);
   	    ExpressionNode moduleSOMversion = ersaztsmethod.trans(ersaztsTC);
 
+  	    System.out.println("KJX checking if we need a dialect " + moduleName);
+  	    ObjectConstructorNode ocNode = (ObjectConstructorNode)ast;
+  	    
+  	    String dialect;
+  	    if (ocNode.getBody().get(0) instanceof DialectNode) {
+  	    	dialect = ((DialectNode)(ocNode.getBody().get(0))).getPath();
+  	    	System.out.println("KJX Got a dialect: " + dialect);
+  	    	dialect += ".grace";
+  	    		
+  	    } else {
+  	    	System.out.println("KJX no dialect, should load in standard prelude instead");
+  	    		dialect = "prelude.grace";
+  	    }
+  	
+  	    System.out.println("KJX WANT DIALECT-FILE " + dialect);
+  	    
+   	    byte[] bytes;
+   	    Parser parser = null;
+  	    File dialectFile = new File(dialect);	
+  	    try {
+  	    	bytes = Files.readAllBytes(dialectFile.toPath());	
+  	    	 parser = new Parser(dialect, new String(bytes,"UTF-8"));
+  	    } catch (Exception e) {
+  	    	System.out.println("BOOM. can't read dialect");
+	  	      VM.errorExit(e.toString());
+  	    }
+
+    	ObjectParseNode dialectModule = (ObjectParseNode)parser.parse();
+    	ObjectConstructorNode dialectAst = (ObjectConstructorNode) new ExecutionTreeTranslator().translate(dialectModule);
+    
+    	System.out.println("KJX GOT DIALECT-FILE " + dialect);
+	    
+        for (Node n : dialectAst.getBody()) {
+        	mxnBuilder.addInitializerExpression(n.trans(ersaztsTC));
+        }
+    	
   	    System.out.println("KJX assembling builder fakeSOM");
 
    	   	MixinDefinition ret = mxnBuilder.assemble(source);

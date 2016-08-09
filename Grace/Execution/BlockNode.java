@@ -143,7 +143,7 @@ public class BlockNode  extends Node
         // from blockBody(builder);
                 
         TranslationContext blockBodyTC = new TranslationContext(builder, tc.mixinBuilder, true);
-        System.out.println("blockBlodyTC buildingMethod=" + blockBodyTC.buildingMethod);
+//        System.out.println("blockBlodyTC buildingMethod=" + blockBodyTC.buildingMethod);
         List<ExpressionNode> exps = getBody().stream().map(n -> n.trans(blockBodyTC)).collect(Collectors.toList());
         
         //KJX TODO TOO EASY!

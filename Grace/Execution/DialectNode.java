@@ -3,7 +3,9 @@
 //
 
 package Grace.Execution;
+import Grace.SOMBridge;
 import Grace.Parsing.Token;
+import som.interpreter.nodes.ExpressionNode;
 import Grace.Parsing.ParseNode;
 import Grace.Parsing.DialectParseNode;
 import Grace.Parsing.StringLiteralParseNode;
@@ -11,7 +13,7 @@ import java.io.PrintStream;
 import java.util.List;
 import java.util.ArrayList;
 
-
+import Grace.TranslationContext;
 import Grace.Execution.DialectNode;
 import Grace.Execution.Node;
 import Grace.Execution.ObjectConstructorNode;
@@ -59,5 +61,9 @@ public class DialectNode  extends Node
         tw.println(prefix + "    " + getPath());
     }
 
+    public ExpressionNode trans(TranslationContext tc) {
+    	return SOMBridge.graceDone();
+    }
+    
 }
 

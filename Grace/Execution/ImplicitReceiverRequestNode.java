@@ -14,6 +14,7 @@ import som.interpreter.nodes.MessageSendNode;
 import som.vmobjects.SSymbol;
 import Grace.Parsing.ParseNode;
 
+import static som.interpreter.SNodeFactory.createImplicitReceiverSend;
 import static som.vm.Symbols.symbolFor;
 
 import java.io.PrintStream;
@@ -98,16 +99,16 @@ public class ImplicitReceiverRequestNode  extends RequestNode
 
         //System.out.println("ImplicitRR.trans() not assignment");
     	SSymbol selector = symbolFor(getSOMnsName());
-    	List<ExpressionNode> subs = new ArrayList<>(parts.size());
+    	List<ExpressionNode> args = new ArrayList<>(parts.size());
     	for (RequestPartNode part : parts) {
     		for (Node arg : part.getArguments()) {
-    			subs.add(arg.trans(tc));
+    			args.add(arg.trans(tc));
     		}
     	}
-    	return tc.methodBuilder.getImplicitReceiverSend(selector, source);
+    	//methodbuilder.getImplicitSend does more optimisation I think
+    	
+    	return tc.methodBuilder.getGraceImplicitReceiverSend(selector, args, source);
     }
-
-
 }
 
 

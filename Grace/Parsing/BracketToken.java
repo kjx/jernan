@@ -52,6 +52,7 @@ public class BracketToken  extends Token
     }
 
     private String computeOther()  {
+	System.out.println("in computeOther " + _name);
         StringBuilder sb = new StringBuilder();
         int[] graphemeIndices = StringInfo.ParseCombiningCharacters(_name);
         for (int i = graphemeIndices.length - 1;i >= 0;i--)
@@ -62,6 +63,7 @@ public class BracketToken  extends Token
             else
                 sb.append(c); 
         }
+	System.out.println("in computeOther, returning " +sb.toString());
         return sb.toString();
     }
 
