@@ -283,48 +283,13 @@ public class MethodNode  extends Node
   	    mxnBuilder.setSuperclassFactorySend(
   	        mxnBuilder.createStandardSuperFactorySend(source), true);
 
-  	    //copied from code in BlockNode and then hacked
-  	    //I'm not sure we need to do this, perhaps nodes could just 
-  	    //generate themselves into the mxnBuilder via tc,
-  	    //and perhaps we need a seperate transInitialiser(tc) method to make initialisers?
-  	    //or perhaps eith make transIntoObject and transIntoMethod (or stick something into the tc - a slotBuilder?)
-
-
-  	    //treats defs and vars the same - I really should generate a "hidden" var slot for a def
-  	    //only with an accessor method that reads the hidden var slot; the hidden var slots' writer is used to initialise...
-  	    //and if a vars readiability and writeability are not the same, shoudl generate a hidden slot and accessors too
-  	    
-        System.out.println("KJX making slots for - " + getName() + " as class");
+  	    System.out.println("KJX making slots for - " + getName() + " as class");
 
   	    //now make the slots
   	    MethodBuilder initializer = mxnBuilder.getInitializerMethodBuilder();  	   
    	    mxnBuilder.setInitializerSource(source);
-   	    
-//KJX Code should now be moved into defDecl & varDecl nodes
-//  	    for (Node nn : ocBody) {
-//        	if (nn instanceof DefDeclarationNode) {
-//        		DefDeclarationNode n = (DefDeclarationNode)nn;
-//        		ExpressionNode slotInitializer = new som.interpreter.nodes.literals.StringLiteralNode("Unitialised def " + n.getName(), source);
-//        				
-//        	    SOMBridge.defSlot(mxnBuilder, 
-//        	    		n.getName(),
-//        				false,
-//        				SOMBridge.getAccessModifier(! n.getPublic()),
-//        				slotInitializer);
-//        	}
-//        	if (nn instanceof VarDeclarationNode) {
-//        		VarDeclarationNode n = (VarDeclarationNode)nn;
-//        		ExpressionNode slotInitializer = new som.interpreter.nodes.literals.StringLiteralNode("Unitialised var " + n.getName(), source);
-//
-//        		SOMBridge.defSlot(mxnBuilder, 
-//        	    		n.getName(),
-//        				false,
-//        				SOMBridge.getAccessModifier(! n.getReadable()),
-//        				slotInitializer);              	    
-//        	}
-//  	    }
-
-  	    //Process the body of the object constructor, running code, adding var inits, returning done for methods...
+ 
+   	    //Process the body of the object constructor, running code, adding var inits, returning done for methods...
         Grace.TranslationContext classTC = new TranslationContext(initializer, mxnBuilder, false);
         for (Node n : ocBody) {
         	mxnBuilder.addInitializerExpression(n.trans(classTC));

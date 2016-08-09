@@ -109,29 +109,27 @@ public class SOMBridge {
     	System.out.println("KJX starting fakeSOM for " + moduleName);
     	
     	//make a new, top-level class called "fakeSOM" to be the Newspeak Module
-        MixinBuilder mxnBuilder = new MixinBuilder(null, AccessModifier.PUBLIC, symbolFor("fakeSOM"));
+        MixinBuilder mxnBuilder = new MixinBuilder(null, AccessModifier.PUBLIC, symbolFor(moduleName));
       
-            SourceCoordinate coord = new SourceCoordinate(1,1,1,1);
-	        Source sourceText = Source.fromText("fake\nfake\nfake\n", "fake source in SOMBridge.java");
-	        SourceSection source = sourceText.createSection("fake\nfake\nfake\n",1,1,1);
+        SourceCoordinate coord = new SourceCoordinate(1,1,1,1);
+	    Source sourceText = Source.fromText("fake\nfake\nfake\n", "fake source in SOMBridge.java");
+	    SourceSection source = sourceText.createSection("fake\nfake\nfake\n",1,1,1);
         		
-	        //build the primary factory method for the fakeSOM class
-		    MethodBuilder primaryFactory = mxnBuilder.getPrimaryFactoryMethodBuilder();	       
-		    primaryFactory.addArgumentIfAbsent("self", source); 	
-		    primaryFactory.addArgumentIfAbsent("platform", source);
-		    primaryFactory.setSignature(symbolFor("usingPlatform:"));
-	  	    mxnBuilder.setupInitializerBasedOnPrimaryFactory(source);
+	    //build the primary factory method for the fakeSOM class
+		MethodBuilder primaryFactory = mxnBuilder.getPrimaryFactoryMethodBuilder();	       
+		primaryFactory.addArgumentIfAbsent("self", source); 	
+		primaryFactory.addArgumentIfAbsent("platform", source);
+		primaryFactory.setSignature(symbolFor("usingPlatform:"));
+		mxnBuilder.setupInitializerBasedOnPrimaryFactory(source);
 	  	    
   	    MethodBuilder meth = mxnBuilder.getClassInstantiationMethodBuilder();
-
   	    SSymbol SCselector = symbolFor("Value"); 
    	    ExpressionNode superClassResolution = meth.getImplicitReceiverSend(SCselector, source);
    	    mxnBuilder.setSuperClassResolution(superClassResolution);
         mxnBuilder.setSuperclassFactorySend(
                 mxnBuilder.createStandardSuperFactorySend(
                    source), true);
-                
-        
+       
         MethodBuilder slotIniterBuilder = mxnBuilder.getInitializerMethodBuilder();
         ExpressionNode initer = slotIniterBuilder.getImplicitReceiverSend(symbolFor("platform"),source);
         
@@ -141,10 +139,11 @@ public class SOMBridge {
 				AccessModifier.PUBLIC,
 	    	    initer);
 
-        
         // initExprs(mxnBuilder);  //decode - can do more later to *initialise* (hopefully instances)
         
    	    mxnBuilder.setInitializerSource(source);
+   	    
+   	    //Here we build the main: method
    	    //sideDeclaration(mxnBuilder);  	//decode   //pretty sure these are nested classes and category tags 
         //ARGH sideDeclaration -> category -> methodDeclaration
         //I guess because methods are in categories... (Smalltalk Stylee)???
@@ -162,26 +161,12 @@ public class SOMBridge {
         // locals(builder); we have no locals
         // ExpressionNode  blockBody(builder);
  
+        //we make it instantiate the module-class
         ExpressionNode self = builder.getSelfRead(source);
     	ExpressionNode runGraceModule = MessageSendNode.createMessageSend(
 				symbolFor(moduleName),  
 				(new ExpressionNode[] { self } ), source);
-        
-    	//KJX the three lines below is old code that just pasted the grace module AST into the body of hte main method.
-    	//we are now being more "subtle" 
-    	
-      	//ObjectConstructorNode graceOC = (ObjectConstructorNode) ast;
-      	//Grace.TranslationContext tc = new TranslationContext(builder,mxnBuilder, true);
-    	//List<ExpressionNode> expressions = graceOC.getBody().stream().map(n -> n.trans(tc)).collect(Collectors.toList());
-  
-                
-        // the end of the method has been found (EndTerm) - make it implicitly
-        // return "self" -- EXCEPT GRACE SHOULDN"T DO THIS! - always return last expression!!
-        //ExpressionNode self = builder.getSelfRead(source);
-        // expressions.add(self);
-        // createSequence(expressions, source);
-        // ExpressionNode body = SNodeFactory.createSequence(expressions, source);
-        SInvokable myMethod = builder.assemble(runGraceModule, accessModifier, category, source);
+    	SInvokable myMethod = builder.assemble(runGraceModule, accessModifier, category, source);
         VM.reportNewMethod(myMethod);
           
   	   try {
@@ -191,13 +176,15 @@ public class SOMBridge {
   	     return null;
   	    }
   	   
+  	    //now what we do is to wrap the parsed module (which is a naked object constructor)
+  	    //in a method-node, so that we can translate the method-node-returning-object-constructor (aka pseudo-class)
+  	    //into a SOMns nested class: we stick that inside the platform class... 
    	    System.out.println("KJX building ersaztsmethod for " + moduleName);
   	    Token tok = new Grace.Parsing.IdentifierToken(moduleName, 1, 1, moduleName);
   	    MethodNode ersaztsmethod = new MethodNode(tok, null);
   	    ersaztsmethod.add(ast);
   	    ersaztsmethod.setFresh(true);
-  	    OrdinarySignaturePartParseNode osppn = new OrdinarySignaturePartParseNode(
-  	    								new IdentifierParseNode(tok));
+  	    OrdinarySignaturePartParseNode osppn = new OrdinarySignaturePartParseNode(new IdentifierParseNode(tok));
   	    SignatureParseNode spn = new SignatureParseNode(tok);
   	    spn.addPart(osppn);
   	    SignatureNode sig = new SignatureNode(tok, spn);
