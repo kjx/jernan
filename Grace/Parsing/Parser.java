@@ -598,7 +598,7 @@ public class Parser
         nextToken();
         IdentifierParseNode partName = new IdentifierParseNode(circumfix,"circumfix" + ob.getName() + ob.getOther());
         OrdinarySignaturePartParseNode ret = new OrdinarySignaturePartParseNode(partName);
-        parseParameterList(ob,OpenBracketToken.class,ret.getParameters());
+        parseParameterList(ob,CloseBracketToken.class,ret.getParameters());
         expectWithError(CloseBracketToken.class,"P1033",ob.getName() + " ... " + ob.getOther());
         CloseBracketToken cb = (CloseBracketToken)lexer.current;
         if (!StringSupport.equals(cb.getName(), ob.getOther()))
@@ -1609,7 +1609,6 @@ public class Parser
                  
                 if (lexer.current.line == firstBodyToken.line && !(lexer.current instanceof NewLineToken || lexer.current instanceof RBraceToken))
                 {
-                    System.out.println("got token " + lexer.current);
                     reportError("P1004",lexer.current,"Unexpected token after statement.");
                 }
                  
@@ -1645,7 +1644,6 @@ public class Parser
                 takeSemicolon();
                 if (lexer.current.line == firstBodyToken.line && !(lexer.current instanceof NewLineToken || lexer.current instanceof RBraceToken))
                 {
-                    System.out.println("got token " + lexer.current);
                     reportError("P1004",lexer.current,"Unexpected token after statement.");
                 }
                  
