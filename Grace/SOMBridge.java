@@ -17,7 +17,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.oracle.truffle.api.source.SourceSection;
@@ -45,6 +47,7 @@ import som.VM;
 import som.compiler.MethodBuilder;
 import som.compiler.MixinBuilder;
 import som.compiler.MixinDefinition;
+import som.compiler.SourcecodeCompiler;
 import som.compiler.Lexer.SourceCoordinate;
 import som.compiler.MixinBuilder.MixinDefinitionError;
 import som.compiler.Parser.ParseError;
@@ -55,6 +58,7 @@ import som.interpreter.nodes.OuterObjectRead;
 import som.interpreter.nodes.SequenceNode;
 import som.interpreter.nodes.MessageSendNode.AbstractUninitializedMessageSendNode;
 import som.interpreter.nodes.literals.StringLiteralNode;
+import som.vm.ObjectSystem;
 import som.vmobjects.SInvokable;
 import som.vmobjects.SSymbol;
 import tools.highlight.Tags.DelimiterClosingTag;
@@ -64,23 +68,65 @@ import tools.highlight.Tags.StatementSeparatorTag;
 
 public class SOMBridge {
 
+		//holds the Jernan AST
+	public static final Map<String, Object> graceModules = new HashMap<>();
+	
+	//holds the SOMns Object which is the Grace Module Object
+	public static final Map<String, Object> loadedGraceModules = new HashMap<>();
+	
+	
+     public static Object loadGraceModule(String path) throws IOException { 
+    	 
+    	 File file = new File(path);
+    	 
+    	 if (loadedGraceModules.containsKey(file.getAbsolutePath())) {
+    		 return loadedGraceModules.get(file.getAbsolutePath());
+    	 }
+
+    	 
+    	 	System.out.println("Load Grace Module " + path);
+    	 	ObjectSystem objectSystem = VM.getObjectSystem();	
+    	 	Object platformObject = objectSystem.getPlatformObject();
+    	 MixinDefinition graceModuleDefinition = 
+    			 parseForSOM(path);
+    	 //now we need to - instantiate the class
+    	 Object graceModuleObject = graceModuleDefinition.instantiateObject(platformObject);  //KJX not 100% sure about this
+	      loadedGraceModules.put(file.getAbsolutePath(), graceModuleObject);
+
+    	 return graceModuleObject;
+     }
+   
+	 public static MixinDefinition parseForSOM(String filename) throws IOException {
+		 return parseForSOM(filename, new File(filename));
+	 }
+	
     public static MixinDefinition parseForSOM(String filename, File file) throws IOException {
     	System.out.println("KJX in SOMBridge");
 //    	if 	("fake.grace".equals(filename)) {
 //    		return fakeSOM(helloWorldNode());
 //    	}
   	
-    	System.out.println("KJX SOMBridge loading " + filename);
+    	if (graceModules.containsKey(file.getAbsolutePath())) {
+    		System.out.println("WHOOPS APOCALYPSE " + file.getAbsolutePath() + graceModules.get(file.getAbsolutePath()));
+    	      VM.errorExit("KABOOM");
+    	}
+    	
+    	//System.out.println("KJX SOMBridge loading " + filename);
+    	
+    	graceModules.put(file.getAbsolutePath(), "LOADING");
+    	 	
     	byte[] bytes = Files.readAllBytes(file.toPath());
     	Parser parser = new Parser(filename, new String(bytes,"UTF-8"));
 
     	ObjectParseNode graceModule = (ObjectParseNode)parser.parse();
-    	Node ast = new ExecutionTreeTranslator().translate(graceModule);
+    	Node graceAst = new ExecutionTreeTranslator().translate(graceModule);
 
-    	ast.debugPrint(new PrintStream(System.out,true), "");
+    	graceAst.debugPrint(new PrintStream(System.out,true), "");
 
-    	System.out.print("KJX SOMBridge returning");
-    	return fakeSOM(ast,"graceModule");
+    	graceModules.put(file.getAbsolutePath(), graceAst);
+    	
+    	//System.out.print("KJX SOMBridge returning");
+    	return fakeSOM(graceAst,"graceModule");
  
  }
     
@@ -107,7 +153,7 @@ public class SOMBridge {
 //    
     public static MixinDefinition fakeSOM(Node ast, String moduleName)  {
     	
-    	System.out.println("KJX starting fakeSOM for " + moduleName);
+    	//System.out.println("KJX starting fakeSOM for " + moduleName);
     	
     	//make a new, top-level class called "fakeSOM" to be the Newspeak Module class
     	//corresponding to the Grace Dialect/Prelude
@@ -190,21 +236,21 @@ public class SOMBridge {
   	    sig.addPart(ospn);
   	    ersaztsmethod.setSignature(sig);
   	    
-  	    System.out.println("KJX translating ersaztsmethod " + moduleName);
+  	    //System.out.println("KJX translating ersaztsmethod " + moduleName);
   	    TranslationContext ersaztsTC = new TranslationContext(slotIniterBuilder,mxnBuilder,true);
   	    ExpressionNode moduleSOMversion = ersaztsmethod.trans(ersaztsTC);
 
-  	    System.out.println("KJX checking if we need a dialect " + moduleName);
+  	    //System.out.println("KJX checking if we need a dialect " + moduleName);
   	    ObjectConstructorNode ocNode = (ObjectConstructorNode)ast;
   	    
   	    String dialect;
-  	    if (ocNode.getBody().get(0) instanceof DialectNode) {
+  	    if ((ocNode.getBody().size() < 0 ) && (ocNode.getBody().get(0) instanceof DialectNode)) {
   	    	dialect = ((DialectNode)(ocNode.getBody().get(0))).getPath();
-  	    	System.out.println("KJX Got a dialect: " + dialect);
+  	    	//System.out.println("KJX Got a dialect: " + dialect);
   	    	dialect += ".grace";
   	    		
   	    } else {
-  	    	System.out.println("KJX no dialect, should load in standard prelude instead");
+  	    	//System.out.println("KJX no dialect, should load in standard prelude instead");
   	    		dialect = "prelude.grace";
   	    }
   	
@@ -224,18 +270,18 @@ public class SOMBridge {
     	ObjectParseNode dialectModule = (ObjectParseNode)parser.parse();
     	ObjectConstructorNode dialectAst = (ObjectConstructorNode) new ExecutionTreeTranslator().translate(dialectModule);
     
-    	System.out.println("KJX GOT DIALECT-FILE " + dialect);
+    	//System.out.println("KJX GOT DIALECT-FILE " + dialect);
 	    
         for (Node n : dialectAst.getBody()) {
         	mxnBuilder.addInitializerExpression(n.trans(ersaztsTC));
         }
     	
-  	    System.out.println("KJX assembling builder fakeSOM");
+  	    //System.out.println("KJX assembling builder fakeSOM");
 
    	   	MixinDefinition ret = mxnBuilder.assemble(source);
    	
   	    
-        System.out.println("KJX returning fakeSOM");
+        //System.out.println("KJX returning fakeSOM");
 	    return ret; 
        
     }
