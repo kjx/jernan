@@ -4,6 +4,7 @@
 
 package Grace.Execution;
 import Grace.Parsing.Token;
+import som.interpreter.nodes.ExpressionNode;
 import Grace.Parsing.ParseNode;
 import static Grace.Parsing.Lexer.isOperatorCharacter;
 import java.io.PrintStream;
@@ -14,7 +15,7 @@ import java.util.Collections;
 import java.util.stream.Collectors;
 import java.lang.StringBuilder;
 
-
+import Grace.TranslationContext;
 import Grace.Execution.Node;
 import Grace.Execution.RequestNode;
 import Grace.Execution.RequestPartNode;
@@ -70,6 +71,14 @@ public abstract class RequestNode  extends Node implements Iterable<RequestPartN
         return name;
     }
 
+    /**
+    * Get an enumerator giving each part of this request
+    * in turn
+    */
+    public Iterator<RequestPartNode> iterator()  {
+	return parts.iterator();
+    }
+
     //name in SOMns format - colon preceeds arguments except for unary mesages
     public String getSOMnsName() {
     	if ((parts.size() == 1) && (parts.get(0).getArguments().size() == 1)) {
@@ -86,14 +95,20 @@ public abstract class RequestNode  extends Node implements Iterable<RequestPartN
     return sb.toString();
     }
     
-    
-    /**
-    * Get an enumerator giving each part of this request
-    * in turn
-    */
-    public Iterator<RequestPartNode> iterator()  {
-	return parts.iterator();
+    public String getSOMnsClassName() {
+    	return "_class`" + getSOMnsName().replace(":", "_");
     }
+    
+    // translate to SOM.ExpressionNode
+    public void transAsInheritsClause(TranslationContext tc) {
+    	throw new UnsupportedOperationException( 	
+						"Sorry, cannot yet transAsInheritsClause " +
+						this.getClass().getName() +
+						" to SOMns at " + Location
+						 );
+    }
+
+    
 }
 
 

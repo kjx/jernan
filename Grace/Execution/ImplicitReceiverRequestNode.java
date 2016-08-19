@@ -7,10 +7,13 @@ package Grace.Execution;
 import Grace.TranslationContext;
 import Grace.Parsing.Token;
 import som.compiler.MixinBuilder;
+import som.compiler.MethodBuilder;
+
 import som.compiler.Variable.Local;
 import som.interpreter.SNodeFactory;
 import som.interpreter.nodes.ExpressionNode;
 import som.interpreter.nodes.MessageSendNode;
+import som.interpreter.nodes.MessageSendNode.AbstractUninitializedMessageSendNode;
 import som.vmobjects.SSymbol;
 import Grace.Parsing.ParseNode;
 
@@ -109,6 +112,58 @@ public class ImplicitReceiverRequestNode  extends RequestNode
     	
     	return tc.methodBuilder.getGraceImplicitReceiverSend(selector, args, source);
     }
+    
+    
+    public void transAsInheritsClause(TranslationContext tc) {
+    	Source sourceText = Source.fromText("fake\nfake\nfake\n", "fake source in SOMBridge.java");
+        SourceSection source = sourceText.createSection("fake\nfake\nfake\n",1,1,1);
+
+        System.out.println("ImplicitRR.transAsInheritsClause(" + getSOMnsName() + ")");
+    	if (getSOMnsName().endsWith(":=")) {
+    		throw new UnsupportedOperationException( 	
+					"You want to INHERIT from an ASSIGNMENT????? - I REFUSE! to IRR.transAsInheristClause to SOMns at " + Location);
+					 //I could support this but WHY BOTHER especially in a SPIKE
+    	}
+
+    	
+    	//setup the tc.methodbuilder as tc.mixinBuilder.classInitialisationMethodBuilder 
+    	MethodBuilder cimb = tc.mixinBuilder.getClassInstantiationMethodBuilder();
+        TranslationContext initTC = new TranslationContext(cimb, tc.mixinBuilder, true);
+
+    	//so: we have to make an implicit send of the munged name to get the fucking class
+    	//and install that as setSuperClassResolution
+        SSymbol SCselector = symbolFor(getSOMnsClassName()); 
+    	ExpressionNode superClassResolution = cimb.getImplicitReceiverSend(SCselector, source);
+   	    initTC.mixinBuilder.setSuperClassResolution(superClassResolution);
+   	    System.out.println(" resolving superclass to " + SCselector);
+   	    
+   	    
+   	    //pervert this current send into a factory call on the superclass initialiser (or something)
+   	    MethodBuilder imb = tc.mixinBuilder.getInitializerMethodBuilder();
+   	    TranslationContext factoryTC = new TranslationContext(imb, tc.mixinBuilder, true);
+  	    
+    	SSymbol initializerName = symbolFor(getSOMnsName());
+    	System.out.println(" attempting to build factory send  " + initializerName);
+
+    	//stuff cming in from Parser inheritance Clause
+
+    	List<ExpressionNode> args = new ArrayList<>(parts.size());
+    	ExpressionNode receiver = factoryTC.methodBuilder.getSuperReadNode(source);
+    	//would be better just to add the reciever in at the start here, but...
+    	for (RequestPartNode part : parts) {
+    		for (Node arg : part.getArguments()) {
+    			args.add(arg.trans(factoryTC));
+    		}
+    	}
+
+   	    ExpressionNode	superclassFactorySend  = 
+   	    		factoryTC.methodBuilder.getGraceImplicitReceiverSendWithReceiver(
+   	    				initializerName, receiver, args, source);
+
+    	//install that as the superclassFactorySend
+        factoryTC.mixinBuilder.setSuperclassFactorySend(superclassFactorySend, false);
+    }
+    
 }
 
 
