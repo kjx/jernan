@@ -125,6 +125,11 @@ public class ImplicitReceiverRequestNode  extends RequestNode
 					 //I could support this but WHY BOTHER especially in a SPIKE
     	}
 
+        //what we have to do here is
+        //1. make implicit call of getSOMnsClassName() -> which gets the SOMns class 
+        //2. send that class the factory method 
+
+
     	
     	//setup the tc.methodbuilder as tc.mixinBuilder.classInitialisationMethodBuilder 
     	MethodBuilder cimb = tc.mixinBuilder.getClassInstantiationMethodBuilder();
@@ -135,6 +140,7 @@ public class ImplicitReceiverRequestNode  extends RequestNode
         SSymbol SCselector = symbolFor(getSOMnsClassName()); 
     	ExpressionNode superClassResolution = cimb.getImplicitReceiverSend(SCselector, source);
    	    initTC.mixinBuilder.setSuperClassResolution(superClassResolution);
+   	    
    	    System.out.println(" resolving superclass to " + SCselector);
    	    
    	    
@@ -147,7 +153,7 @@ public class ImplicitReceiverRequestNode  extends RequestNode
 
     	//stuff cming in from Parser inheritance Clause
 
-    	List<ExpressionNode> args = new ArrayList<>(parts.size());
+    	List<ExpressionNode> args = new ArrayList<>(parts.size() + 1);
     	ExpressionNode receiver = factoryTC.methodBuilder.getSuperReadNode(source);
     	//would be better just to add the reciever in at the start here, but...
     	for (RequestPartNode part : parts) {
@@ -156,10 +162,16 @@ public class ImplicitReceiverRequestNode  extends RequestNode
     		}
     	}
 
+    	initializerName = factoryTC.mixinBuilder.getInitializerName(initializerName);
+    	
+    	// Originally I wrote: this code seemed to work but now I think it shouldn't
+    	// Now I think: that's because I was an idiot.
+    	//these factory sends are *super* sends from the *Current* class to invokve the *superclass factory*
+    	//which is why they are *implicit*
    	    ExpressionNode	superclassFactorySend  = 
    	    		factoryTC.methodBuilder.getGraceImplicitReceiverSendWithReceiver(
-   	    				initializerName, receiver, args, source);
-
+   	    				initializerName, receiver, args, source);    	
+    	
     	//install that as the superclassFactorySend
         factoryTC.mixinBuilder.setSuperclassFactorySend(superclassFactorySend, false);
     }
