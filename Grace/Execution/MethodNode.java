@@ -197,7 +197,7 @@ public class MethodNode  extends Node
   
     
     public ExpressionNode trans(final TranslationContext tc) {
-       System.out.println("KJX translating method node - " + getName());
+       // System.out.println("KJX translating method node - " + getName());
        if (getFresh()) {
     	   if (isSimpleClass()) {
     		   return transAsClass(tc);
@@ -206,9 +206,9 @@ public class MethodNode  extends Node
     	       super.trans(tc); //Give up
     	   }	
        }
-       System.out.println("KJX translating method node - " + getName() + " as method");
+       //System.out.println("KJX translating method node - " + getName() + " as method");
 
-       Source sourceText = Source.fromText("fake\nfake\nfake\n", "fake source in SOMBridge.java");
+       Source sourceText = Source.fromText("fake\nfake\nfake\n", "MethodNode " + getName());
        SourceSection source = sourceText.createSection("fake\nfake\nfake\n",1,1,1);
      
 //build a new method and add it into the TC mixing builder
@@ -239,16 +239,20 @@ public class MethodNode  extends Node
        return Grace.SOMBridge.graceDone();
     }	
     
+    public SourceSection source(String s) {
+        Source sourceText = Source.fromText("fake\nfake\nfake\n", "MNTAC " + s + " " + getName());
+        SourceSection source = sourceText.createSection("fake\nfake\nfake\n",1,1,1);
+    	return source;
+    }
+    
     public ExpressionNode transAsClass(TranslationContext tc) {
     	assert isSimpleClass();  //method body is just one ObjectConstructorNode
     	ObjectConstructorNode internalOC = (ObjectConstructorNode)getBody().get(0);
     	List<Node> ocBody = internalOC.getBody();
     	
-        System.out.println("KJX translating method node - " + getName() + " as class");
+        //System.out.println("KJX translating method node - " + getName() + " as class");
 
         SourceCoordinate coord = new SourceCoordinate(1,1,1,1);
-        Source sourceText = Source.fromText("fake\nfake\nfake\n", "fake source in SOMBridge.java");
-        SourceSection source = sourceText.createSection("fake\nfake\nfake\n",1,1,1);
         
         //what we have to do
         //1.make a SOMns nestedclass called _class_foo_bar_baz is the NAME of the NS class - foo()bar()baz() is its primary factory.
@@ -271,40 +275,75 @@ public class MethodNode  extends Node
 	    MethodBuilder primaryFactory = mxnBuilder.getPrimaryFactoryMethodBuilder();	       
 	    buildParametersForMethod(primaryFactory);
 	    primaryFactory.setSignature(symbolFor(getSignature().getSOMnsName()));
-  	    mxnBuilder.setupInitializerBasedOnPrimaryFactory(source);
+  	    mxnBuilder.setupInitializerBasedOnPrimaryFactory(source("primaryFactory"));
 
   	    // set up inheritance from Object
   	    // KJX need to add in inhertance later
   	    MethodBuilder def = mxnBuilder.getClassInstantiationMethodBuilder();
-  	    ExpressionNode selfRead = def.getSelfRead(source);
+  	    ExpressionNode selfRead = def.getSelfRead(source("selfRead CIMB"));
   	    ExpressionNode superClass = createMessageSend(Symbols.OBJECT,
-  	        new ExpressionNode[] {selfRead}, false, source);
+  	        new ExpressionNode[] {selfRead}, false, source("OBJECT CIMB"));
   	    mxnBuilder.setSuperClassResolution(superClass);
   	    mxnBuilder.setSuperclassFactorySend(
-  	        mxnBuilder.createStandardSuperFactorySend(source), true);
+  	        mxnBuilder.createStandardSuperFactorySend(source("stdSuperFactorySend")), true);
 
-  	    System.out.println("KJX making slots for - " + getName() + " as class");
+  	    //System.out.println("KJX making slots for - " + getName() + " as class");
 
-  	    //now make the slots
+  	    //now make the slots etc
   	    MethodBuilder initializer = mxnBuilder.getInitializerMethodBuilder();  	   
-   	    mxnBuilder.setInitializerSource(source);
+   	    mxnBuilder.setInitializerSource(source("initializer"));
+
+   	    
+   	    //Grace class/method arguments (like platfrom are accessible inside bodies
+   	    //Since we don't have proper lexical scope, we'll try to bind them to slots
+   	 for (SignaturePartNode pp : getSignature().getParts()) {
+	    	OrdinarySignaturePartNode p = (OrdinarySignaturePartNode)pp;
+	    	for (Node nn : p.getParameters()) {
+	    		ParameterNode n = (ParameterNode)nn;
+	    		String parameterName = n.getName();
+	    
+
+	            ExpressionNode initer = initializer.getImplicitReceiverSend(symbolFor(parameterName),source("Copy param to def " + parameterName));        
+	            SOMBridge.defSlot(mxnBuilder, 
+	            		parameterName,
+	    				true,
+	    				AccessModifier.PUBLIC,
+	    	    	    initer);
+
+	    		
+	    		
+	    	}
+	    }	 
+   	    
+        
+   	    
+   	    
  
-   	    //Process the body of the object constructor, running code, adding var inits, returning done for methods...
+//   	    mxnBuilder.addInitializerExpression(createMessageSend(symbolFor("println"), 
+//   	    		new ExpressionNode[] { new som.interpreter.nodes.literals.StringLiteralNode("MNTX init" + getName() + " start",source("initPRINTS")) },
+//   	    		false, source("initPRINT")  ));
+   	    
+   	    //Process the body of the object constructor, running code, adding slots, adding var inits, returning done for methods...
         Grace.TranslationContext classTC = new TranslationContext(initializer, mxnBuilder, false);
         for (Node n : ocBody) {
         	mxnBuilder.addInitializerExpression(n.trans(classTC));
         }
+
+//   	    mxnBuilder.addInitializerExpression(createMessageSend(symbolFor("println"), 
+//   	    		new ExpressionNode[] { new som.interpreter.nodes.literals.StringLiteralNode("MNTX  init" + getName() + " done",source("initPRINTS")) },
+//   	    		false, source("initPRINT")  ));
+
         
   	    //finally install the class as a nested class in the enclosing mixinBuilder.
         try {
-      	    tc.mixinBuilder.addNestedMixin(mxnBuilder.assemble(source));  //really belongs with code above but throws
+      	    tc.mixinBuilder.addNestedMixin(mxnBuilder.assemble(source("assemble nested mixin")));  //really belongs with code above but throws
   	    } catch (MixinDefinitionError pe) {	
   	    	System.out.println("Crashed trying to install the SOMns class " + getSignature().getSOMnsClassName());
   	    	VM.errorExit(pe.toString());
   	     return null;
   	    }
       
-        System.out.println("KJX making class bridge method for - " + getName() + " as class");
+        //System.out.println("KJX making class bridge method for - " + getName() + " as class");
 
   	    //now add the "bridge method" that invokes the class
         final SSymbol category = symbolFor("");  //no category for us
@@ -319,9 +358,9 @@ public class MethodNode  extends Node
 	    ///AARGH I'm getting really confused -- KJX AARGH
 	    	
 	    // body of "bridge method" - generate self call to "getSOMnsClassName()" to get the SOM Class object"
-	    ExpressionNode self = builder.getSelfRead(source);
+	    ExpressionNode self = builder.getSelfRead(source("selfread for bridge method"));
 	 	ExpressionNode theSOMnsClass = SNodeFactory.createMessageSend(symbolFor(getSignature().getSOMnsClassName()), new ExpressionNode[] {self},
-	            false, source);
+	            false, source("send for bridge method"));
 
 	 	//now make a send that sends all the arguments to the new message
 	 	List<ExpressionNode> expressions = new ArrayList<ExpressionNode>();
@@ -330,17 +369,17 @@ public class MethodNode  extends Node
 	    	OrdinarySignaturePartNode p = (OrdinarySignaturePartNode)pp;
 	    	for (Node nn : p.getParameters()) {
 	    		ParameterNode n = (ParameterNode)nn;
-	    		System.out.println("getting " + n.getName());
-	    		 expressions.add(builder.getReadNode(n.getName(), source)); 	
+	    		// System.out.println("getting " + n.getName());
+	    		 expressions.add(builder.getReadNode(n.getName(), source("arg bridge method" + n.getName()))); 	
 	    	}
 	    }
 
         ExpressionNode body = 
         		MessageSendNode.createMessageSend(
         				symbolFor(getSignature().getSOMnsName()),  //which is also the name of the primary Factory method
-        				expressions.toArray(new ExpressionNode[0]), source);
+        				expressions.toArray(new ExpressionNode[0]), source("primary factory send " + getSignature().getSOMnsName()));
  
-        SInvokable bridgeMethod = builder.assemble(body, accessModifier, category, source);          
+        SInvokable bridgeMethod = builder.assemble(body, accessModifier, category, source("assembled bridge method"));          
         try {
         	tc.mixinBuilder.addMethod(bridgeMethod);  //really belongs with code above but throws
   	    } catch (MixinDefinitionError pe) {	

@@ -3,12 +3,23 @@
 //
 
 package Grace.Execution;
+import static som.vm.Symbols.symbolFor;
+
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.oracle.truffle.api.source.Source;
+import com.oracle.truffle.api.source.SourceSection;
+
+import Grace.SOMBridge;
+import Grace.TranslationContext;
 import Grace.Parsing.ParseNode;
 import Grace.Parsing.Token;
+import som.VM;
+import som.compiler.AccessModifier;
+import som.interpreter.nodes.ExpressionNode;
+import som.vmobjects.SSymbol;
 
 /**
 * A type literal
@@ -52,6 +63,16 @@ public class TypeNode  extends Node
         }
     }
 
+    public ExpressionNode trans(TranslationContext tc) {
+    	Source sourceText = Source.fromText("fake\nfake\nfake\n", "fake source in SOMBridge.java");
+        SourceSection source = sourceText.createSection("fake\nfake\nfake\n",1,1,1);
+
+     System.out.println("KJX found a type node, ignoring it, really should crash");
+        
+        return tc.methodBuilder.getSelfRead(source);
+   }
+    
+    
 }
 
 

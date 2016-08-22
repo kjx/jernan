@@ -17,9 +17,11 @@ import Grace.Execution.Node;
 import Grace.Execution.RequestNode;
 import Grace.Execution.RequestPartNode;
 
+import static som.interpreter.SNodeFactory.createMessageSend;
 import static som.vm.Symbols.symbolFor;
 import som.interpreter.nodes.MessageSendNode;
 import som.compiler.MethodBuilder;
+import som.interpreter.SNodeFactory;
 import som.interpreter.nodes.ExpressionNode;
 import som.vmobjects.SSymbol;
 import com.oracle.truffle.api.source.SourceSection;
@@ -76,6 +78,14 @@ public class ExplicitReceiverRequestNode  extends RequestNode
         }
     }
 
+    
+    public SourceSection source(String s) {
+        Source sourceText = Source.fromText("fake\nfake\nfake\n", "ERRr " + s + " " + getName());
+        SourceSection source = sourceText.createSection("fake\nfake\nfake\n",1,1,1);
+    	return source;
+    }
+    
+    
     public ExpressionNode trans(TranslationContext tc) {
     	Source sourceText = Source.fromText("fake\nfake\nfake\n", "fake source in SOMBridge.java");
         SourceSection source = sourceText.createSection("fake\nfake\nfake\n",1,1,1);
@@ -116,6 +126,8 @@ public class ExplicitReceiverRequestNode  extends RequestNode
         
     	//so: we have to make an EXPLICIT send of the munged name to the Receiver to get the fucking class
     	//and install that as setSuperClassResolution
+        System.out.println("XXXX KJX trying to find superclassresolution");
+        receiver.debugPrint(System.out, "XXXX KJX");
         SSymbol SCselector = symbolFor(getSOMnsClassName()); 
     	ExpressionNode superClassResolution = 
     			 MessageSendNode.createMessageSend(SCselector, 
@@ -132,9 +144,9 @@ public class ExplicitReceiverRequestNode  extends RequestNode
     	System.out.println(" attempting to build factory send  " + initializerName);
 
     	//stuff cming in from Parser inheritance Clause
-
-    	List<ExpressionNode> args = new ArrayList<>(parts.size());
     	ExpressionNode factoryReceiver = factoryTC.methodBuilder.getSuperReadNode(source);  
+    	
+    	List<ExpressionNode> args = new ArrayList<>(parts.size());
     	//would be better just to add the reciever in at the start here, but...
     	for (RequestPartNode part : parts) {
     		for (Node arg : part.getArguments()) {
@@ -142,16 +154,36 @@ public class ExplicitReceiverRequestNode  extends RequestNode
     		}
     	}
     	
-    	
     	initializerName = factoryTC.mixinBuilder.getInitializerName(initializerName);
     	
       	// Originally I wrote: this code seemed to work but now I think it shouldn't
     	// Now I think: that's because I was an idiot.
     	//these factory sends are *super* sends from the *Current* class to invokve the *superclass factory*
     	//which is why they are *implicit*
-   	    ExpressionNode	superclassFactorySend  = 
-   	    		factoryTC.methodBuilder.getGraceImplicitReceiverSendWithReceiver(
-   	    				initializerName, factoryReceiver, args, source);
+  
+    	List<ExpressionNode> iexprs = new ArrayList<>();
+    	iexprs.add(createMessageSend(symbolFor("println"), 
+	   	    		new ExpressionNode[] { new som.interpreter.nodes.literals.StringLiteralNode("ERR super " + getName() + " start",source("ERR")) },
+	   	    		false, source("ERR")  ));
+	   	
+    	iexprs.add(SNodeFactory.createMessageSend(
+    	        initializerName, new ExpressionNode[] {factoryReceiver}, false, source));
+    	
+//    	//causes endless loops...
+//  		iexprs.add(factoryTC.methodBuilder.getGraceImplicitReceiverSendWithReceiver(
+//   				initializerName, factoryReceiver, args, source)  );
+
+    	iexprs.add(createMessageSend(symbolFor("println"), 
+   	    		new ExpressionNode[] { new som.interpreter.nodes.literals.StringLiteralNode("ERR super " + getName() + " done",source("ERR")) },
+   	    		false, source("ERR")  ));
+	
+    	iexprs.add(factoryTC.methodBuilder.getSelfRead(source("ERR self")));
+    	
+    	ExpressionNode	superclassFactorySend  = SNodeFactory.createSequence(iexprs, source("ERR SCFS"));
+   	    		
+   	    		
+   	        
+   	    
 
     	//install that as the superclassFactorySend
         factoryTC.mixinBuilder.setSuperclassFactorySend(superclassFactorySend, false);

@@ -121,12 +121,12 @@ public class SOMBridge {
     	ObjectParseNode graceModule = (ObjectParseNode)parser.parse();
     	Node graceAst = new ExecutionTreeTranslator().translate(graceModule);
 
-    	graceAst.debugPrint(new PrintStream(System.out,true), "");
+    	//graceAst.debugPrint(new PrintStream(System.out,true), "");
 
     	graceModules.put(file.getAbsolutePath(), graceAst);
     	
     	//System.out.print("KJX SOMBridge returning");
-    	return fakeSOM(graceAst,"graceModule");
+    	return fakeSOM(graceAst,"graceModule" + filename);
  
  }
     
@@ -162,7 +162,7 @@ public class SOMBridge {
         MixinBuilder mxnBuilder = new MixinBuilder(null, AccessModifier.PUBLIC, symbolFor(moduleName));
       
         SourceCoordinate coord = new SourceCoordinate(1,1,1,1);
-	    Source sourceText = Source.fromText("fake\nfake\nfake\n", "fake source in SOMBridge.java");
+	    Source sourceText = Source.fromText("fake\nfake\nfake\n", "fakeSOM for + moduleName");
 	    SourceSection source = sourceText.createSection("fake\nfake\nfake\n",1,1,1);
         		
 	    //build the primary factory method for the fakeSOM class
@@ -172,6 +172,7 @@ public class SOMBridge {
 		primaryFactory.setSignature(symbolFor("usingPlatform:"));
 		mxnBuilder.setupInitializerBasedOnPrimaryFactory(source);
 	  	    
+		//set up inheritance from "Value" --- all NS modules must be values
   	    MethodBuilder meth = mxnBuilder.getClassInstantiationMethodBuilder();
   	    SSymbol SCselector = symbolFor("Value"); 
    	    ExpressionNode superClassResolution = meth.getImplicitReceiverSend(SCselector, source);
@@ -189,7 +190,9 @@ public class SOMBridge {
 				AccessModifier.PUBLIC,
 	    	    initer);
 
-        // initExprs(mxnBuilder);  //decode - can do more later to *initialise* (hopefully instances)
+        
+        
+        
         
    	    mxnBuilder.setInitializerSource(source);
    	    
@@ -206,13 +209,21 @@ public class SOMBridge {
   
  
         //we make it instantiate the module-class
+        
+  	   	String ersatzModuleName = "ersatz" + moduleName;
+
+  	   	
         ExpressionNode self = builder.getSelfRead(source);
-    	ExpressionNode runGraceModule = MessageSendNode.createMessageSend(
-				symbolFor(moduleName),  
-				(new ExpressionNode[] { self } ), source);
-    	SInvokable myMethod = builder.assemble(runGraceModule, accessModifier, category, source);
-        VM.reportNewMethod(myMethod);
-          
+        List<ExpressionNode> expressions = new ArrayList<>();
+        expressions.add(MessageSendNode.createMessageSend(
+				symbolFor(ersatzModuleName),  
+				(new ExpressionNode[] { self } ), source));
+    	ExpressionNode mainMethodBody = 
+    			SNodeFactory.createSequence(expressions, source);
+    	    	
+    	SInvokable myMethod = builder.assemble(mainMethodBody, accessModifier, category, source);
+        
+    	
   	   try {
   	      mxnBuilder.addMethod(myMethod);  //really belongs with code above but throws
   	   } catch (MixinDefinitionError pe) {
@@ -220,11 +231,61 @@ public class SOMBridge {
   	     return null;
   	    }
   	   
-  	    //now what we do is to wrap the parsed module (which is a naked object constructor)
+ 	    
+ 	    //System.out.println("KJX checking if we need a dialect " + moduleName);
+ 	    ObjectConstructorNode ocNode = (ObjectConstructorNode)ast;
+ 	    
+// 	    for (Node n : ocNode.getBody()) {
+// 	    	System.out.println("BODY------------------");
+// 	    	n.debugPrint(System.out, "BODY");
+// 	    }
+ 	    
+// 	    ocNode.getBody().get(0).debugPrint(System.out, "FUCKWWITT");
+ 	    
+ 	    String dialect;
+ 	    if ((ocNode.getBody().size() > 0 ) && (ocNode.getBody().get(0) instanceof DialectNode)) {
+ 	    	dialect = ((DialectNode)(ocNode.getBody().get(0))).getPath();
+ 	    	//System.out.println("KJX Got a dialect: " + dialect);
+ 	    	dialect += ".grace";
+ 	    		
+ 	    } else {
+ 	    	//System.out.println("KJX no dialect, should load in standard prelude instead");
+ 	    		dialect = "prelude.grace";
+ 	    }
+ 	
+ 	    System.out.println("KJX WANT DIALECT-FILE " + dialect);
+ 	    
+  	    byte[] bytes;
+  	    Parser parser = null;
+ 	    File dialectFile = new File(dialect);	
+ 	    try {
+ 	    	bytes = Files.readAllBytes(dialectFile.toPath());	
+ 	    	 parser = new Parser(dialect, new String(bytes,"UTF-8"));
+ 	    } catch (Exception e) {
+ 	    	System.out.println("BOOM. can't read dialect");
+	  	      VM.errorExit(e.toString());
+ 	    }
+
+   	ObjectParseNode dialectModule = (ObjectParseNode)parser.parse();
+   	ObjectConstructorNode dialectAst = (ObjectConstructorNode) new ExecutionTreeTranslator().translate(dialectModule);
+   
+   	//System.out.println("KJX GOT DIALECT-FILE " + dialect);
+	    
+   	//Note that the dialect goes into the outer object...
+    	TranslationContext outerTC = new TranslationContext(mxnBuilder.getInitializerMethodBuilder(), mxnBuilder, false);
+   
+       for (Node n : dialectAst.getBody()) {
+       	mxnBuilder.addInitializerExpression(n.trans(outerTC));
+       }
+   	
+     
+  	   
+  	   
+  	    //now what we do is to wrap the parsed Grace module ast (which is a naked jernan object constructor)
   	    //in a method-node, so that we can translate the method-node-returning-object-constructor (aka pseudo-class)
   	    //into a SOMns nested class: we stick that inside the platform class... 
-   	    System.out.println("KJX building ersaztsmethod for " + moduleName);
-  	    Token tok = new Grace.Parsing.IdentifierToken(moduleName, 1, 1, moduleName);
+   	    System.out.println("KJX building ersaztsmethod for " + ersatzModuleName);
+  	    Token tok = new Grace.Parsing.IdentifierToken(ersatzModuleName, 1, 1, ersatzModuleName);
   	    MethodNode ersaztsmethod = new MethodNode(tok, null);
   	    ersaztsmethod.add(ast);
   	    ersaztsmethod.setFresh(true);
@@ -236,46 +297,14 @@ public class SOMBridge {
   	    sig.addPart(ospn);
   	    ersaztsmethod.setSignature(sig);
   	    
-  	    //System.out.println("KJX translating ersaztsmethod " + moduleName);
-  	    TranslationContext ersaztsTC = new TranslationContext(slotIniterBuilder,mxnBuilder,true);
+  	    System.out.println("KJX SOLD SOUL TO SATAN"); //this adds the dialect to the INNER (erszats) object too!!!
+  	    ocNode.getBody().addAll(dialectAst.getBody());
+  	    
+  	    System.out.println("KJX translating ersaztsmethod " + ersatzModuleName);
+  	    TranslationContext ersaztsTC = new TranslationContext(slotIniterBuilder,mxnBuilder,false);
   	    ExpressionNode moduleSOMversion = ersaztsmethod.trans(ersaztsTC);
 
-  	    //System.out.println("KJX checking if we need a dialect " + moduleName);
-  	    ObjectConstructorNode ocNode = (ObjectConstructorNode)ast;
   	    
-  	    String dialect;
-  	    if ((ocNode.getBody().size() < 0 ) && (ocNode.getBody().get(0) instanceof DialectNode)) {
-  	    	dialect = ((DialectNode)(ocNode.getBody().get(0))).getPath();
-  	    	//System.out.println("KJX Got a dialect: " + dialect);
-  	    	dialect += ".grace";
-  	    		
-  	    } else {
-  	    	//System.out.println("KJX no dialect, should load in standard prelude instead");
-  	    		dialect = "prelude.grace";
-  	    }
-  	
-  	    System.out.println("KJX WANT DIALECT-FILE " + dialect);
-  	    
-   	    byte[] bytes;
-   	    Parser parser = null;
-  	    File dialectFile = new File(dialect);	
-  	    try {
-  	    	bytes = Files.readAllBytes(dialectFile.toPath());	
-  	    	 parser = new Parser(dialect, new String(bytes,"UTF-8"));
-  	    } catch (Exception e) {
-  	    	System.out.println("BOOM. can't read dialect");
-	  	      VM.errorExit(e.toString());
-  	    }
-
-    	ObjectParseNode dialectModule = (ObjectParseNode)parser.parse();
-    	ObjectConstructorNode dialectAst = (ObjectConstructorNode) new ExecutionTreeTranslator().translate(dialectModule);
-    
-    	//System.out.println("KJX GOT DIALECT-FILE " + dialect);
-	    
-        for (Node n : dialectAst.getBody()) {
-        	mxnBuilder.addInitializerExpression(n.trans(ersaztsTC));
-        }
-    	
   	    //System.out.println("KJX assembling builder fakeSOM");
 
    	   	MixinDefinition ret = mxnBuilder.assemble(source);
@@ -295,7 +324,9 @@ public class SOMBridge {
     				    	    final ExpressionNode init)
     	       {
 
-    	Source sourceText = Source.fromText("fake\nfake\nfake\n", "fake source in SOMBridge.java");
+    	System.out.println("VAR DefSlot " + slotName + " in " + mxnBuilder);
+    	
+    	Source sourceText = Source.fromText("fake\nfake\nfake\n", "SOMBridge.java defslot " + slotName);
         SourceSection source = sourceText.createSection("fake\nfake\nfake\n",1,1,1);
 	
         	assert !(immutable && (init == null));
@@ -311,14 +342,14 @@ public class SOMBridge {
     	       }
     
     public static ExpressionNode graceDone() {
-    		Source sourceText = Source.fromText("fake\nfake\nfake\n", "fake source in SOMBridge.java");
+    		Source sourceText = Source.fromText("fake\nfake\nfake\n", "SOMBridge.java graceDone");
     		SourceSection source = sourceText.createSection("fake\nfake\nfake\n",1,1,1);
     		return new som.interpreter.nodes.literals.StringLiteralNode("***KJX***DONE***",source);}
     
     public static ExpressionNode makeReturn(final MethodBuilder builder,
     										final ExpressionNode result) {
 
-    	Source sourceText = Source.fromText("fake\nfake\nfake\n", "fake source in SOMBridge.java");
+    	Source sourceText = Source.fromText("fake\nfake\nfake\n", "SOMBridge.java makereturn");
         SourceSection source = sourceText.createSection("fake\nfake\nfake\n",1,1,1);
 	
         	//KJX force everything to be a non-local return

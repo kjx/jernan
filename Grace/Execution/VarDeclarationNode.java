@@ -138,14 +138,14 @@ public class VarDeclarationNode  extends Node
 //        System.out.println("KJX EVIL DEAD");
 //        return new NilLiteralNode(source);
 
-        System.out.println("translating vardecl " + getName() + "buldingMethod=" + tc.buildingMethod);
+//        System.out.println("translating vardecl " + getName() + "buldingMethod=" + tc.buildingMethod);
 
         if (tc.buildingMethod) {
 //            System.out.println("adding as local " + getName());
   
         	tc.methodBuilder.addLocalIfAbsent(getName(), source);
         } else {
-//            System.out.println("adding as class slot " + getName());
+            System.out.println("adding as class slot " + getName());
 
     		ExpressionNode slotInitializer = new som.interpreter.nodes.literals.StringLiteralNode("Unitialised var " + getName(), source);
       	    SOMBridge.defSlot(tc.mixinBuilder, 

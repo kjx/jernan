@@ -138,6 +138,7 @@ public class InheritsNode  extends Node
 					 );
        };
        
+       System.out.println("delegating inheritance to request node " + ((RequestNode)getFrom()).getName());
        ((RequestNode) getFrom()).transAsInheritsClause(tc);
       
        

@@ -6,7 +6,12 @@ package Grace.Execution;
 import Grace.Parsing.Token;
 import som.VM;
 import som.compiler.AccessModifier;
+import som.compiler.MethodBuilder;
+import som.compiler.MixinBuilder;
+import som.compiler.MixinBuilder.MixinDefinitionError;
 import som.interpreter.nodes.ExpressionNode;
+import som.interpreter.nodes.MessageSendNode;
+import som.vmobjects.SInvokable;
 import som.vmobjects.SSymbol;
 import Grace.Parsing.ImportParseNode;
 import Grace.Parsing.IdentifierParseNode;
@@ -83,7 +88,7 @@ public class ImportNode  extends Node
 
     
     public ExpressionNode trans(TranslationContext tc) {
-    	Source sourceText = Source.fromText("fake\nfake\nfake\n", "fake source in SOMBridge.java");
+    	Source sourceText = Source.fromText("fake\nfake\nfake\n", "importNode");
         SourceSection source = sourceText.createSection("fake\nfake\nfake\n",1,1,1);
 
       //should really check it is only at the top level - this will allow imports inside (nested) classes
@@ -92,23 +97,76 @@ public class ImportNode  extends Node
         if (tc.buildingMethod) {
         	System.out.println("cain't import inside a method"); //but it should still work if we did! 
         	VM.errorExit("KKRUNCH");
+        } 
+   		
+        //tc.mixinbuilder *should* be the grace module class  (i.e. instenace of ersatz)
+        //tc.mixinbuild.getOuterBuilder(): should get the builder for the enclosing graceModule thingy 
+        
+        MixinBuilder whereToStickTheImport;
+        
+        
+        Boolean makeImportInSurroundingObject = true;
+        
+        if (makeImportInSurroundingObject) {
+        	whereToStickTheImport = tc.mixinBuilder.getOuterBuilder();
         } else {
-   			
-            //System.out.println("KJX translating import " + getPath() + " as " + getName());
+        	whereToStickTheImport = tc.mixinBuilder;
+        }
+        	
+        if (whereToStickTheImport == null) {
+           	System.out.println("whereToStickTheImport is null"); //huh 
+           	whereToStickTheImport = tc.mixinBuilder;
+        	// VM.errorExit("KKRUNCH");
+        }
+        
+            System.out.println("IMP translating import " + getPath() + " as " + getName());
+            System.out.println("IMP Putting the import " + whereToStickTheImport);
         	
         	SSymbol selector = symbolFor("loadGraceModule:");
         	List<ExpressionNode> args = new ArrayList<>(1);        	
         	args.add( new som.interpreter.nodes.literals.StringLiteralNode(getPath(), source) );
         	
-        	ExpressionNode slotInitializer =  tc.methodBuilder.getGraceImplicitReceiverSend(selector, args, source);
-   			    				
-      	    SOMBridge.defSlot(tc.mixinBuilder, 
+        	ExpressionNode slotInitializer =  whereToStickTheImport.getInitializerMethodBuilder().getGraceImplicitReceiverSend(selector, args, source);
+        	//ExpressionNode slotInitializer =  whereToStickTheImport.getInitializerMethodBuilder().getSelfRead(source);
+        	   	
+
+        	Boolean makeImportASlot = false;
+        	
+            if (makeImportASlot)  {
+            	//  if this is in the inner thing, then an inherit statement can't find it
+            	//  if this is in the outer thing, then the grace module isn't a fucking NS value  so we crash
+            	
+        	SOMBridge.defSlot(whereToStickTheImport, 
     	    		getName(),
-    				false,
-    				AccessModifier.PRIVATE,
+    				true,
+    				AccessModifier.PUBLIC,
     				slotInitializer);
-        }
-        
+        	} else { 
+        	//  we make a METHOD not a SLOT and stick THAT in the  scope
+        	//  we rely on the vm caching under loadGraceModule 
+        	//        	
+        	//        	
+            final SSymbol category = symbolFor("");  //no category for us
+            AccessModifier accessModifier = AccessModifier.PUBLIC;
+            MethodBuilder builder = new MethodBuilder(
+            		whereToStickTheImport, whereToStickTheImport.getScopeForCurrentParserPosition());
+            // messagePattern(builder); //decode
+            builder.addArgumentIfAbsent("self", source);
+            builder.setSignature(symbolFor(getName()));
+      
+        	ExpressionNode methodBody = slotInitializer;
+        	
+        	SInvokable myMethod = builder.assemble(methodBody, accessModifier, category, source);
+            VM.reportNewMethod(myMethod);
+              
+      	   try {
+      	      whereToStickTheImport.addMethod(myMethod);  //really belongs with code above but throws
+      	   } catch (MixinDefinitionError pe) {
+     	      VM.errorExit(pe.toString());
+      	     return null;
+      	    }
+        	}
+        	
         //return self. for some reason I don't understand - kjx 
         //ahh. probalby should return "done"
         return tc.methodBuilder.getSelfRead(source);

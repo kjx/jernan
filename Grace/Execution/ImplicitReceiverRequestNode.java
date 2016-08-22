@@ -92,7 +92,7 @@ public class ImplicitReceiverRequestNode  extends RequestNode
     	Source sourceText = Source.fromText("fake\nfake\nfake\n", "fake source in SOMBridge.java");
         SourceSection source = sourceText.createSection("fake\nfake\nfake\n",1,1,1);
 
-        //System.out.println("ImplicitRR.trans(" + getSOMnsName() + ")");
+//        System.out.println("ImplicitRR.trans(" + getSOMnsName() + ")");
     	if (getSOMnsName().endsWith(":=")) {
  	   //Kernan parse tree for assignments is FUCKED! FUCKED! FUCKED!
     		assert parts.size() == 2;
@@ -100,7 +100,7 @@ public class ImplicitReceiverRequestNode  extends RequestNode
     		return tc.methodBuilder.getGraceSetterSend(getSOMnsName(), parts.get(1).getArguments().get(0).trans(tc), source);
     	}	    	  
 
-        //System.out.println("ImplicitRR.trans() not assignment");
+//        System.out.println("ImplicitRR.trans() not assignment");
     	SSymbol selector = symbolFor(getSOMnsName());
     	List<ExpressionNode> args = new ArrayList<>(parts.size());
     	for (RequestPartNode part : parts) {
@@ -138,7 +138,7 @@ public class ImplicitReceiverRequestNode  extends RequestNode
     	//so: we have to make an implicit send of the munged name to get the fucking class
     	//and install that as setSuperClassResolution
         SSymbol SCselector = symbolFor(getSOMnsClassName()); 
-    	ExpressionNode superClassResolution = cimb.getImplicitReceiverSend(SCselector, source);
+        ExpressionNode superClassResolution = cimb.getImplicitReceiverSend(SCselector, source);
    	    initTC.mixinBuilder.setSuperClassResolution(superClassResolution);
    	    
    	    System.out.println(" resolving superclass to " + SCselector);
